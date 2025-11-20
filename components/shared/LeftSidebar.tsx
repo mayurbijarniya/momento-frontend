@@ -11,14 +11,16 @@ import { INavLink } from "@/types";
 
 const LeftSidebar = () => {
   const pathname = usePathname();
-  const { mutate: signOut, isSuccess } = useSignOutAccount();
+  const { mutate: signOutMutation, isSuccess } = useSignOutAccount();
   const router = useRouter();
-  const { user } = useUserContext();
-  const { isAuthenticated } = useUserContext();
+  const { user, isAuthenticated, signOut } = useUserContext();
 
   useEffect(() => {
-    if (isSuccess) router.push("/");
-  }, [isSuccess]);
+    if (isSuccess) {
+      signOut();
+      router.push("/sign-in");
+    }
+  }, [isSuccess, router, signOut]);
 
   return (
     <nav className="leftsidebar">
@@ -49,7 +51,7 @@ const LeftSidebar = () => {
           <img
             src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
             alt="profile"
-            className="h-14 w-14 rounded-full max-lg:w-[60px] max-lg:h-[60px] object-contain"
+            className="h-14 w-14 rounded-full max-lg:w-[60px] max-lg:h-[60px] object-cover"
           />
           <div className="flex flex-col justify-center max-lg:hidden">
             <p className="body-bold">{user.name}</p>
@@ -87,7 +89,7 @@ const LeftSidebar = () => {
         <Button
           variant="ghost"
           className="hover:bg-white group flex justify-start mt-20 gap-3"
-          onClick={() => signOut()}
+          onClick={() => signOutMutation()}
         >
           <img
             className="group-hover:invert max-lg:w-[30px] max-lg:h-[30px] "

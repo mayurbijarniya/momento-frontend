@@ -38,7 +38,7 @@ const PostCard = ({ post }: PostCardProps) => {
                 "/assets/icons/profile-placeholder.svg"
               }
               alt="creator"
-              className="rounded-full w-12 h-12 object-contain"
+              className="rounded-full w-12 h-12 object-cover"
             />
           </Link>
 
@@ -57,12 +57,11 @@ const PostCard = ({ post }: PostCardProps) => {
 
         <Link
           href={`/update-post/${post.$id || post.id}`}
-          className={`${user.id !== (post.creator.$id || post.creator.id) && "hidden"}`}
+          className={`${
+            user.id !== (post.creator.$id || post.creator.id) && "hidden"
+          }`}
         >
-          <img src="/assets/icons/edit.svg" 
-          alt="edit" 
-          width={18} 
-          height={18} />
+          <img src="/assets/icons/edit.svg" alt="edit" width={18} height={18} />
         </Link>
       </div>
 
@@ -70,11 +69,11 @@ const PostCard = ({ post }: PostCardProps) => {
         <div className="relative min-h-[300px]">
           {loading && (
             <div className="absolute size-full inset-0 flex justify-center items-center">
-              <Loader/>
+              <Loader />
             </div>
           )}
           <img
-            src={post.imageUrl || "assets/icons/profile-placeholder.svg"}
+            src={post.imageUrl || "/assets/icons/profile-placeholder.svg"}
             alt="post image"
             className={` rounded-md  min-w-[235px] sm:w-[750px] md:w-[1000px] lg:w-[1220px] xl:[1500px] ${
               loading ? "opacity-0" : "opacity-100"

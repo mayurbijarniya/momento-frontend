@@ -1,6 +1,6 @@
 "use client";
 
-import { getCurrentUser } from '@/lib/appwrite/api';
+import { getCurrentUser } from '@/lib/api/client';
 import { IUser } from '@/types';
 import {ReactNode, createContext, useContext, useEffect, useState } from 'react'
  
@@ -21,6 +21,7 @@ const INITIAL_STATE = {
     setUser: () => {},
     setIsAuthenticated: () => {},
     checkAuthUser: async () => false as boolean,
+    signOut: () => {},
 }
 
 type IContextType = {
@@ -30,6 +31,7 @@ type IContextType = {
     isAuthenticated: boolean;
     setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
     checkAuthUser: () => Promise<boolean>;
+    signOut: () => void;
   };
 
 const AuthContext = createContext<IContextType>(INITIAL_STATE);
@@ -41,42 +43,41 @@ const AuthProvider = ({children}: {children: ReactNode}) => {
 
     const checkAuthUser = async () =>{
         try {
+            setIsLoading(true);
             const currentAccount = await getCurrentUser();
 
             if(currentAccount){
                 setUser({
-                    id: (currentAccount as any).$id || (currentAccount as any).id,
-                    name: (currentAccount as any).name,
-                    username: (currentAccount as any).username,
-                    email: (currentAccount as any).email,
-                    imageUrl: (currentAccount as any).imageUrl,
-                    bio: (currentAccount as any).bio
+                    id: currentAccount.id,
+                    name: currentAccount.name || '',
+                    username: currentAccount.username || '',
+                    email: currentAccount.email || '',
+                    imageUrl: currentAccount.imageUrl || '',
+                    bio: currentAccount.bio || ''
                 })
 
                 setIsAuthenticated(true);
-
                 return true;
             }
 
+            setIsAuthenticated(false);
             return false;
 
         } catch (error) {
+            setIsAuthenticated(false);
             return false;
         } finally{
             setIsLoading(false);
         }
     }
 
+    const signOut = () => {
+        setUser(INITIAL_USER);
+        setIsAuthenticated(false);
+    }
+
     useEffect(() => {
-        setIsLoading(true);
-        const token = localStorage.getItem('cookieFallback');
-        if(token === null || token === '[]' ) 
-        {
-            setIsAuthenticated(false);
-            setIsLoading(false);
-        }else{
-            checkAuthUser();  
-        }
+        checkAuthUser();
     }, []);
     
 
@@ -87,6 +88,7 @@ const AuthProvider = ({children}: {children: ReactNode}) => {
      isAuthenticated,
      setIsAuthenticated,
      checkAuthUser,
+     signOut,
     }
 
 

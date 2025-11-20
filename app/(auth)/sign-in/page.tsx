@@ -58,7 +58,7 @@ const SigninForm = () => {
     } else {
       toast({ title: "Sign-up failed. Try again" });
     }
-  }  
+  }
 
   return (
     <Form {...form}>
@@ -79,9 +79,14 @@ const SigninForm = () => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Email or Username</FormLabel>
                 <FormControl>
-                  <Input type="email" className="shad-input" {...field} />
+                  <Input
+                    type="text"
+                    className="shad-input"
+                    placeholder="Enter email or username"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -94,7 +99,12 @@ const SigninForm = () => {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input type="password" className="shad-input" {...field} />
+                  <Input
+                    type="password"
+                    className="shad-input"
+                    placeholder="Enter password"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
