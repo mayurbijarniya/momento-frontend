@@ -21,6 +21,7 @@ import {
   useGetUserById,
   useUpdateUser,
 } from "@/lib/react-query/queriesAndMutation";
+import { uploadProfileImage } from "@/lib/api/client";
 import Loader from "@/components/shared/Loader";
 import ProfileUploader from "./ProfileUploader";
 import { Input } from "@/components/ui/input";
@@ -60,19 +61,37 @@ const UpdateProfile = () => {
   // Handler
   const handleUpdate = async (value: z.infer<typeof ProfileValidation>) => {
     if (isAuthenticated) {
+      let imageUrl = (currentUser as any).imageUrl;
+      let imageId = (currentUser as any).imageId;
+
+      // If a new file was uploaded, upload it first
+      if (value.file && value.file.length > 0) {
+        try {
+          const uploadResult = await uploadProfileImage(value.file[0]);
+          imageUrl = uploadResult.imageUrl;
+          imageId = uploadResult.imageId;
+        } catch (error) {
+          toast({
+            title: "Failed to upload image. Please try again.",
+          });
+          return;
+        }
+      }
+
       const updatedUser = await updateUser({
         userId: (currentUser as any).$id || (currentUser as any).id || userId,
         name: value.name,
         bio: value.bio,
         file: value.file,
-        imageUrl: (currentUser as any).imageUrl,
-        imageId: (currentUser as any).imageId,
+        imageUrl: imageUrl,
+        imageId: imageId,
       });
 
       if (!updatedUser) {
         toast({
           title: `Update user failed. Please try again.`,
         });
+        return;
       }
 
       setUser({
