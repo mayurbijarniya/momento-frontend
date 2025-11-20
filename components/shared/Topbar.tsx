@@ -21,9 +21,9 @@ const Topbar = () => {
           <div className="flex mr-3">
             <Link href={`/profile/${user.id}`} className="flex-center gap-3">
               <img
-                src={user.imageUrl || "/assets/images/profile-placeholder.svg"}
+                src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
                 alt="profile"
-                className="h-12 w-12 rounded-full"
+                className="h-12 w-12 rounded-full object-cover"
               />
             </Link>
           </div>
