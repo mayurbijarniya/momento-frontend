@@ -18,6 +18,7 @@ const axiosWithFormData = axios.create({
 const HTTP_SERVER =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
 const USERS_API = `${HTTP_SERVER}/users`;
+const POSTS_API = `${HTTP_SERVER}/posts`;
 
 export const createUserAccount = async (user: INewUser) => {
   const response = await axiosWithCredentials.post(`${USERS_API}/signup`, user);
@@ -47,6 +48,10 @@ export const getCurrentUser = async () => {
     return null;
   }
   const user = response.data;
+  
+  const savesResponse = await axiosWithCredentials.get(`${HTTP_SERVER}/saves/user/${user._id}`);
+  const saves = savesResponse.data.save || [];
+  
   return {
     id: user._id,
     name: user.name,
@@ -54,6 +59,7 @@ export const getCurrentUser = async () => {
     email: user.email,
     imageUrl: user.imageUrl || "",
     bio: user.bio || "",
+    save: saves,
   };
 };
 
@@ -120,54 +126,286 @@ export const getUsers = async (limit?: number) => {
 };
 
 export const createPost = async (post: INewPost) => {
-  return null;
+  const formData = new FormData();
+  formData.append("file", post.file[0]);
+  formData.append("caption", post.caption);
+  formData.append("location", post.location || "");
+  formData.append("tags", post.tags || "");
+
+  const response = await axiosWithFormData.post(`${POSTS_API}`, formData);
+  const postData = response.data;
+  return {
+    $id: postData._id,
+    id: postData._id,
+    creator: {
+      $id: postData.creator._id,
+      id: postData.creator._id,
+      name: postData.creator.name,
+      username: postData.creator.username,
+      imageUrl: postData.creator.imageUrl || "",
+    },
+    caption: postData.caption,
+    imageUrl: postData.imageUrl,
+    imageId: postData.imageId,
+    location: postData.location,
+    tags: postData.tags,
+    likes: postData.likes || [],
+    $createdAt: postData.createdAt,
+    createdAt: postData.createdAt,
+  };
 };
 
 export const getRecentPosts = async () => {
-  return { documents: [] };
+  const response = await axiosWithCredentials.get(`${POSTS_API}`);
+  const posts = response.data.documents || [];
+  return {
+    documents: posts.map((post: any) => ({
+      $id: post._id,
+      id: post._id,
+      creator: {
+        $id: post.creator._id,
+        id: post.creator._id,
+        name: post.creator.name,
+        username: post.creator.username,
+        imageUrl: post.creator.imageUrl || "",
+      },
+      caption: post.caption,
+      imageUrl: post.imageUrl,
+      imageId: post.imageId,
+      location: post.location,
+      tags: post.tags || [],
+      likes: post.likes || [],
+      $createdAt: post.createdAt,
+      createdAt: post.createdAt,
+    })),
+  };
 };
 
 export const getUserPosts = async (userId?: string) => {
-  return { documents: [] };
+  if (!userId) return { documents: [] };
+  const response = await axiosWithCredentials.get(`${POSTS_API}/user/${userId}`);
+  const posts = response.data.documents || [];
+  return {
+    documents: posts.map((post: any) => ({
+      $id: post._id,
+      id: post._id,
+      creator: {
+        $id: post.creator._id,
+        id: post.creator._id,
+        name: post.creator.name,
+        username: post.creator.username,
+        imageUrl: post.creator.imageUrl || "",
+      },
+      caption: post.caption,
+      imageUrl: post.imageUrl,
+      imageId: post.imageId,
+      location: post.location,
+      tags: post.tags || [],
+      likes: post.likes || [],
+      $createdAt: post.createdAt,
+      createdAt: post.createdAt,
+    })),
+  };
+};
+
+export const getLikedPosts = async (userId: string) => {
+  const response = await axiosWithCredentials.get(`${POSTS_API}/user/${userId}/liked`);
+  const posts = response.data.documents || [];
+  return {
+    documents: posts.map((post: any) => ({
+      $id: post._id,
+      id: post._id,
+      creator: {
+        $id: post.creator._id,
+        id: post.creator._id,
+        name: post.creator.name,
+        username: post.creator.username,
+        imageUrl: post.creator.imageUrl || "",
+      },
+      caption: post.caption,
+      imageUrl: post.imageUrl,
+      imageId: post.imageId,
+      location: post.location,
+      tags: post.tags || [],
+      likes: post.likes || [],
+      $createdAt: post.createdAt,
+      createdAt: post.createdAt,
+    })),
+  };
 };
 
 export const likePost = async (postId: string, likeArray: string[]) => {
-  return null;
+  const response = await axiosWithCredentials.put(`${POSTS_API}/${postId}/like`, {
+    likesArray: likeArray,
+  });
+  const postData = response.data;
+  return {
+    $id: postData._id,
+    id: postData._id,
+    likes: postData.likes || [],
+  };
 };
 
 export const savePost = async (postId: string, userId: string) => {
-  return null;
+  const response = await axiosWithCredentials.post(`${HTTP_SERVER}/saves`, {
+    postId,
+  });
+  return {
+    $id: response.data._id,
+    id: response.data._id,
+    post: {
+      $id: response.data.post,
+      id: response.data.post,
+    },
+  };
 };
 
-export const deleteSavedPost = async (savedRecordId: string) => {
-  return null;
+export const deleteSavedPost = async (postId: string) => {
+  await axiosWithCredentials.delete(`${HTTP_SERVER}/saves`, {
+    data: { postId },
+  });
+  return { status: "ok" };
 };
 
 export const getPostById = async (postId: string) => {
-  return null;
+  const response = await axiosWithCredentials.get(`${POSTS_API}/${postId}`);
+  const postData = response.data;
+  return {
+    $id: postData._id,
+    id: postData._id,
+    creator: {
+      $id: postData.creator._id,
+      id: postData.creator._id,
+      name: postData.creator.name,
+      username: postData.creator.username,
+      imageUrl: postData.creator.imageUrl || "",
+    },
+    caption: postData.caption,
+    imageUrl: postData.imageUrl,
+    imageId: postData.imageId,
+    location: postData.location,
+    tags: postData.tags || [],
+    likes: postData.likes || [],
+    $createdAt: postData.createdAt,
+    createdAt: postData.createdAt,
+  };
 };
 
 export const updatePost = async (post: IUpdatePost) => {
-  return null;
+  const formData = new FormData();
+  if (post.file && post.file.length > 0) {
+    formData.append("file", post.file[0]);
+  }
+  formData.append("caption", post.caption);
+  formData.append("location", post.location || "");
+  formData.append("tags", post.tags || "");
+
+  const response = await axiosWithFormData.put(
+    `${POSTS_API}/${post.postId}`,
+    formData
+  );
+  const postData = response.data;
+  return {
+    $id: postData._id,
+    id: postData._id,
+    creator: {
+      $id: postData.creator._id,
+      id: postData.creator._id,
+      name: postData.creator.name,
+      username: postData.creator.username,
+      imageUrl: postData.creator.imageUrl || "",
+    },
+    caption: postData.caption,
+    imageUrl: postData.imageUrl,
+    imageId: postData.imageId,
+    location: postData.location,
+    tags: postData.tags || [],
+    likes: postData.likes || [],
+    $createdAt: postData.createdAt,
+    createdAt: postData.createdAt,
+  };
 };
 
 export const deletePost = async (postId: string, imageId: string) => {
-  return null;
+  await axiosWithCredentials.delete(`${POSTS_API}/${postId}`);
+  return { status: "ok" };
 };
 
 export const getInfinitePosts = async ({
-  pageParam,
+  pageParam = 0,
 }: {
-  pageParam: number;
+  pageParam?: number;
 }) => {
-  return { documents: [] };
+  const limit = 10;
+  const skip = pageParam * limit;
+  const response = await axiosWithCredentials.get(
+    `${POSTS_API}?limit=${limit}&skip=${skip}`
+  );
+  const posts = response.data.documents || [];
+  return {
+    documents: posts.map((post: any) => ({
+      $id: post._id,
+      id: post._id,
+      creator: {
+        $id: post.creator._id,
+        id: post.creator._id,
+        name: post.creator.name,
+        username: post.creator.username,
+        imageUrl: post.creator.imageUrl || "",
+      },
+      caption: post.caption,
+      imageUrl: post.imageUrl,
+      imageId: post.imageId,
+      location: post.location,
+      tags: post.tags || [],
+      likes: post.likes || [],
+      $createdAt: post.createdAt,
+      createdAt: post.createdAt,
+    })),
+  };
 };
 
 export const searchPosts = async (searchTerm: string) => {
-  return { documents: [] };
+  const response = await axiosWithCredentials.get(`${POSTS_API}/search`, {
+    params: { searchTerm },
+  });
+  const posts = response.data.documents || [];
+  return {
+    documents: posts.map((post: any) => ({
+      $id: post._id,
+      id: post._id,
+      creator: {
+        $id: post.creator._id,
+        id: post.creator._id,
+        name: post.creator.name,
+        username: post.creator.username,
+        imageUrl: post.creator.imageUrl || "",
+      },
+      caption: post.caption,
+      imageUrl: post.imageUrl,
+      imageId: post.imageId,
+      location: post.location,
+      tags: post.tags || [],
+      likes: post.likes || [],
+      $createdAt: post.createdAt,
+      createdAt: post.createdAt,
+    })),
+  };
 };
 
 export const deleteUserAccount = async (userId: string) => {
   const response = await axiosWithCredentials.delete(`${USERS_API}/${userId}`);
+  return response.data;
+};
+
+export const searchExternal = async (query: string, page?: number) => {
+  const response = await axiosWithCredentials.get(`${HTTP_SERVER}/external/search`, {
+    params: { q: query, page: page || 1 },
+  });
+  return response.data;
+};
+
+export const getExternalDetails = async (id: string) => {
+  const response = await axiosWithCredentials.get(`${HTTP_SERVER}/external/details/${id}`);
   return response.data;
 };
