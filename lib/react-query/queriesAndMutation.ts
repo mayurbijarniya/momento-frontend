@@ -16,6 +16,7 @@ import {
   getRecentPosts,
   getUserById,
   getUserPosts,
+  getLikedPosts,
   getUsers,
   likePost,
   savePost,
@@ -24,6 +25,8 @@ import {
   signOutAccount,
   updatePost,
   updateUser,
+  searchExternal,
+  getExternalDetails,
 } from "../api/client";
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { QUERY_KEYS } from "./queryKeys";
@@ -125,7 +128,7 @@ export const useDeleteSavedPost = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (savedRecordId: string) => deleteSavedPost(savedRecordId),
+    mutationFn: (postId: string) => deleteSavedPost(postId),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
@@ -152,6 +155,14 @@ export const useGetUserPosts = (userId?: string) => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_USER_POSTS, userId],
     queryFn: () => getUserPosts(userId),
+    enabled: !!userId,
+  });
+};
+
+export const useGetLikedPosts = (userId?: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_USER_POSTS, userId, "liked"],
+    queryFn: () => getLikedPosts(userId!),
     enabled: !!userId,
   });
 };
@@ -190,19 +201,16 @@ export const useGetPosts = () => {
   return useInfiniteQuery({
     queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
     queryFn: getInfinitePosts as any,
-    getNextPageParam: (lastPage: any) => {
-      // If there's no data, there are no more pages.
+    getNextPageParam: (lastPage: any, allPages: any[]) => {
       if (lastPage && lastPage.documents.length === 0) {
-        return null;
+        return undefined;
       }
-
-      // Use the $id of the last document as the cursor.
-      const lastId =
-        lastPage.documents[lastPage.documents.length - 1].$id ||
-        (lastPage.documents[lastPage.documents.length - 1] as any).id;
-      return lastId;
+      if (lastPage && lastPage.documents.length < 10) {
+        return undefined;
+      }
+      return allPages.length;
     },
-    initialPageParam: undefined, // Add this line
+    initialPageParam: 0,
   });
 };
 
@@ -261,5 +269,21 @@ export const useDeleteUserAccount = () => {
     onSuccess: () => {
       queryClient.invalidateQueries();
     },
+  });
+};
+
+export const useSearchExternal = (query: string, page?: number) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.SEARCH_EXTERNAL, query, page],
+    queryFn: () => searchExternal(query, page),
+    enabled: !!query,
+  });
+};
+
+export const useGetExternalDetails = (id: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_EXTERNAL_DETAILS, id],
+    queryFn: () => getExternalDetails(id),
+    enabled: !!id,
   });
 };

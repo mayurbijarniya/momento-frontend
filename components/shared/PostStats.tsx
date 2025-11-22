@@ -9,7 +9,6 @@ import {
 } from "@/lib/react-query/queriesAndMutation";
 import { checkIsLiked } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
-import { useToast } from "../ui/use-toast";
 
 type PostStatsProps = {
   post?: any;
@@ -17,67 +16,104 @@ type PostStatsProps = {
 };
 const PostStats = ({ post, userId }: PostStatsProps) => {
   const { isAuthenticated } = useUserContext();
-  const { toast } = useToast();
 
-  const likesList = post?.likes.map((user: any) => user.$id || user.id);
+  const getLikesArray = (postLikes: any): string[] => {
+    if (!postLikes || !Array.isArray(postLikes)) return [];
+    return postLikes
+      .map((like: any) => {
+        if (typeof like === "string") {
+          return like;
+        }
+        if (like && typeof like === "object") {
+          return like?.$id || like?.id || like;
+        }
+        return null;
+      })
+      .filter((id: any) => id != null && id !== "") as string[];
+  };
 
-  const [likes, setLikes] = useState(likesList);
+  const likesList = getLikesArray(post?.likes);
+  const [likes, setLikes] = useState<string[]>(likesList);
   const [isSaved, setIsSaved] = useState(false);
 
+  useEffect(() => {
+    const newLikesList = getLikesArray(post?.likes);
+    setLikes(newLikesList);
+  }, [post?.likes]);
+
   const { mutate: likePost } = useLikePost();
-  const { mutate: savePost } = useSavePost();
-  const { mutate: deleteSavedPost } = useDeleteSavedPost();
+  const { mutate: savePost, isPending: isSaving } = useSavePost();
+  const { mutate: deleteSavedPost, isPending: isDeleting } = useDeleteSavedPost();
 
   const { data: currentUser } = useGetCurrentUser();
 
   const savedPostRecord = (currentUser as any)?.save?.find(
     (record: any) => (record.post.$id || record.post.id) === (post?.$id || post?.id)
-  ); // checks saved to see if user already saved post
+  );
 
   useEffect(() => {
     setIsSaved(savedPostRecord ? true : false);
-    //  !!savedPostRecord is another way to write ternary operator
-  }, [currentUser]);
+  }, [currentUser, savedPostRecord]);
 
   const handleLikePost = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (isAuthenticated) {
-      e.stopPropagation();
-
       let newLikes = [...likes];
 
       const hasLiked = newLikes.includes(userId);
 
       if (hasLiked) {
-        newLikes = newLikes.filter((id) => id !== userId); // removes the like (filter gives array of all others who have liked except for the id)
+        newLikes = newLikes.filter((id) => id !== userId);
       } else {
         newLikes.push(userId);
       }
 
       setLikes(newLikes);
-      likePost({ postId: post?.$id || "", likesArray: newLikes });
+      likePost(
+        { postId: post?.$id || post?.id || "", likesArray: newLikes },
+        {
+          onSuccess: (data) => {
+            if (data?.likes) {
+              setLikes(data.likes);
+            }
+          },
+        }
+      );
     } else {
-      toast({
-        title: "you are not signed in to perform this action",
-      });
+      window.location.href = "/sign-in";
     }
   };
 
   const handleSavePost = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (isAuthenticated) {
-      e.stopPropagation();
+      const postId = post?.$id || post?.id || "";
+      if (!postId) return;
 
       if (savedPostRecord) {
-        //(if post is saved already) removes saved post
-        setIsSaved(false);
-        deleteSavedPost(savedPostRecord.$id);
+        deleteSavedPost(postId, {
+          onSuccess: () => {
+            setIsSaved(false);
+          },
+          onError: (error) => {
+            console.error("Failed to unsave post:", error);
+          },
+        });
       } else {
-        savePost({ postId: post?.$id || "", userId });
-        setIsSaved(true);
+        savePost(
+          { postId, userId },
+          {
+            onSuccess: () => {
+              setIsSaved(true);
+            },
+            onError: (error) => {
+              console.error("Failed to save post:", error);
+            },
+          }
+        );
       }
-    }else{
-      toast({
-        title: "You are not signed in to perform this action",
-      });
+    } else {
+      window.location.href = "/sign-in";
     }
   };
 
