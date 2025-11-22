@@ -22,8 +22,10 @@ const Explore = () => {
     useSearchPosts(debouncedValue);
 
   useEffect(() => {
-    if (InView && !searchValue) fetchNextPage(); //for infinite scroll
-  }, [InView, searchValue]);
+    if (InView && !searchValue && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [InView, searchValue, hasNextPage, fetchNextPage]);
 
   if (!posts) {
     return (
