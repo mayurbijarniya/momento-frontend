@@ -1,6 +1,6 @@
 "use client";
 
-import { getCurrentUser } from '@/lib/api/client';
+import { getCurrentUser, signOutAccount } from '@/lib/api/client';
 import { IUser } from '@/types';
 import {ReactNode, createContext, useContext, useEffect, useState } from 'react'
  
@@ -21,7 +21,7 @@ const INITIAL_STATE = {
     setUser: () => {},
     setIsAuthenticated: () => {},
     checkAuthUser: async () => false as boolean,
-    signOut: () => {},
+    signOut: async () => {},
 }
 
 type IContextType = {
@@ -31,7 +31,7 @@ type IContextType = {
     isAuthenticated: boolean;
     setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
     checkAuthUser: () => Promise<boolean>;
-    signOut: () => void;
+    signOut: () => Promise<void>;
   };
 
 const AuthContext = createContext<IContextType>(INITIAL_STATE);
@@ -71,9 +71,14 @@ const AuthProvider = ({children}: {children: ReactNode}) => {
         }
     }
 
-    const signOut = () => {
-        setUser(INITIAL_USER);
-        setIsAuthenticated(false);
+    const signOut = async () => {
+        try {
+            await signOutAccount();
+        } catch (error) {
+        } finally {
+            setUser(INITIAL_USER);
+            setIsAuthenticated(false);
+        }
     }
 
     useEffect(() => {

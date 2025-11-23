@@ -24,7 +24,6 @@ export default function MomentoLayout({
       <section className="flex flex-1 md:h-screen min-h-[100vh]">
         {children}
       </section>
-      <Bottombar />
     </div>
   );
 }

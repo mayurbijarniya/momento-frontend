@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useUserContext } from "@/context/AuthContext";
 import Loader from "@/components/shared/Loader";
 import Bottombar from "@/components/shared/Bottombar";
@@ -11,25 +9,10 @@ import PostCard from "@/components/shared/PostCard";
 import { useGetRecentPosts } from "@/lib/react-query/queriesAndMutation";
 
 export default function RootPage() {
-  const router = useRouter();
   const { isAuthenticated, isLoading } = useUserContext();
   const { data: posts, isPending: isPostLoading } = useGetRecentPosts();
 
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.replace("/sign-in");
-    }
-  }, [isAuthenticated, isLoading, router]);
-
   if (isLoading) {
-    return (
-      <div className="flex-center w-full h-screen">
-        <Loader />
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
     return (
       <div className="flex-center w-full h-screen">
         <Loader />
@@ -61,7 +44,7 @@ export default function RootPage() {
           </div>
         </div>
       </section>
-      <Bottombar />
+      {isAuthenticated && <Bottombar />}
     </div>
   );
 }
