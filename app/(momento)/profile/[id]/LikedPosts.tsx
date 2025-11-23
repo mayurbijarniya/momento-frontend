@@ -1,32 +1,31 @@
+"use client";
+
 import GridPostList from "@/components/shared/GridPostList";
 import Loader from "@/components/shared/Loader";
-import { useGetCurrentUser } from "@/lib/react-query/queriesAndMutation";
+import { useGetLikedPosts } from "@/lib/react-query/queriesAndMutation";
+import { useUserContext } from "@/context/AuthContext";
 
 const LikedPosts = () => {
-  const { data: currentUser } = useGetCurrentUser();
+  const { user } = useUserContext();
+  const { data: likedPosts, isLoading } = useGetLikedPosts(user.id);
 
-
-
-
-
-  if (!currentUser)
+  if (isLoading) {
     return (
       <div className="flex-center w-full h-full">
         <Loader />
       </div>
     );
+  }
 
-  return (
-    <>
-      <>
-      {(!(currentUser as any).liked || (currentUser as any).liked.length === 0) && (
-        <p className="text-light-4">No liked posts</p>
-      )}
+  const posts = likedPosts?.documents || [];
 
-      <GridPostList posts={(currentUser as any).liked || []} showStats={false} />
-    </>
-    </>
-  );
+  if (posts.length === 0) {
+    return (
+      <p className="text-light-4 mt-10 text-center w-full">No liked posts</p>
+    );
+  }
+
+  return <GridPostList posts={posts} showStats={false} />;
 };
 
 export default LikedPosts;

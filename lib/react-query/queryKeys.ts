@@ -15,6 +15,10 @@ export enum QUERY_KEYS {
     GET_USER_POSTS = "getUserPosts",
     GET_FILE_PREVIEW = "getFileView",
   
-    //  SEARCH KEYS
-    SEARCH_POSTS = "getSearchPosts",
-  }
+  //  SEARCH KEYS
+  SEARCH_POSTS = "getSearchPosts",
+  
+  // EXTERNAL API KEYS
+  SEARCH_EXTERNAL = "searchExternal",
+  GET_EXTERNAL_DETAILS = "getExternalDetails",
+}
