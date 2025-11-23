@@ -46,8 +46,9 @@ const Profile = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      signOut();
-      router.push("/sign-in");
+      signOut().then(() => {
+        router.push("/sign-in");
+      });
     }
   }, [isSuccess, router, signOut]);
 
@@ -62,7 +63,7 @@ const Profile = () => {
         title: "Account deleted successfully",
         description: "Your account has been permanently deleted.",
       });
-      signOut();
+      await signOut();
       router.push("/sign-in");
     } catch (error) {
       toast({
@@ -159,7 +160,7 @@ const Profile = () => {
                       alt="delete"
                       width={20}
                       height={20}
-                      className="brightness-0 group-hover:brightness-0 group-hover:saturate-100 group-hover:hue-rotate-[320deg]"
+                      className="brightness-0 transition-all duration-200 group-hover:brightness-0 group-hover:invert group-hover:sepia group-hover:saturate-[10000%] group-hover:hue-rotate-[0deg] group-hover:brightness-[0.9]"
                     />
                     <p className="font-semibold whitespace-nowrap group-hover:text-white text-black ">
                       Delete Account
