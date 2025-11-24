@@ -17,8 +17,9 @@ const LeftSidebar = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      signOut();
-      router.push("/sign-in");
+      signOut().then(() => {
+        router.push("/sign-in");
+      });
     }
   }, [isSuccess, router, signOut]);
 

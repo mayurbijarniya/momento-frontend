@@ -12,19 +12,19 @@ type PostCardProps = {
 };
 
 const PostCard = ({ post }: PostCardProps) => {
-  const [loading, setLoading] = useState(true); // State for managing image loading
+  const [loading, setLoading] = useState(true);
   const dateString: string = post.$createdAt;
   const timestamp: string = timeAgo(dateString);
 
-  const { user } = useUserContext();
+  const { user, isAuthenticated } = useUserContext();
   if (!post.creator) return null;
 
   const handleImageLoad = () => {
-    setLoading(false); // Set loading to false when the image is loaded
+    setLoading(false);
   };
 
   const handleImageError = () => {
-    setLoading(false); // Stop loading spinner if there's an error
+    setLoading(false);
   };
 
   return (
@@ -55,14 +55,16 @@ const PostCard = ({ post }: PostCardProps) => {
           </div>
         </div>
 
-        <Link
-          href={`/update-post/${post.$id || post.id}`}
-          className={`${
-            user.id !== (post.creator.$id || post.creator.id) && "hidden"
-          }`}
-        >
-          <img src="/assets/icons/edit.svg" alt="edit" width={18} height={18} />
-        </Link>
+        {isAuthenticated && (
+          <Link
+            href={`/update-post/${post.$id || post.id}`}
+            className={`${
+              user.id !== (post.creator.$id || post.creator.id) && "hidden"
+            }`}
+          >
+            <img src="/assets/icons/edit.svg" alt="edit" width={18} height={18} />
+          </Link>
+        )}
       </div>
 
       <Link href={`/posts/${post.$id || post.id}`}>
@@ -98,7 +100,7 @@ const PostCard = ({ post }: PostCardProps) => {
         </div>
       </Link>
 
-      <PostStats post={post} userId={user.id} />
+      <PostStats post={post} userId={user?.id || ""} />
     </div>
   );
 };

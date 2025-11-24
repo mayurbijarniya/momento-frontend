@@ -17,7 +17,7 @@ const Topbar = () => {
           />
         </Link>
 
-        {isAuthenticated ? (
+        {isAuthenticated && (
           <div className="flex mr-3">
             <Link href={`/profile/${user.id}`} className="flex-center gap-3">
               <img
@@ -25,18 +25,6 @@ const Topbar = () => {
                 alt="profile"
                 className="h-12 w-12 rounded-full object-cover"
               />
-            </Link>
-          </div>
-        ) : (
-          <div className="flex-center">
-            <Link href="/sign-up">
-              <Button className="rounded-full p-5">
-                <img
-                  src="/assets/icons/sign-up.svg"
-                  alt="signup"
-                  className="h-6"
-                />
-              </Button>
             </Link>
           </div>
         )}
