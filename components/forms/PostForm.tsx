@@ -17,8 +17,8 @@ import { useRouter } from "next/navigation"
 import { useCreatePost, useUpdatePost } from "@/lib/react-query/queriesAndMutation"
 import Loader from "../shared/Loader"
 
-type PostFormProps = { //define the prop type
-    post?: any;    //post? -> means post might or might not be there.  Models is from appwrite
+type PostFormProps = {
+    post?: any;
     action: 'Create' | 'Update';
 }
 
