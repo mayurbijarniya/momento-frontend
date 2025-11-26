@@ -21,21 +21,28 @@ export function timeAgo(dateString: string | undefined): string {
   const hours: number = Math.floor(minutes / 60);
   const days: number = Math.floor(hours / 24);
 
-  if (days > 1) {
-    return `${days} days ago`;
-  } else if (days === 1) {
-    return '1 day ago';
-  } else if (hours > 1) {
-    return `${hours} hours ago`;
-  } else if (hours === 1) {
-    return '1 hour ago';
-  } else if (minutes > 1) {
-    return `${minutes} minutes ago`;
-  } else if (minutes === 1) {
-    return '1 minute ago';
-  } else {
-    return 'Just now';
+  // If less than 24 hours, show relative time
+  if (hours < 24) {
+    if (hours > 1) {
+      return `${hours} hrs ago`;
+    } else if (hours === 1) {
+      return '1 hr ago';
+    } else if (minutes > 1) {
+      return `${minutes} mins ago`;
+    } else if (minutes === 1) {
+      return '1 min ago';
+    } else {
+      return 'Just now';
+    }
   }
+
+  // If 24 hours or more, show exact date
+  const day = inputDate.getDate();
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const month = monthNames[inputDate.getMonth()];
+  const year = inputDate.getFullYear();
+
+  return `${month} ${day}, ${year}`;
 }
 
 
