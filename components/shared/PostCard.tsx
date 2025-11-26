@@ -13,7 +13,7 @@ type PostCardProps = {
 
 const PostCard = ({ post }: PostCardProps) => {
   const [loading, setLoading] = useState(true);
-  const dateString: string = post.$createdAt;
+  const dateString: string = post.$createdAt || post.createdAt;
   const timestamp: string = timeAgo(dateString);
 
   const { user, isAuthenticated } = useUserContext();
@@ -68,7 +68,7 @@ const PostCard = ({ post }: PostCardProps) => {
       </div>
 
       <Link href={`/posts/${post.$id || post.id}`}>
-        <div className="relative min-h-[300px]">
+        <div className="relative w-full bg-dark-4 rounded-md overflow-hidden">
           {loading && (
             <div className="absolute size-full inset-0 flex justify-center items-center">
               <Loader />
@@ -77,7 +77,7 @@ const PostCard = ({ post }: PostCardProps) => {
           <img
             src={post.imageUrl || "/assets/icons/profile-placeholder.svg"}
             alt="post image"
-            className={` rounded-md  min-w-[235px] sm:w-[750px] md:w-[1000px] lg:w-[1220px] xl:[1500px] ${
+            className={`w-full h-auto object-contain ${
               loading ? "opacity-0" : "opacity-100"
             }`}
             onLoad={handleImageLoad}

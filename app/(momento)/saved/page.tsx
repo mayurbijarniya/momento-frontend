@@ -6,11 +6,14 @@ import Loader from "@/components/shared/Loader";
 import { useUserContext } from "@/context/AuthContext";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/lib/react-query/queryKeys";
 
 const Saved = () => {
   const { data: currentUser } = useGetCurrentUser();
   const { isAuthenticated, isLoading } = useUserContext();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -18,11 +21,30 @@ const Saved = () => {
     }
   }, [isAuthenticated, isLoading, router]);
 
+  // Refetch current user data when authentication state changes to true
+  useEffect(() => {
+    if (isAuthenticated && !isLoading) {
+      // Invalidate and refetch to ensure fresh saved posts data
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+      });
+    }
+  }, [isAuthenticated, isLoading, queryClient]);
+
   const savePosts = (currentUser as any)?.save
+    ?.filter((savePost: any) => savePost?.post && (savePost.post._id || savePost.post.$id || savePost.post.id)) // Filter out null/undefined posts
     ?.map((savePost: any) => ({
       ...savePost.post,
-      creator: {
+      // Ensure we have the correct post ID
+      $id: savePost.post._id || savePost.post.$id || savePost.post.id,
+      id: savePost.post._id || savePost.post.$id || savePost.post.id,
+      creator: savePost.post?.creator || {
         imageUrl: (currentUser as any).imageUrl,
+        name: (currentUser as any).name,
+        username: (currentUser as any).username,
+        id: (currentUser as any).id,
+        $id: (currentUser as any).id,
+        _id: (currentUser as any).id,
       },
     }))
     .reverse() || [];

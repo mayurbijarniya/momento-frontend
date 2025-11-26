@@ -4,7 +4,10 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "../ui/button";
-import { useSignOutAccount } from "@/lib/react-query/queriesAndMutation";
+import {
+  useSignOutAccount,
+  useGetUnreadNotificationCount,
+} from "@/lib/react-query/queriesAndMutation";
 import { useUserContext } from "@/context/AuthContext";
 import { sidebarLinks } from "@/constants";
 import { INavLink } from "@/types";
@@ -14,6 +17,8 @@ const LeftSidebar = () => {
   const { mutate: signOutMutation, isSuccess } = useSignOutAccount();
   const router = useRouter();
   const { user, isAuthenticated, signOut } = useUserContext();
+  const { data: unreadCountData } = useGetUnreadNotificationCount();
+  const unreadCount = unreadCountData?.count || 0;
 
   useEffect(() => {
     if (isSuccess) {
@@ -63,6 +68,8 @@ const LeftSidebar = () => {
         <ul className="flex flex-col gap-6 ">
           {sidebarLinks.map((link: INavLink) => {
             const isActive = pathname === link.route;
+            const isNotifications = link.route === "/notifications";
+            const showBadge = isNotifications && unreadCount > 0;
             return (
               <li
                 key={link.label}
@@ -70,19 +77,53 @@ const LeftSidebar = () => {
                   isActive ? "text-black bg-white " : " text-light-1"
                 }`}
               >
-                <Link href={link.route} className="flex gap-2 item-center p-2">
-                  <img
-                    src={link.imgURL}
-                    alt={link.label}
-                    className={`group-hover:invert max-lg:w-[30px] max-lg:h-[30px] ${
-                      isActive && "invert"
-                    }`}
-                  />
+                <Link
+                  href={link.route}
+                  className="flex gap-2 item-center p-2 relative"
+                >
+                  <div className="relative">
+                    <img
+                      src={link.imgURL}
+                      alt={link.label}
+                      className={`group-hover:invert max-lg:w-[30px] max-lg:h-[30px] ${
+                        isActive && "invert"
+                      }`}
+                    />
+                    {showBadge && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                        {unreadCount > 9 ? "9+" : unreadCount}
+                      </span>
+                    )}
+                  </div>
                   <p className="max-lg:hidden body-bold">{link.label}</p>
                 </Link>
               </li>
             );
           })}
+          {/* Admin Dashboard Link - Only visible to admins */}
+          {isAuthenticated && user.role === "ADMIN" && (
+            <li
+              className={`group body-bold leftsidebar-link ${
+                pathname === "/admin" ? "text-black bg-white " : " text-light-1"
+              }`}
+            >
+              <Link
+                href="/admin"
+                className="flex gap-2 item-center p-2 relative"
+              >
+                <div className="relative">
+                  <img
+                    src="/assets/icons/filter.svg"
+                    alt="Admin"
+                    className={`invert group-hover:invert max-lg:w-[30px] max-lg:h-[30px] ${
+                      pathname === "/admin" && "invert"
+                    }`}
+                  />
+                </div>
+                <p className="max-lg:hidden body-bold">Admin</p>
+              </Link>
+            </li>
+          )}
         </ul>
       </div>
 
