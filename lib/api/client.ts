@@ -48,10 +48,12 @@ export const getCurrentUser = async () => {
     return null;
   }
   const user = response.data;
-  
-  const savesResponse = await axiosWithCredentials.get(`${HTTP_SERVER}/saves/user/${user._id}`);
+
+  const savesResponse = await axiosWithCredentials.get(
+    `${HTTP_SERVER}/saves/user/${user._id}`
+  );
   const saves = savesResponse.data.save || [];
-  
+
   return {
     id: user._id,
     name: user.name,
@@ -59,6 +61,7 @@ export const getCurrentUser = async () => {
     email: user.email,
     imageUrl: user.imageUrl || "",
     bio: user.bio || "",
+    role: user.role || "USER",
     save: saves,
   };
 };
@@ -183,7 +186,9 @@ export const getRecentPosts = async () => {
 
 export const getUserPosts = async (userId?: string) => {
   if (!userId) return { documents: [] };
-  const response = await axiosWithCredentials.get(`${POSTS_API}/user/${userId}`);
+  const response = await axiosWithCredentials.get(
+    `${POSTS_API}/user/${userId}`
+  );
   const posts = response.data.documents || [];
   return {
     documents: posts.map((post: any) => ({
@@ -209,7 +214,9 @@ export const getUserPosts = async (userId?: string) => {
 };
 
 export const getLikedPosts = async (userId: string) => {
-  const response = await axiosWithCredentials.get(`${POSTS_API}/user/${userId}/liked`);
+  const response = await axiosWithCredentials.get(
+    `${POSTS_API}/user/${userId}/liked`
+  );
   const posts = response.data.documents || [];
   return {
     documents: posts.map((post: any) => ({
@@ -235,9 +242,12 @@ export const getLikedPosts = async (userId: string) => {
 };
 
 export const likePost = async (postId: string, likeArray: string[]) => {
-  const response = await axiosWithCredentials.put(`${POSTS_API}/${postId}/like`, {
-    likesArray: likeArray,
-  });
+  const response = await axiosWithCredentials.put(
+    `${POSTS_API}/${postId}/like`,
+    {
+      likesArray: likeArray,
+    }
+  );
   const postData = response.data;
   return {
     $id: postData._id,
@@ -268,27 +278,40 @@ export const deleteSavedPost = async (postId: string) => {
 };
 
 export const getPostById = async (postId: string) => {
-  const response = await axiosWithCredentials.get(`${POSTS_API}/${postId}`);
-  const postData = response.data;
-  return {
-    $id: postData._id,
-    id: postData._id,
-    creator: {
-      $id: postData.creator._id,
-      id: postData.creator._id,
-      name: postData.creator.name,
-      username: postData.creator.username,
-      imageUrl: postData.creator.imageUrl || "",
-    },
-    caption: postData.caption,
-    imageUrl: postData.imageUrl,
-    imageId: postData.imageId,
-    location: postData.location,
-    tags: postData.tags || [],
-    likes: postData.likes || [],
-    $createdAt: postData.createdAt,
-    createdAt: postData.createdAt,
-  };
+  try {
+    const response = await axiosWithCredentials.get(`${POSTS_API}/${postId}`);
+    const postData = response.data;
+
+    if (!postData) {
+      throw new Error("Post not found");
+    }
+
+    return {
+      $id: postData._id,
+      id: postData._id,
+      creator: {
+        $id: postData.creator._id,
+        id: postData.creator._id,
+        name: postData.creator.name,
+        username: postData.creator.username,
+        imageUrl: postData.creator.imageUrl || "",
+      },
+      caption: postData.caption,
+      imageUrl: postData.imageUrl,
+      imageId: postData.imageId,
+      location: postData.location,
+      tags: postData.tags || [],
+      likes: postData.likes || [],
+      $createdAt: postData.createdAt,
+      createdAt: postData.createdAt,
+    };
+  } catch (error: any) {
+    // Re-throw the error so React Query can handle it
+    if (error.response?.status === 404) {
+      throw new Error("Post not found");
+    }
+    throw error;
+  }
 };
 
 export const updatePost = async (post: IUpdatePost) => {
@@ -399,13 +422,147 @@ export const deleteUserAccount = async (userId: string) => {
 };
 
 export const searchExternal = async (query: string, page?: number) => {
-  const response = await axiosWithCredentials.get(`${HTTP_SERVER}/external/search`, {
-    params: { q: query, page: page || 1 },
-  });
+  const response = await axiosWithCredentials.get(
+    `${HTTP_SERVER}/external/search`,
+    {
+      params: { q: query, page: page || 1 },
+    }
+  );
   return response.data;
 };
 
 export const getExternalDetails = async (id: string) => {
-  const response = await axiosWithCredentials.get(`${HTTP_SERVER}/external/details/${id}`);
+  const response = await axiosWithCredentials.get(
+    `${HTTP_SERVER}/external/details/${id}`
+  );
+  return response.data;
+};
+
+// Follow functions
+export const followUser = async (followingId: string) => {
+  const response = await axiosWithCredentials.post(`${HTTP_SERVER}/follows`, {
+    followingId,
+  });
+  return response.data;
+};
+
+export const unfollowUser = async (followingId: string) => {
+  const response = await axiosWithCredentials.delete(
+    `${HTTP_SERVER}/follows/${followingId}`
+  );
+  return response.data;
+};
+
+export const getFollowers = async (userId: string) => {
+  const response = await axiosWithCredentials.get(
+    `${HTTP_SERVER}/follows/followers/${userId}`
+  );
+  return response.data;
+};
+
+export const getFollowing = async (userId: string) => {
+  const response = await axiosWithCredentials.get(
+    `${HTTP_SERVER}/follows/following/${userId}`
+  );
+  return response.data;
+};
+
+// Review functions
+export const createReview = async (review: {
+  postId?: string;
+  externalContentId?: string;
+  review: string;
+  rating?: number;
+}) => {
+  const response = await axiosWithCredentials.post(
+    `${HTTP_SERVER}/reviews`,
+    review
+  );
+  return response.data;
+};
+
+export const getReviewsByPost = async (postId: string) => {
+  const response = await axiosWithCredentials.get(
+    `${HTTP_SERVER}/reviews/post/${postId}`
+  );
+  return response.data;
+};
+
+export const getReviewsByExternalContent = async (
+  externalContentId: string
+) => {
+  const response = await axiosWithCredentials.get(
+    `${HTTP_SERVER}/reviews/external/${externalContentId}`
+  );
+  return response.data;
+};
+
+export const updateReview = async (
+  reviewId: string,
+  review: { review?: string; rating?: number }
+) => {
+  const response = await axiosWithCredentials.put(
+    `${HTTP_SERVER}/reviews/${reviewId}`,
+    review
+  );
+  return response.data;
+};
+
+export const deleteReview = async (reviewId: string) => {
+  const response = await axiosWithCredentials.delete(
+    `${HTTP_SERVER}/reviews/${reviewId}`
+  );
+  return response.data;
+};
+
+// Notification functions
+export const getNotifications = async () => {
+  const response = await axiosWithCredentials.get(
+    `${HTTP_SERVER}/notifications`
+  );
+  return response.data;
+};
+
+export const getUnreadNotificationCount = async () => {
+  const response = await axiosWithCredentials.get(
+    `${HTTP_SERVER}/notifications/unread-count`
+  );
+  return response.data;
+};
+
+export const markNotificationAsRead = async (notificationId: string) => {
+  const response = await axiosWithCredentials.put(
+    `${HTTP_SERVER}/notifications/${notificationId}/read`
+  );
+  return response.data;
+};
+
+export const markAllNotificationsAsRead = async () => {
+  const response = await axiosWithCredentials.put(
+    `${HTTP_SERVER}/notifications/read-all`
+  );
+  return response.data;
+};
+
+export const deleteNotification = async (notificationId: string) => {
+  const response = await axiosWithCredentials.delete(
+    `${HTTP_SERVER}/notifications/${notificationId}`
+  );
+  return response.data;
+};
+
+// Admin functions
+export const getAllUsersAdmin = async () => {
+  const response = await axiosWithCredentials.get(`${HTTP_SERVER}/admin/users`);
+  return response.data;
+};
+
+export const deleteUserAdmin = async (userId: string) => {
+  const response = await axiosWithCredentials.delete(`${USERS_API}/${userId}`);
+  return response.data;
+};
+
+export const deletePostAdmin = async (postId: string, imageId?: string) => {
+  const response = await axiosWithCredentials.delete(`${POSTS_API}/${postId}`);
   return response.data;
 };
