@@ -10,6 +10,9 @@ type DeleteAccountDialogProps = {
   onClose: () => void;
   onConfirm: () => void;
   isLoading?: boolean;
+  title?: string;
+  description?: string;
+  buttonText?: string;
 };
 
 const DeleteAccountDialog = ({
@@ -17,6 +20,9 @@ const DeleteAccountDialog = ({
   onClose,
   onConfirm,
   isLoading = false,
+  title = "Delete Account",
+  description = "This action cannot be undone. This will permanently delete your account and remove all your data from our servers.",
+  buttonText = "Delete Account",
 }: DeleteAccountDialogProps) => {
   const [confirmText, setConfirmText] = useState("");
   const { toast } = useToast();
@@ -28,7 +34,7 @@ const DeleteAccountDialog = ({
     if (confirmText.toLowerCase() !== CONFIRM_TEXT) {
       toast({
         title: "Confirmation text doesn't match",
-        description: `Please type "${CONFIRM_TEXT}" to confirm account deletion.`,
+        description: `Please type "${CONFIRM_TEXT}" to confirm.`,
       });
       return;
     }
@@ -38,11 +44,8 @@ const DeleteAccountDialog = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="bg-dark-2 rounded-lg p-6 w-full max-w-md mx-4 border border-dark-4">
-        <h2 className="text-xl font-bold text-white mb-2">Delete Account</h2>
-        <p className="text-light-2 mb-4">
-          This action cannot be undone. This will permanently delete your
-          account and remove all your data from our servers.
-        </p>
+        <h2 className="text-xl font-bold text-white mb-2">{title}</h2>
+        <p className="text-light-2 mb-4">{description}</p>
         <p className="text-light-3 text-sm mb-4">
           Type <span className="font-bold text-white">"{CONFIRM_TEXT}"</span> to
           confirm:
@@ -77,7 +80,7 @@ const DeleteAccountDialog = ({
             disabled={isLoading || confirmText.toLowerCase() !== CONFIRM_TEXT}
             className="bg-red-600 hover:bg-red-700 text-white"
           >
-            {isLoading ? "Deleting..." : "Delete Account"}
+            {isLoading ? "Deleting..." : buttonText}
           </Button>
         </div>
       </div>

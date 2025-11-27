@@ -136,7 +136,7 @@
 
   /* Home */
   .home-container {
-    @apply flex flex-col flex-1 items-center gap-10 overflow-scroll py-10 px-5 md:px-8 lg:p-14 custom-scrollbar ;
+    @apply flex flex-col flex-1 items-center gap-10 overflow-scroll py-10 px-5 md:px-8 lg:p-14 custom-scrollbar;
   }
 
   .home-posts {
@@ -148,7 +148,7 @@
   }
 
   /* Post Details */
-  .post_details-container { 
+  .post_details-container {
     @apply flex flex-col flex-1 gap-10 overflow-scroll py-10 px-5 md:p-14 custom-scrollbar items-center;
   }
 
@@ -186,9 +186,19 @@
     @apply flex flex-col flex-1 items-center gap-10 overflow-scroll py-10 px-5 md:p-14 custom-scrollbar;
   }
 
+  /* Notifications */
+  .notifications-container {
+    @apply flex flex-col flex-1 items-center gap-10 overflow-scroll py-10 px-5 md:p-14 custom-scrollbar;
+  }
+
+  /* Admin */
+  .admin-container {
+    @apply flex flex-col flex-1 items-center gap-10 overflow-scroll py-10 px-5 md:p-14 custom-scrollbar;
+  }
+
   /* Bottom bar */
   .bottom-bar {
-    @apply z-50 flex justify-around items-center w-full sticky bottom-0  bg-dark-3 border-t border-zinc-800 px-5 py-4 md:hidden rounded-t-[50px] ;
+    @apply z-50 flex justify-around items-center w-full sticky bottom-0  bg-dark-3 border-t border-zinc-800 px-5 py-4 md:hidden rounded-t-[50px];
   }
 
   /* File uploader */

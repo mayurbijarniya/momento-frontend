@@ -35,3 +35,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# backend
+momento-backend/node_modules/
+momento-backend/uploads/*
+!momento-backend/uploads/.gitkeep
+momento-backend/.env

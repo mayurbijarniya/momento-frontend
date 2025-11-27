@@ -7,7 +7,9 @@ import { useUserContext } from "@/context/AuthContext";
 import {
   useDeletePost,
   useGetPostById,
+  useGetReviewsByPost,
 } from "@/lib/react-query/queriesAndMutation";
+import ReviewList from "@/components/shared/ReviewList";
 import { timeAgo } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
@@ -17,7 +19,10 @@ const PostDetails = () => {
 
   const { id } = useParams();
   const postId = Array.isArray(id) ? id[0] : id || "";
-  const { data: post, isPending } = useGetPostById(postId);
+  const { data: post, isPending, isError, error } = useGetPostById(postId);
+  const { data: reviewsData, isLoading: isLoadingReviews } =
+    useGetReviewsByPost(postId);
+  const reviews = reviewsData?.documents || [];
 
   const { user, isAuthenticated } = useUserContext();
 
@@ -34,10 +39,37 @@ const PostDetails = () => {
     }
   };
 
+  // Handle error case
+  if (isError) {
+    return (
+      <div className="post_details-container">
+        <div className="post_details-card">
+          <div className="flex-center flex-col gap-4 p-10">
+            <p className="text-light-1 text-center">
+              {(error as any)?.response?.data?.message || "Post not found"}
+            </p>
+            <Button onClick={() => router.push("/")} variant="outline">
+              Go Back Home
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="post_details-container">
       {isPending ? (
         <Loader />
+      ) : !post ? (
+        <div className="post_details-card">
+          <div className="flex-center flex-col gap-4 p-10">
+            <p className="text-light-1 text-center">Post not found</p>
+            <Button onClick={() => router.push("/")} variant="outline">
+              Go Back Home
+            </Button>
+          </div>
+        </div>
       ) : (
         <div className="post_details-card ">
           <img
@@ -48,7 +80,9 @@ const PostDetails = () => {
           <div className="post_details-info">
             <div className="flex-between w-full ">
               <Link
-                href={`/profile/${(post as any)?.creator?.$id || (post as any)?.creator?.id}`}
+                href={`/profile/${
+                  (post as any)?.creator?.$id || (post as any)?.creator?.id
+                }`}
                 className="flex items-center gap-3"
               >
                 <img
@@ -66,7 +100,10 @@ const PostDetails = () => {
                   </p>
                   <div className="flex items-center flex-wrap gap-2 text-slate-400">
                     <p className="subtle-semibold lg:small-regular">
-                      {timeAgo((post as any)?.$createdAt || (post as any)?.createdAt)},
+                      {timeAgo(
+                        (post as any)?.$createdAt || (post as any)?.createdAt
+                      )}
+                      ,
                     </p>
                     <p className="subtle-semibold lg:small-regular">
                       {(post as any)?.location}
@@ -78,8 +115,14 @@ const PostDetails = () => {
               {isAuthenticated && (
                 <div className="flex-center ">
                   <Link
-                    href={`/update-post/${(post as any)?.$id || (post as any)?.id}`}
-                    className={`${user.id !== ((post as any)?.creator?.$id || (post as any)?.creator?.id) && "hidden"}`}
+                    href={`/update-post/${
+                      (post as any)?.$id || (post as any)?.id
+                    }`}
+                    className={`${
+                      user.id !==
+                        ((post as any)?.creator?.$id ||
+                          (post as any)?.creator?.id) && "hidden"
+                    }`}
                   >
                     <img
                       src="/assets/icons/edit.svg"
@@ -92,7 +135,9 @@ const PostDetails = () => {
                     onClick={handleDeletePost}
                     variant={`ghost`}
                     className={`ghost_details-delete_btn ${
-                      user.id !== ((post as any)?.creator.$id || (post as any)?.creator.id) && "hidden"
+                      user.id !==
+                        ((post as any)?.creator.$id ||
+                          (post as any)?.creator.id) && "hidden"
                     }`}
                   >
                     <img
@@ -120,6 +165,15 @@ const PostDetails = () => {
             </div>
             <div className="w-full">
               <PostStats post={post as any} userId={user?.id || ""} />
+            </div>
+
+            {/* Reviews Section */}
+            <div className="w-full mt-6 pt-6 border-t border-dark-4/80">
+              <ReviewList
+                postId={postId}
+                reviews={reviews}
+                isLoading={isLoadingReviews}
+              />
             </div>
           </div>
         </div>

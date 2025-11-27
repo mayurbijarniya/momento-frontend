@@ -27,6 +27,23 @@ import {
   updateUser,
   searchExternal,
   getExternalDetails,
+  followUser,
+  unfollowUser,
+  getFollowers,
+  getFollowing,
+  createReview,
+  getReviewsByPost,
+  getReviewsByExternalContent,
+  updateReview,
+  deleteReview,
+  getNotifications,
+  getUnreadNotificationCount,
+  markNotificationAsRead,
+  markAllNotificationsAsRead,
+  deleteNotification,
+  getAllUsersAdmin,
+  deleteUserAdmin,
+  deletePostAdmin,
 } from "../api/client";
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { QUERY_KEYS } from "./queryKeys";
@@ -38,9 +55,16 @@ export const useCreateUserAccount = () => {
 };
 
 export const useSignInAccount = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (user: { email: string; password: string }) =>
       signInAccount(user),
+    onSuccess: () => {
+      // Invalidate and refetch current user data after successful login
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+      });
+    },
   });
 };
 
@@ -49,7 +73,8 @@ export const useSignOutAccount = () => {
   return useMutation({
     mutationFn: signOutAccount,
     onSuccess: () => {
-      queryClient.invalidateQueries();
+      // Clear all queries and cache on logout
+      queryClient.clear();
     },
   });
 };
@@ -148,6 +173,8 @@ export const useGetPostById = (postId: string) => {
     queryKey: [QUERY_KEYS.GET_POST_BY_ID, postId],
     queryFn: () => getPostById(postId),
     enabled: !!postId, //enabled is used to stop refetching, also !! is basically ternary operator. ##enable is true when we fetch data for a new postid
+    retry: 1, // Only retry once on failure
+    retryOnMount: false, // Don't retry when component remounts
   });
 };
 
@@ -226,6 +253,9 @@ export const useGetCurrentUser = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_CURRENT_USER],
     queryFn: getCurrentUser,
+    staleTime: 0, // Always consider data stale to ensure fresh fetches
+    refetchOnMount: true, // Always refetch when component mounts
+    refetchOnWindowFocus: false, // Don't refetch on window focus
   });
 };
 
@@ -285,5 +315,249 @@ export const useGetExternalDetails = (id: string) => {
     queryKey: [QUERY_KEYS.GET_EXTERNAL_DETAILS, id],
     queryFn: () => getExternalDetails(id),
     enabled: !!id,
+  });
+};
+
+// Follow hooks
+export const useFollowUser = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (followingId: string) => followUser(followingId),
+    onSuccess: (data, followingId) => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_FOLLOWERS, followingId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_FOLLOWING],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_USER_BY_ID, followingId],
+      });
+    },
+  });
+};
+
+export const useUnfollowUser = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (followingId: string) => unfollowUser(followingId),
+    onSuccess: (data, followingId) => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_FOLLOWERS, followingId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_FOLLOWING],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_USER_BY_ID, followingId],
+      });
+    },
+  });
+};
+
+export const useGetFollowers = (userId: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_FOLLOWERS, userId],
+    queryFn: () => getFollowers(userId),
+    enabled: !!userId,
+  });
+};
+
+export const useGetFollowing = (userId: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_FOLLOWING, userId],
+    queryFn: () => getFollowing(userId),
+    enabled: !!userId,
+  });
+};
+
+// Review hooks
+export const useCreateReview = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (review: {
+      postId?: string;
+      externalContentId?: string;
+      review: string;
+      rating?: number;
+    }) => createReview(review),
+    onSuccess: (data) => {
+      if (data.post) {
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.GET_REVIEWS_BY_POST, data.post],
+        });
+      }
+      if (data.externalContentId) {
+        queryClient.invalidateQueries({
+          queryKey: [
+            QUERY_KEYS.GET_REVIEWS_BY_EXTERNAL,
+            data.externalContentId,
+          ],
+        });
+      }
+    },
+  });
+};
+
+export const useGetReviewsByPost = (postId: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_REVIEWS_BY_POST, postId],
+    queryFn: () => getReviewsByPost(postId),
+    enabled: !!postId,
+    staleTime: 0, // Always fetch fresh data
+    refetchOnMount: true, // Refetch when component mounts
+  });
+};
+
+export const useGetReviewsByExternalContent = (externalContentId: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_REVIEWS_BY_EXTERNAL, externalContentId],
+    queryFn: () => getReviewsByExternalContent(externalContentId),
+    enabled: !!externalContentId,
+  });
+};
+
+export const useUpdateReview = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      reviewId,
+      review,
+    }: {
+      reviewId: string;
+      review: { review?: string; rating?: number };
+    }) => updateReview(reviewId, review),
+    onSuccess: (data) => {
+      if (data.post) {
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.GET_REVIEWS_BY_POST, data.post],
+        });
+      }
+      if (data.externalContentId) {
+        queryClient.invalidateQueries({
+          queryKey: [
+            QUERY_KEYS.GET_REVIEWS_BY_EXTERNAL,
+            data.externalContentId,
+          ],
+        });
+      }
+    },
+  });
+};
+
+export const useDeleteReview = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (reviewId: string) => deleteReview(reviewId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_REVIEWS_BY_POST],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_REVIEWS_BY_EXTERNAL],
+      });
+    },
+  });
+};
+
+// Notification hooks
+export const useGetNotifications = () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_NOTIFICATIONS],
+    queryFn: getNotifications,
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
+};
+
+export const useGetUnreadNotificationCount = () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_UNREAD_NOTIFICATION_COUNT],
+    queryFn: getUnreadNotificationCount,
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
+};
+
+export const useMarkNotificationAsRead = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (notificationId: string) =>
+      markNotificationAsRead(notificationId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_NOTIFICATIONS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_UNREAD_NOTIFICATION_COUNT],
+      });
+    },
+  });
+};
+
+export const useMarkAllNotificationsAsRead = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: markAllNotificationsAsRead,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_NOTIFICATIONS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_UNREAD_NOTIFICATION_COUNT],
+      });
+    },
+  });
+};
+
+export const useDeleteNotification = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (notificationId: string) => deleteNotification(notificationId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_NOTIFICATIONS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_UNREAD_NOTIFICATION_COUNT],
+      });
+    },
+  });
+};
+
+// Admin hooks
+export const useGetAllUsersAdmin = () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_USERS, "admin"],
+    queryFn: getAllUsersAdmin,
+  });
+};
+
+export const useDeleteUserAdmin = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (userId: string) => deleteUserAdmin(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_USERS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+      });
+    },
+  });
+};
+
+export const useDeletePostAdmin = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ postId, imageId }: { postId: string; imageId?: string }) =>
+      deletePostAdmin(postId, imageId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_POSTS],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
+      });
+    },
   });
 };

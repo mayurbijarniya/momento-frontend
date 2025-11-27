@@ -42,36 +42,75 @@ const SignupForm = () => {
       username: "",
       email: "",
       password: "",
+      role: "USER",
     },
   });
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof SignupValidation>) {
-    //create user
-    const newUser = await createUserAccount(values);
-    if (!newUser) {
-      return toast({
-        title: "Sign-Up failed, try again",
+    try {
+      //create user
+      const newUser = await createUserAccount(values);
+      if (!newUser) {
+        return toast({
+          title: "Sign-Up failed",
+          description: "Unable to create account. Please try again.",
+          variant: "destructive",
+        });
+      }
+
+      const session = await signInAccount({
+        email: values.email,
+        password: values.password,
       });
-    }
 
-    const session = await signInAccount({
-      email: values.email,
-      password: values.password,
-    });
+      if (!session) {
+        return toast({
+          title: "Sign-In failed",
+          description:
+            "Account created but unable to sign in. Please try logging in.",
+          variant: "destructive",
+        });
+      }
 
-    if (!session) {
-      return toast({ title: "Sign-In failed, try again" });
-    }
+      const isLoggedIn = await checkAuthUser();
 
-    const isLoggedIn = await checkAuthUser();
+      if (isLoggedIn) {
+        form.reset();
+        router.push("/");
+      } else {
+        toast({
+          title: "Sign-up failed",
+          description: "Unable to verify your session. Please try logging in.",
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Unable to create account. Please try again.";
 
-    if (isLoggedIn) {
-      form.reset();
+      // Check for specific error types
+      let description = errorMessage;
+      if (
+        errorMessage.toLowerCase().includes("email") ||
+        errorMessage.toLowerCase().includes("username")
+      ) {
+        if (errorMessage.toLowerCase().includes("email")) {
+          description =
+            "This email is already registered. Please use a different email or try logging in.";
+        } else if (errorMessage.toLowerCase().includes("username")) {
+          description =
+            "This username is already taken. Please choose a different username.";
+        }
+      }
 
-      router.push("/");
-    } else {
-      toast({ title: "Sign-up failed. Try again" });
+      toast({
+        title: "Sign-Up failed",
+        description: description,
+        variant: "destructive",
+      });
     }
   }
 
@@ -81,9 +120,7 @@ const SignupForm = () => {
         <Link href="/" className="mb-2">
           <img src="/assets/images/logo.svg" className="h-20 w-auto" />
         </Link>
-        <h2 className="h3-bold md:h2-bold pt-2 pb-1">
-          Create a new account.
-        </h2>
+        <h2 className="h3-bold md:h2-bold pt-2 pb-1">Create a new account.</h2>
         <p className="text-slate-400 small-regular mt-1 mb-3">
           To use Momento enter your account details
         </p>
@@ -140,6 +177,29 @@ const SignupForm = () => {
                 <FormControl>
                   <Input type="password" className="shad-input" {...field} />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="role"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Account Type</FormLabel>
+                <FormControl>
+                  <select
+                    {...field}
+                    className="shad-input h-12 bg-dark-4 border-none text-white focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3"
+                  >
+                    <option value="USER">User</option>
+                    <option value="ADMIN">Admin</option>
+                  </select>
+                </FormControl>
+                <p className="text-xs text-light-3 mt-1">
+                  Choose your account type. Admin accounts have additional
+                  permissions.
+                </p>
                 <FormMessage />
               </FormItem>
             )}
