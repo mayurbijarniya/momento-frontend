@@ -39,7 +39,6 @@ const PostDetails = () => {
     }
   };
 
-  // Handle error case
   if (isError) {
     return (
       <div className="post_details-container">
@@ -167,7 +166,6 @@ const PostDetails = () => {
               <PostStats post={post as any} userId={user?.id || ""} />
             </div>
 
-            {/* Reviews Section */}
             <div className="w-full mt-6 pt-6 border-t border-dark-4/80">
               <ReviewList
                 postId={postId}

@@ -77,7 +77,6 @@ const ExternalDetails = () => {
           )}
         </div>
         <div className="post_details-info">
-          {/* Photographer Info */}
           <div className="flex-between w-full">
             <div className="flex items-center gap-3">
               {photoData?.user?.imageUrl && (
@@ -119,7 +118,6 @@ const ExternalDetails = () => {
 
           <hr className="border w-full border-dark-4/80" />
 
-          {/* Photo Description */}
           <div className="flex flex-col flex-1 w-full gap-4">
             {photoData?.description && (
               <div>
@@ -129,7 +127,6 @@ const ExternalDetails = () => {
               </div>
             )}
 
-            {/* Photo Stats */}
             <div className="flex items-center gap-6 text-slate-400">
               {photoData?.likes !== undefined && (
                 <div className="flex items-center gap-2">
@@ -149,7 +146,6 @@ const ExternalDetails = () => {
               )}
             </div>
 
-            {/* Tags */}
             {photoData?.tags && Array.isArray(photoData.tags) && photoData.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-2">
                 {photoData.tags.map((tag: any, index: number) => (
@@ -163,7 +159,6 @@ const ExternalDetails = () => {
               </div>
             )}
 
-            {/* EXIF Data */}
             {photoData?.exif && Object.keys(photoData.exif).length > 0 && (
               <div className="mt-4 p-4 bg-dark-4 rounded-lg">
                 <h3 className="small-semibold text-light-1 mb-2">Photo Details</h3>
@@ -186,7 +181,6 @@ const ExternalDetails = () => {
             )}
           </div>
 
-          {/* Reviews Section */}
           <div className="w-full mt-6 pt-6 border-t border-dark-4/80">
             <ReviewList
               externalContentId={photoId}

@@ -26,7 +26,6 @@ const ReviewList = ({
         Reviews ({isLoading ? "..." : reviews.length})
       </h3>
 
-      {/* Show review form immediately - don't wait for reviews to load */}
       <ReviewForm
         postId={postId}
         externalContentId={externalContentId}
@@ -35,7 +34,6 @@ const ReviewList = ({
         onSuccess={() => setEditingReview(null)}
       />
 
-      {/* Show loader only for reviews list, not the entire component */}
       <div className="mt-6">
         {isLoading ? (
           <div className="flex-center py-8">
