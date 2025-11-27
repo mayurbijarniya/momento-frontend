@@ -90,7 +90,11 @@ const LeftSidebar = () => {
                       }`}
                     />
                     {showBadge && (
-                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                      <span className={`absolute -top-2 -right-2 bg-red-600 text-[11px] font-extrabold rounded-full min-w-[22px] h-6 px-2 flex items-center justify-center shadow-xl border-2 z-20 ring-2 transition-colors ${
+                        isActive 
+                          ? "text-black border-black ring-black" 
+                          : "text-white border-white group-hover:text-black group-hover:border-black ring-dark-1 group-hover:ring-black"
+                      }`}>
                         {unreadCount > 9 ? "9+" : unreadCount}
                       </span>
                     )}
@@ -100,7 +104,6 @@ const LeftSidebar = () => {
               </li>
             );
           })}
-          {/* Admin Dashboard Link - Only visible to admins */}
           {isAuthenticated && user.role === "ADMIN" && (
             <li
               className={`group body-bold leftsidebar-link ${

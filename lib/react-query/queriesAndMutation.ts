@@ -60,7 +60,6 @@ export const useSignInAccount = () => {
     mutationFn: (user: { email: string; password: string }) =>
       signInAccount(user),
     onSuccess: () => {
-      // Invalidate and refetch current user data after successful login
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_CURRENT_USER],
       });
@@ -73,7 +72,6 @@ export const useSignOutAccount = () => {
   return useMutation({
     mutationFn: signOutAccount,
     onSuccess: () => {
-      // Clear all queries and cache on logout
       queryClient.clear();
     },
   });
@@ -318,7 +316,6 @@ export const useGetExternalDetails = (id: string) => {
   });
 };
 
-// Follow hooks
 export const useFollowUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -371,7 +368,6 @@ export const useGetFollowing = (userId: string) => {
   });
 };
 
-// Review hooks
 export const useCreateReview = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -460,12 +456,11 @@ export const useDeleteReview = () => {
   });
 };
 
-// Notification hooks
 export const useGetNotifications = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_NOTIFICATIONS],
     queryFn: getNotifications,
-    refetchInterval: 30000, // Refetch every 30 seconds
+    refetchInterval: 30000 // Refetch every 30 seconds
   });
 };
 
@@ -473,7 +468,7 @@ export const useGetUnreadNotificationCount = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_UNREAD_NOTIFICATION_COUNT],
     queryFn: getUnreadNotificationCount,
-    refetchInterval: 30000, // Refetch every 30 seconds
+    refetchInterval: 30000 // Refetch every 30 seconds
   });
 };
 
@@ -523,7 +518,6 @@ export const useDeleteNotification = () => {
   });
 };
 
-// Admin hooks
 export const useGetAllUsersAdmin = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_USERS, "admin"],

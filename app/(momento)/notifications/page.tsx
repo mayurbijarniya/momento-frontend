@@ -1,10 +1,10 @@
 "use client";
 
+import React, { useEffect } from "react";
 import { useGetNotifications, useMarkNotificationAsRead, useMarkAllNotificationsAsRead, useDeleteNotification } from "@/lib/react-query/queriesAndMutation";
 import Loader from "@/components/shared/Loader";
 import { useUserContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { timeAgo } from "@/lib/utils";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -17,14 +17,31 @@ const Notifications = () => {
   const { mutate: markAsRead } = useMarkNotificationAsRead();
   const { mutate: markAllAsRead } = useMarkAllNotificationsAsRead();
   const { mutate: deleteNotif } = useDeleteNotification();
+  const [deletingIds, setDeletingIds] = React.useState<Set<string>>(new Set());
+  const notificationsRef = React.useRef<any[]>([]);
 
   const notifications = notificationsData?.documents || [];
+
+  React.useEffect(() => {
+    notificationsRef.current = notifications;
+  }, [notifications]);
 
   useEffect(() => {
     if (!isAuthLoading && !isAuthenticated) {
       router.replace("/sign-in");
     }
   }, [isAuthenticated, isAuthLoading, router]);
+
+  useEffect(() => {
+    return () => {
+      if (isAuthenticated && notificationsRef.current.length > 0) {
+        const hasUnread = notificationsRef.current.some((n: any) => !n.read);
+        if (hasUnread) {
+          markAllAsRead();
+        }
+      }
+    };
+  }, [isAuthenticated, markAllAsRead]);
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
@@ -97,7 +114,7 @@ const Notifications = () => {
       <div className="flex-between w-full max-w-5xl mb-6">
         <div className="flex gap-2 items-center">
           <img
-            src="/assets/icons/chat.svg"
+            src="/assets/icons/bell.svg"
             width={36}
             height={36}
             alt="notifications"
@@ -123,7 +140,7 @@ const Notifications = () => {
       ) : notifications.length === 0 ? (
         <div className="flex-center flex-col gap-4 py-20">
           <img
-            src="/assets/icons/chat.svg"
+            src="/assets/icons/bell.svg"
             width={80}
             height={80}
             alt="no notifications"
@@ -132,74 +149,93 @@ const Notifications = () => {
           <p className="text-light-3 text-center">No notifications yet</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-2 w-full max-w-5xl">
+        <div className="flex flex-col gap-3 w-full max-w-5xl">
           {notifications.map((notification: any) => {
             const notificationId = notification._id || notification.id;
             const isUnread = !notification.read;
             const link = getNotificationLink(notification);
+            const isDeleting = deletingIds.has(notificationId);
 
             return (
-              <Link
+              <div
                 key={notificationId}
-                href={link}
-                onClick={() => handleNotificationClick(notification)}
-                className={`flex items-start gap-4 p-4 rounded-lg transition ${
-                  isUnread
-                    ? "bg-dark-4 hover:bg-dark-3 border-l-4 border-blue-500"
-                    : "bg-dark-2 hover:bg-dark-3"
-                }`}
+                className={`relative transition-all duration-300 ${
+                  isDeleting
+                    ? "opacity-50 bg-dark-1 scale-95"
+                    : isUnread
+                    ? "bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30"
+                    : "bg-dark-2 hover:bg-dark-1 border border-dark-4"
+                } rounded-lg`}
               >
-                <div className="flex-shrink-0">
-                  {notification.actor?.imageUrl ? (
-                    <img
-                      src={notification.actor.imageUrl}
-                      alt={notification.actor.name || "User"}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-dark-4 flex items-center justify-center">
-                      {getNotificationIcon(notification.type)}
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
+                <Link
+                  href={link}
+                  onClick={() => handleNotificationClick(notification)}
+                  className="flex items-start gap-4 p-4 rounded-lg"
+                >
+                  <div className="flex-shrink-0">
+                    {notification.actor?.imageUrl ? (
+                      <img
+                        src={notification.actor.imageUrl}
+                        alt={notification.actor.name || "User"}
+                        className="w-12 h-12 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-dark-4 flex items-center justify-center">
                         {getNotificationIcon(notification.type)}
-                        <p className="text-light-1 small-medium lg:base-regular">
-                          {getNotificationMessage(notification)}
-                        </p>
                       </div>
-                      <p className="text-light-3 text-xs">
-                        {timeAgo(notification.createdAt)}
-                      </p>
-                    </div>
-                    <button
-                      onClick={(e) => handleDelete(e, notificationId)}
-                      className="flex-shrink-0 p-1 hover:bg-dark-4 rounded-full transition"
-                      aria-label="Delete notification"
-                    >
-                      <X className="w-4 h-4 text-light-3" />
-                    </button>
+                    )}
                   </div>
 
-                  {notification.post?.imageUrl && (
-                    <div className="mt-2">
-                      <img
-                        src={notification.post.imageUrl}
-                        alt="Post"
-                        className="w-16 h-16 rounded-md object-cover"
-                      />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          {getNotificationIcon(notification.type)}
+                          <p className={`small-medium lg:base-regular ${
+                            isUnread 
+                              ? "text-light-1 font-bold" 
+                              : "text-light-3 font-normal"
+                          }`}>
+                            {getNotificationMessage(notification)}
+                          </p>
+                        </div>
+                        <p className="text-light-3 text-xs">
+                          {timeAgo(notification.createdAt)}
+                        </p>
+                      </div>
                     </div>
-                  )}
-                </div>
 
-                {isUnread && (
-                  <div className="flex-shrink-0 w-2 h-2 bg-blue-500 rounded-full mt-2" />
-                )}
-              </Link>
+                    {notification.post?.imageUrl && (
+                      <div className="mt-2">
+                        <img
+                          src={notification.post.imageUrl}
+                          alt="Post"
+                          className="w-16 h-16 rounded-md object-cover"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </Link>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDeletingIds((prev) => new Set(prev).add(notificationId));
+                    setTimeout(() => {
+                      handleDelete(e, notificationId);
+                      setDeletingIds((prev) => {
+                        const next = new Set(prev);
+                        next.delete(notificationId);
+                        return next;
+                      });
+                    }, 200);
+                  }}
+                  className="absolute top-3 right-3 flex-shrink-0 p-1.5 hover:bg-dark-4 rounded-full transition-colors z-10"
+                  aria-label="Delete notification"
+                >
+                  <X className="w-4 h-4 text-light-3 hover:text-light-1" />
+                </button>
+              </div>
             );
           })}
         </div>

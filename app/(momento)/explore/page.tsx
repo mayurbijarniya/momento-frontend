@@ -11,22 +11,44 @@ import {
   useSearchPosts,
   useSearchExternal,
 } from "@/lib/react-query/queriesAndMutation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useInView } from "react-intersection-observer";
+import { useSearchParams, useRouter } from "next/navigation";
 
 type SearchType = "local" | "external";
 
-const Explore = () => {
+const ExploreContent = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [ref, InView] = useInView();
   const { data: posts, fetchNextPage, hasNextPage } = useGetPosts();
-  const [searchValue, setsearchValue] = useState("");
-  const [searchType, setSearchType] = useState<SearchType>("local");
 
-  const debouncedValue = useDebounce(searchValue, 500); // used in searchbox so that searchPosts() is not called after every keystroke instead after a certain miliseconds
+  const [searchValue, setsearchValue] = useState(
+    searchParams.get("q") || ""
+  );
+  const [searchType, setSearchType] = useState<SearchType>(
+    (searchParams.get("type") as SearchType) || "local"
+  );
+
+  const debouncedValue = useDebounce(searchValue, 500);
   const { data: searchedPosts, isFetching: isSearchFetching } =
     useSearchPosts(debouncedValue);
   const { data: searchedPhotos, isFetching: isExternalSearchFetching } =
     useSearchExternal(debouncedValue, 1);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (searchValue) {
+      params.set("q", searchValue);
+    }
+    if (searchType !== "local") {
+      params.set("type", searchType);
+    }
+    const newUrl = params.toString() 
+      ? `/explore?${params.toString()}` 
+      : "/explore";
+    router.replace(newUrl, { scroll: false });
+  }, [searchValue, searchType, router]);
 
   useEffect(() => {
     if (InView && !searchValue && hasNextPage && searchType === "local") {
@@ -70,11 +92,12 @@ const Explore = () => {
         </div>
       </div>
 
-      {/* Search Type Tabs */}
       {shouldShowSearchResults && (
         <div className="flex gap-2 mt-4 mb-4">
           <button
-            onClick={() => setSearchType("local")}
+            onClick={() => {
+              setSearchType("local");
+            }}
             className={`px-4 py-2 rounded-lg transition ${
               searchType === "local"
                 ? "bg-white text-black"
@@ -84,11 +107,13 @@ const Explore = () => {
             <p className="small-medium md:base-medium">Local Posts</p>
           </button>
           <button
-            onClick={() => setSearchType("external")}
+            onClick={() => {
+              setSearchType("external");
+            }}
             className={`px-4 py-2 rounded-lg transition ${
               searchType === "external"
                 ? "bg-white text-black"
-                : "bg-dark-4 text-light-2 hover:bg-dark-3"
+                : "bg-dark-4 text-light-2 hover:bg-dark-1"
             }`}
           >
             <p className="small-medium md:base-medium">External Photos</p>
@@ -149,6 +174,18 @@ const Explore = () => {
         </div>
       )}
     </div>
+  );
+};
+
+const Explore = () => {
+  return (
+    <Suspense fallback={
+      <div className="flex-center w-full h-screen">
+        <Loader />
+      </div>
+    }>
+      <ExploreContent />
+    </Suspense>
   );
 };
 

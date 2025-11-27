@@ -306,7 +306,6 @@ export const getPostById = async (postId: string) => {
       createdAt: postData.createdAt,
     };
   } catch (error: any) {
-    // Re-throw the error so React Query can handle it
     if (error.response?.status === 404) {
       throw new Error("Post not found");
     }
@@ -438,7 +437,6 @@ export const getExternalDetails = async (id: string) => {
   return response.data;
 };
 
-// Follow functions
 export const followUser = async (followingId: string) => {
   const response = await axiosWithCredentials.post(`${HTTP_SERVER}/follows`, {
     followingId,
@@ -467,7 +465,6 @@ export const getFollowing = async (userId: string) => {
   return response.data;
 };
 
-// Review functions
 export const createReview = async (review: {
   postId?: string;
   externalContentId?: string;
@@ -515,7 +512,6 @@ export const deleteReview = async (reviewId: string) => {
   return response.data;
 };
 
-// Notification functions
 export const getNotifications = async () => {
   const response = await axiosWithCredentials.get(
     `${HTTP_SERVER}/notifications`
@@ -551,7 +547,6 @@ export const deleteNotification = async (notificationId: string) => {
   return response.data;
 };
 
-// Admin functions
 export const getAllUsersAdmin = async () => {
   const response = await axiosWithCredentials.get(`${HTTP_SERVER}/admin/users`);
   return response.data;
