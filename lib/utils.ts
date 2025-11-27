@@ -21,7 +21,6 @@ export function timeAgo(dateString: string | undefined): string {
   const hours: number = Math.floor(minutes / 60);
   const days: number = Math.floor(hours / 24);
 
-  // If less than 24 hours, show relative time
   if (hours < 24) {
     if (hours > 1) {
       return `${hours} hrs ago`;
@@ -36,7 +35,6 @@ export function timeAgo(dateString: string | undefined): string {
     }
   }
 
-  // If 24 hours or more, show exact date
   const day = inputDate.getDate();
   const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const month = monthNames[inputDate.getMonth()];

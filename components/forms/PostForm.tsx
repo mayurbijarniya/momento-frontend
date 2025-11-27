@@ -29,8 +29,7 @@ const PostForm = ({post, action}: PostFormProps) => { //gave prop (posts) a type
     const {user} = useUserContext();
     const { toast } = useToast();
     const router = useRouter();
-    
-    // 1. Define your form.
+
     const form = useForm<z.infer<typeof PostValidation>>({
         resolver: zodResolver(PostValidation),
         defaultValues: {
@@ -41,7 +40,6 @@ const PostForm = ({post, action}: PostFormProps) => { //gave prop (posts) a type
         },
     })
 
-    // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof PostValidation>) {
 
         if(post && action === 'Update'){ //if its a post update this if loop will execute

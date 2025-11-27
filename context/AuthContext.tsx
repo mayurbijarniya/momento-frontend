@@ -68,7 +68,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         setIsAuthenticated(true);
 
-        // Invalidate React Query cache to ensure fresh data is fetched
         queryClient.invalidateQueries({
           queryKey: [QUERY_KEYS.GET_CURRENT_USER],
         });
@@ -93,7 +92,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setUser(INITIAL_USER);
       setIsAuthenticated(false);
-      // Clear React Query cache on logout
       queryClient.clear();
     }
   };

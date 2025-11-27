@@ -78,9 +78,6 @@ const Profile = () => {
   const { mutate: followUser, isPending: isFollowing } = useFollowUser();
   const { mutate: unfollowUser, isPending: isUnfollowing } = useUnfollowUser();
 
-  // Check if current user is following this profile user
-  // Followers list contains users who follow the profile user
-  // So if current user is in followers list, they are following the profile user
   const isFollowingUser =
     isAuthenticated &&
     Array.isArray(followers) &&
@@ -189,7 +186,7 @@ const Profile = () => {
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-8 mt-10 items-start max-xl:items-center justify-center p-2 xl:justify-start flex-wrap z-20">
+                <div className="flex flex-col gap-8 mt-6 items-start max-xl:items-center justify-center p-2 xl:justify-start flex-wrap z-20">
                   <StatBlock value={posts.length} label="Posts" />
                   <StatBlock
                     value={Array.isArray(followers) ? followers.length : 0}
@@ -203,13 +200,12 @@ const Profile = () => {
                   />
                 </div>
 
-                <p className="small-medium md:base-medium text-center xl:text-left mt-7 max-w-screen-sm">
+                <p className="small-medium md:base-medium text-center xl:text-left mt-4 max-w-screen-sm">
                   {(currentUser as any).bio}
                 </p>
               </div>
 
               <div className="flex justify-center gap-4">
-                {/* Follow/Unfollow Button - Show when viewing other user's profile */}
                 {user.id !==
                   ((currentUser as any).$id || (currentUser as any).id) && (
                   <div className="flex-center flex-col gap-3">
@@ -227,7 +223,6 @@ const Profile = () => {
                   </div>
                 )}
 
-                {/* Edit/Delete Buttons - Show when viewing own profile */}
                 {user.id ===
                   ((currentUser as any).$id || (currentUser as any).id) && (
                   <div className="flex-center flex-col gap-3">
@@ -326,7 +321,6 @@ const Profile = () => {
         <Oops />
       )}
 
-      {/* Followers/Following Dialogs */}
       <FollowersFollowingDialog
         isOpen={followersDialogOpen}
         onClose={() => setFollowersDialogOpen(false)}

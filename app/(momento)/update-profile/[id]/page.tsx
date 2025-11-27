@@ -51,7 +51,6 @@ const UpdateProfile = () => {
     },
   });
 
-  // Queries
   const { data: currentUser } = useGetUserById(userId);
   const { mutateAsync: updateUser, isPending: isLoadingUpdate } =
     useUpdateUser();
@@ -63,13 +62,11 @@ const UpdateProfile = () => {
       </div>
     );
 
-  // Handler
   const handleUpdate = async (value: z.infer<typeof ProfileValidation>) => {
     if (isAuthenticated) {
       let imageUrl = (currentUser as any).imageUrl;
       let imageId = (currentUser as any).imageId;
 
-      // If a new file was uploaded, upload it first
       if (value.file && value.file.length > 0) {
         try {
           const uploadResult = await uploadProfileImage(value.file[0]);

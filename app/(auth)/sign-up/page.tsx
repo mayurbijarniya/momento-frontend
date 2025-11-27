@@ -32,9 +32,8 @@ const SignupForm = () => {
   const { mutateAsync: createUserAccount, isPending: isCreatingAccount } =
     useCreateUserAccount();
 
-  const { mutateAsync: signInAccount } = useSignInAccount(); // to create a session
+  const { mutateAsync: signInAccount } = useSignInAccount();
 
-  // 1. Define your form. // boiler code for zod
   const form = useForm<z.infer<typeof SignupValidation>>({
     resolver: zodResolver(SignupValidation),
     defaultValues: {
@@ -46,10 +45,8 @@ const SignupForm = () => {
     },
   });
 
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof SignupValidation>) {
     try {
-      //create user
       const newUser = await createUserAccount(values);
       if (!newUser) {
         return toast({
@@ -91,7 +88,6 @@ const SignupForm = () => {
         error?.message ||
         "Unable to create account. Please try again.";
 
-      // Check for specific error types
       let description = errorMessage;
       if (
         errorMessage.toLowerCase().includes("email") ||
@@ -186,11 +182,11 @@ const SignupForm = () => {
             name="role"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Account Type</FormLabel>
+                <FormLabel className="block mb-3">Account Type</FormLabel>
                 <FormControl>
                   <select
                     {...field}
-                    className="shad-input h-12 bg-dark-4 border-none text-white focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3"
+                    className="shad-input text-white w-full"
                   >
                     <option value="USER">User</option>
                     <option value="ADMIN">Admin</option>

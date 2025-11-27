@@ -111,7 +111,6 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Tabs */}
       <div className="flex gap-2 mb-6 w-full max-w-5xl">
         <Button
           onClick={() => setActiveTab("users")}
@@ -137,7 +136,6 @@ const AdminDashboard = () => {
         </Button>
       </div>
 
-      {/* Users Tab */}
       {activeTab === "users" && (
         <div className="w-full max-w-5xl">
           {isLoadingUsers ? (
@@ -184,7 +182,6 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      {/* Posts Tab */}
       {activeTab === "posts" && (
         <div className="w-full max-w-5xl">
           {isLoadingPosts ? (
@@ -217,7 +214,6 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      {/* Delete User Dialog */}
       <DeleteAccountDialog
         isOpen={userToDelete !== null}
         onClose={() => setUserToDelete(null)}
@@ -227,7 +223,6 @@ const AdminDashboard = () => {
         description="Are you sure you want to delete this user account? This action cannot be undone."
       />
 
-      {/* Delete Post Dialog */}
       <DeleteAccountDialog
         isOpen={postToDelete !== null}
         onClose={() => setPostToDelete(null)}

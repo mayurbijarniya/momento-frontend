@@ -21,10 +21,8 @@ const Saved = () => {
     }
   }, [isAuthenticated, isLoading, router]);
 
-  // Refetch current user data when authentication state changes to true
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      // Invalidate and refetch to ensure fresh saved posts data
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_CURRENT_USER],
       });
@@ -32,10 +30,9 @@ const Saved = () => {
   }, [isAuthenticated, isLoading, queryClient]);
 
   const savePosts = (currentUser as any)?.save
-    ?.filter((savePost: any) => savePost?.post && (savePost.post._id || savePost.post.$id || savePost.post.id)) // Filter out null/undefined posts
+    ?.filter((savePost: any) => savePost?.post && (savePost.post._id || savePost.post.$id || savePost.post.id))
     ?.map((savePost: any) => ({
       ...savePost.post,
-      // Ensure we have the correct post ID
       $id: savePost.post._id || savePost.post.$id || savePost.post.id,
       id: savePost.post._id || savePost.post.$id || savePost.post.id,
       creator: savePost.post?.creator || {

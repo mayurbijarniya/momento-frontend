@@ -9,7 +9,7 @@ export const SignupValidation = z.object({
   password: z
     .string()
     .min(8, { message: "Password must be atleast 8 characters." }),
-  role: z.enum(["USER", "ADMIN"]).optional().default("USER"),
+  role: z.enum(["USER", "ADMIN"]),
 });
 
 export const SigninValidation = z.object({
