@@ -30,7 +30,7 @@ const LeftSidebar = () => {
 
   return (
     <nav className="leftsidebar">
-      <div className="flex flex-col gap-11 items-center lg:pr-10">
+      <div className="flex flex-col gap-6 items-center lg:pr-10">
         <Link href="/" className="flex gap-3 items-center">
           <img
             src="/assets/images/logo.svg"
@@ -57,15 +57,15 @@ const LeftSidebar = () => {
           <img
             src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
             alt="profile"
-            className="h-14 w-14 rounded-full max-lg:w-[60px] max-lg:h-[60px] object-cover"
+            className="h-12 w-12 rounded-full max-lg:w-[50px] max-lg:h-[50px] object-cover"
           />
           <div className="flex flex-col justify-center max-lg:hidden">
-            <p className="body-bold">{user.name}</p>
-            <p className="small-regular text-light-1">@{user.username}</p>
+            <p className="base-semibold">{user.name}</p>
+            <p className="text-[13px] text-light-1">@{user.username}</p>
           </div>
         </Link>
 
-        <ul className="flex flex-col gap-6 ">
+        <ul className="flex flex-col gap-4 ">
           {sidebarLinks.map((link: INavLink) => {
             const isActive = pathname === link.route;
             const isNotifications = link.route === "/notifications";
@@ -133,7 +133,7 @@ const LeftSidebar = () => {
       {isAuthenticated ? (
         <Button
           variant="ghost"
-          className="hover:bg-white group flex justify-start mt-20 gap-3"
+          className="hover:bg-white group flex justify-start gap-3 py-2"
           onClick={() => signOutMutation()}
         >
           <img
@@ -142,24 +142,24 @@ const LeftSidebar = () => {
             alt="logout"
           />
           <p
-            className={`body-bold group-hover:text-black  text-light-1  max-lg:hidden`}
+            className={`base-semibold group-hover:text-black  text-light-1  max-lg:hidden`}
           >
             Logout
           </p>
         </Button>
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           <Link href="/sign-in">
             <Button
               variant="ghost"
-              className="hover:bg-white group flex justify-start border border-dark-4 w-full gap-3 font-bold"
+              className="hover:bg-white group flex justify-start border border-dark-4 w-full gap-3 py-2"
             >
               <img
                 src="/assets/icons/account.svg"
                 className="group-hover:invert max-lg:w-[30px] max-lg:h-[30px] "
               />
               <p
-                className={`font-bold group-hover:text-black  text-light-1  max-lg:hidden`}
+                className={`base-semibold group-hover:text-black  text-light-1  max-lg:hidden`}
               >
                 Sign-in
               </p>
@@ -168,14 +168,14 @@ const LeftSidebar = () => {
           <Link href="/sign-up">
             <Button
               variant="ghost"
-              className="hover:bg-white group flex justify-start bg-dark-4 border border-dark-4  w-full gap-3 font-bold"
+              className="hover:bg-white group flex justify-start bg-dark-4 border border-dark-4  w-full gap-3 py-2"
             >
               <img
                 src="/assets/icons/sign-up.svg"
                 className="group-hover:invert max-lg:w-[30px] max-lg:h-[30px] "
               />
               <p
-                className={`font-bold group-hover:text-black  text-light-1  max-lg:hidden`}
+                className={`base-semibold group-hover:text-black  text-light-1  max-lg:hidden`}
               >
                 Sign-up
               </p>
