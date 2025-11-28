@@ -155,6 +155,26 @@ const Profile = () => {
     );
 
   const posts = userPosts?.documents || [];
+  const isOwnProfile =
+    isAuthenticated &&
+    user.id === ((currentUser as any).$id || (currentUser as any).id);
+  const limitedPosts = isAuthenticated ? posts : posts.slice(0, 2);
+
+  const handleFollowersClick = () => {
+    if (!isAuthenticated) {
+      router.push("/sign-in");
+      return;
+    }
+    setFollowersDialogOpen(true);
+  };
+
+  const handleFollowingClick = () => {
+    if (!isAuthenticated) {
+      router.push("/sign-in");
+      return;
+    }
+    setFollowingDialogOpen(true);
+  };
 
   return (
     <>
@@ -164,19 +184,18 @@ const Profile = () => {
         onConfirm={handleDeleteAccount}
         isLoading={isDeleting}
       />
-      {isAuthenticated ? (
-        <div className="profile-container">
+      <div className="profile-container">
           <div className="profile-inner_container">
-            <div className="flex xl:flex-row flex-col max-xl:items-center flex-1 gap-7">
+            <div className="flex xl:flex-row flex-col max-xl:items-center flex-1 gap-4 xl:gap-6">
               <img
                 src={
                   (currentUser as any).imageUrl ||
                   "/assets/icons/profile-placeholder.svg"
                 }
                 alt="profile"
-                className="w-28 h-28 lg:h-36 lg:w-36 rounded-full object-cover"
+                className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:h-36 lg:w-36 rounded-full object-cover flex-shrink-0"
               />
-              <div className="flex flex-col flex-1 justify-between md:mt-2">
+              <div className="flex flex-col flex-1 justify-between md:mt-2 min-w-0">
                 <div className="flex flex-col w-full">
                   <h1 className="text-center xl:text-left h3-bold md:h1-semibold w-full">
                     {(currentUser as any).name}
@@ -191,12 +210,12 @@ const Profile = () => {
                   <StatBlock
                     value={Array.isArray(followers) ? followers.length : 0}
                     label="Followers"
-                    onClick={() => setFollowersDialogOpen(true)}
+                    onClick={handleFollowersClick}
                   />
                   <StatBlock
                     value={Array.isArray(following) ? following.length : 0}
                     label="Following"
-                    onClick={() => setFollowingDialogOpen(true)}
+                    onClick={handleFollowingClick}
                   />
                 </div>
 
@@ -206,25 +225,32 @@ const Profile = () => {
               </div>
 
               <div className="flex justify-center gap-4">
-                {user.id !==
-                  ((currentUser as any).$id || (currentUser as any).id) && (
+                {!isOwnProfile && (
                   <div className="flex-center flex-col gap-3">
-                    <Button
-                      onClick={isFollowingUser ? handleUnfollow : handleFollow}
-                      disabled={isFollowing || isUnfollowing}
-                      className="h-12 bg-white text-black hover:bg-gray-300 font-semibold px-6"
-                    >
-                      {isFollowing || isUnfollowing
-                        ? "Loading..."
-                        : isFollowingUser
-                        ? "Unfollow"
-                        : "Follow"}
-                    </Button>
+                    {isAuthenticated ? (
+                      <Button
+                        onClick={isFollowingUser ? handleUnfollow : handleFollow}
+                        disabled={isFollowing || isUnfollowing}
+                        className="h-12 bg-white text-black hover:bg-gray-300 font-semibold px-6"
+                      >
+                        {isFollowing || isUnfollowing
+                          ? "Loading..."
+                          : isFollowingUser
+                          ? "Unfollow"
+                          : "Follow"}
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => router.push("/sign-in")}
+                        className="h-12 bg-white text-black hover:bg-gray-300 font-semibold px-6"
+                      >
+                        Follow
+                      </Button>
+                    )}
                   </div>
                 )}
 
-                {user.id ===
-                  ((currentUser as any).$id || (currentUser as any).id) && (
+                {isOwnProfile && (
                   <div className="flex-center flex-col gap-3">
                     <Link
                       href={`/update-profile/${
@@ -274,8 +300,7 @@ const Profile = () => {
             </div>
           </div>
 
-          {((currentUser as any).$id || (currentUser as any).id) ===
-            user.id && (
+          {isOwnProfile && (
             <div className="flex max-w-5xl justify-center w-full">
               <Link
                 href={`/profile/${userId}`}
@@ -309,17 +334,28 @@ const Profile = () => {
           )}
 
           {pathname === `/profile/${userId}/liked-posts` ? (
-            ((currentUser as any).$id || (currentUser as any).id) ===
-            user.id ? (
+            isOwnProfile ? (
               <LikedPosts />
             ) : null
           ) : (
-            <GridPostList posts={posts} showUser={false} />
+            <>
+              <GridPostList posts={limitedPosts} showUser={false} />
+              {!isAuthenticated && posts.length > 2 && (
+                <div className="flex-center flex-col gap-4 mt-8 p-6 border border-dark-4 rounded-lg bg-dark-2">
+                  <p className="text-light-1 base-medium">
+                    Sign in to see more posts
+                  </p>
+                  <Button
+                    onClick={() => router.push("/sign-in")}
+                    className="bg-white text-black hover:bg-gray-300"
+                  >
+                    Sign In
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </div>
-      ) : (
-        <Oops />
-      )}
 
       <FollowersFollowingDialog
         isOpen={followersDialogOpen}

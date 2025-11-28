@@ -14,6 +14,7 @@ import {
 import { useEffect, useState, Suspense } from "react";
 import { useInView } from "react-intersection-observer";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useUserContext } from "@/context/AuthContext";
 
 type SearchType = "local" | "external";
 
@@ -21,6 +22,7 @@ const ExploreContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [ref, InView] = useInView();
+  const { isAuthenticated } = useUserContext();
   const { data: posts, fetchNextPage, hasNextPage } = useGetPosts();
 
   const [searchValue, setsearchValue] = useState(
@@ -67,7 +69,13 @@ const ExploreContent = () => {
   const shouldShowSearchResults = searchValue !== "";
   const shouldShowPosts =
     !shouldShowSearchResults &&
-    posts.pages.every((item) => item?.documents.length === 0); // 2nd condition means we have posts
+    posts.pages.every((item) => item?.documents.length === 0);
+
+  const firstPagePosts = posts.pages[0]?.documents || [];
+  const availablePostsForAnonymous = firstPagePosts.slice(0, 3);
+  const availablePostIds = availablePostsForAnonymous.map((post: any) => 
+    post._id || post.$id || post.id
+  );
 
   return (
     <div className="explore-container">
@@ -131,7 +139,12 @@ const ExploreContent = () => {
         </h3>
 
         {!shouldShowSearchResults && (
-          <div className="flex-center gap-3 bg-dark-3 rounded-xl px-4 py-2 cursor-pointer">
+          <button
+            onClick={() => {
+              console.log("Filter clicked");
+            }}
+            className="flex-center gap-3 bg-dark-3 rounded-xl px-4 py-2 cursor-pointer hover:bg-dark-4 transition"
+          >
             <p className="small-medium md:base-medium text-light-2">All</p>
             <img
               src="/assets/icons/filter.svg"
@@ -139,7 +152,7 @@ const ExploreContent = () => {
               height={20}
               alt="filter"
             />
-          </div>
+          </button>
         )}
       </div>
 
@@ -149,6 +162,8 @@ const ExploreContent = () => {
             <SearchResults
               isSearchFetching={isSearchFetching}
               searchedPosts={searchedPosts}
+              isAuthenticated={isAuthenticated}
+              availablePostIds={availablePostIds}
             />
           ) : (
             <ExternalSearchResults
@@ -161,10 +176,29 @@ const ExploreContent = () => {
         ) : (
           <>
             {posts.pages.map((item, index) => {
+              const postsToShow = isAuthenticated
+                ? item.documents
+                : index === 0
+                ? item.documents.slice(0, 3)
+                : [];
+              if (postsToShow.length === 0) return null;
               return (
-                <GridPostList key={`page-${index}`} posts={item.documents} />
+                <GridPostList key={`page-${index}`} posts={postsToShow} />
               );
             })}
+            {!isAuthenticated && firstPagePosts.length > 3 && (
+              <div className="flex-center flex-col gap-4 mt-8 p-6 border border-dark-4 rounded-lg bg-dark-2 w-full max-w-md mx-auto">
+                <p className="text-light-1 base-medium text-center">
+                  Sign in to see more posts
+                </p>
+                <button
+                  onClick={() => router.push("/sign-in")}
+                  className="bg-white text-black hover:bg-gray-300 px-6 py-2 rounded-lg font-semibold transition"
+                >
+                  Sign In
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>

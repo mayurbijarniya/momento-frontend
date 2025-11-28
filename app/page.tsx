@@ -7,6 +7,7 @@ import LeftSidebar from "@/components/shared/LeftSidebar";
 import Topbar from "@/components/shared/Topbar";
 import PostCard from "@/components/shared/PostCard";
 import { useGetRecentPosts } from "@/lib/react-query/queriesAndMutation";
+import { Button } from "@/components/ui/button";
 
 export default function RootPage() {
   const { isAuthenticated, isLoading } = useUserContext();
@@ -35,13 +36,31 @@ export default function RootPage() {
               {isPostLoading && !posts ? (
                 <Loader />
               ) : (
-                <ul className="flex flex-col flex-1 gap-9 w-full 2xl:px-10 lg:px-6 md:px-5 sm:px-2">
-                  {posts?.documents?.map((post: any) => (
-                    <li key={post.$id || post.id}>
-                      <PostCard post={post} />
-                    </li>
-                  ))}
-                </ul>
+                <>
+                  <ul className="flex flex-col flex-1 gap-9 w-full 2xl:px-10 lg:px-6 md:px-5 sm:px-2">
+                    {(isAuthenticated
+                      ? posts?.documents
+                      : posts?.documents?.slice(0, 3)
+                    )?.map((post: any) => (
+                      <li key={post.$id || post.id}>
+                        <PostCard post={post} />
+                      </li>
+                    ))}
+                  </ul>
+                  {!isAuthenticated && posts?.documents && posts.documents.length > 3 && (
+                    <div className="flex-center flex-col gap-4 mt-8 p-6 border border-dark-4 rounded-lg bg-dark-2 mx-auto max-w-md">
+                      <p className="text-light-1 base-medium text-center">
+                        Sign in to see more posts
+                      </p>
+                      <Button
+                        onClick={() => (window.location.href = "/sign-in")}
+                        className="bg-white text-black hover:bg-gray-300"
+                      >
+                        Sign In
+                      </Button>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
