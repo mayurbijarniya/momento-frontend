@@ -44,6 +44,12 @@ import {
   getAllUsersAdmin,
   deleteUserAdmin,
   deletePostAdmin,
+  sendMessageToAI,
+  getChatHistory,
+  updateMessageFeedback,
+  clearChatHistory,
+  sendUserMessage,
+  getUserConversation,
 } from "../api/client";
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { QUERY_KEYS } from "./queryKeys";
@@ -552,6 +558,65 @@ export const useDeletePostAdmin = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
       });
+    },
+  });
+};
+
+export const useGetChatHistory = () => {
+  return useQuery({
+    queryKey: ["chatHistory"],
+    queryFn: getChatHistory,
+  });
+};
+
+export const useSendMessage = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (content: string) => sendMessageToAI(content),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["chatHistory"] });
+    },
+  });
+};
+
+export const useUpdateFeedback = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ messageId, feedback }: { 
+      messageId: string; 
+      feedback: "up" | "down" | null 
+    }) => updateMessageFeedback(messageId, feedback),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["chatHistory"] });
+    },
+  });
+};
+
+export const useClearChat = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: clearChatHistory,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["chatHistory"] });
+    },
+  });
+};
+
+export const useGetUserConversation = (userId: string | null) => {
+  return useQuery({
+    queryKey: ["userConversation", userId],
+    queryFn: () => getUserConversation(userId!),
+    enabled: !!userId,
+  });
+};
+
+export const useSendUserMessage = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ receiverId, content }: { receiverId: string; content: string }) =>
+      sendUserMessage(receiverId, content),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["userConversation", variables.receiverId] });
     },
   });
 };

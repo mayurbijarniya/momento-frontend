@@ -561,3 +561,51 @@ export const deletePostAdmin = async (postId: string, imageId?: string) => {
   const response = await axiosWithCredentials.delete(`${POSTS_API}/${postId}`);
   return response.data;
 };
+
+const MESSAGES_API = `${HTTP_SERVER}/messages`;
+
+export const sendMessageToAI = async (content: string) => {
+  const response = await axiosWithCredentials.post(
+    `${MESSAGES_API}/chat`,
+    { content }
+  );
+  return response.data;
+};
+
+export const getChatHistory = async () => {
+  const response = await axiosWithCredentials.get(MESSAGES_API);
+  return response.data;
+};
+
+export const updateMessageFeedback = async (
+  messageId: string, 
+  feedback: "up" | "down" | null
+) => {
+  const response = await axiosWithCredentials.put(
+    `${MESSAGES_API}/${messageId}/feedback`,
+    { feedback }
+  );
+  return response.data;
+};
+
+export const clearChatHistory = async () => {
+  const response = await axiosWithCredentials.delete(MESSAGES_API);
+  return response.data;
+};
+
+const CONVERSATIONS_API = `${HTTP_SERVER}/conversations`;
+
+export const sendUserMessage = async (receiverId: string, content: string) => {
+  const response = await axiosWithCredentials.post(
+    `${CONVERSATIONS_API}/send`,
+    { receiverId, content }
+  );
+  return response.data;
+};
+
+export const getUserConversation = async (userId: string) => {
+  const response = await axiosWithCredentials.get(
+    `${CONVERSATIONS_API}/${userId}`
+  );
+  return response.data;
+};
