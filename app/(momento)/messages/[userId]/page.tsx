@@ -50,7 +50,6 @@ const ChatPage = () => {
   const selectedUserImage = isAI ? "/assets/images/momento-ai-avatar.svg" : userData?.imageUrl || "/assets/icons/profile-placeholder.svg";
 
   useEffect(() => {
-    // Only redirect if auth has finished loading and user is not authenticated
     if (!authLoading && !isAuthenticated) {
       console.log("Redirecting to sign-in from chat page");
       router.push("/sign-in");
@@ -73,7 +72,6 @@ const ChatPage = () => {
     }
   };
 
-  // Show loader while auth is loading
   if (authLoading) {
     return (
       <div className="flex-center w-full h-full">
@@ -82,7 +80,6 @@ const ChatPage = () => {
     );
   }
 
-  // Don't render anything if not authenticated (will redirect)
   if (!isAuthenticated) {
     return (
       <div className="flex-center w-full h-full">

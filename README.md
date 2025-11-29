@@ -67,12 +67,14 @@ momento-frontend/
 │   │   ├── profile/      # User profile pages
 │   │   ├── details/      # External content details
 │   │   ├── notifications/# Notifications page
+│   │   ├── messages/     # Messaging pages
 │   │   └── admin/        # Admin dashboard
 │   ├── layout.tsx        # Root layout
 │   └── globals.css       # Global styles
 ├── components/           # Reusable React components
 │   ├── shared/          # Shared components
 │   ├── forms/           # Form components
+│   ├── messages/        # Messaging components
 │   └── ui/              # UI primitives
 ├── context/             # React Context providers
 │   └── AuthContext.tsx  # Authentication context
@@ -128,6 +130,14 @@ momento-frontend/
 - Unread notification count
 - Mark as read functionality
 - Notification types: LIKE, FOLLOW, REVIEW
+
+### Messaging
+- AI assistant chat with OpenRouter integration
+- User-to-user direct messaging
+- Real-time message display
+- Message history and conversation threads
+- Typing indicators
+- Message feedback system
 
 ### Admin Dashboard
 - View all users
