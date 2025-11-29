@@ -48,3 +48,12 @@ export type INewUser = {
   password: string;
   role?: "USER" | "ADMIN";
 };
+
+export interface IMessage {
+  _id: string;
+  userId: string;
+  role: "user" | "assistant";
+  content: string;
+  feedback?: "up" | "down" | null;
+  createdAt: string;
+}
