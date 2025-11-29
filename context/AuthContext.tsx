@@ -46,7 +46,7 @@ const AuthContext = createContext<IContextType>(INITIAL_STATE);
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<IUser>(INITIAL_USER);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const queryClient = useQueryClient();
 
@@ -78,6 +78,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsAuthenticated(false);
       return false;
     } catch (error) {
+      console.error("Auth check failed:", error);
       setIsAuthenticated(false);
       return false;
     } finally {
