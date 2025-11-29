@@ -11,7 +11,9 @@ const Bottombar = () => {
   return (
     <section className="bottom-bar ">
       {bottombarLinks.map((link) => {
-        const isActive = pathname === link.route;
+        const isActive = link.route === "/messages" 
+          ? pathname.startsWith("/messages")
+          : pathname === link.route;
         const isNotifications = link.route === "/notifications";
         const showBadge = isNotifications && unreadCount > 0;
         return (

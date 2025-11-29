@@ -20,6 +20,8 @@ const LeftSidebar = () => {
   const { data: unreadCountData } = useGetUnreadNotificationCount();
   const unreadCount = unreadCountData?.count || 0;
 
+  const isMessagesPage = pathname.startsWith("/messages");
+
   useEffect(() => {
     if (isSuccess) {
       signOut().then(() => {
@@ -37,14 +39,14 @@ const LeftSidebar = () => {
             alt="Logo"
             width={200}
             height={36}
-            className="max-lg:hidden"
+            className={isMessagesPage ? "hidden" : "max-lg:hidden"}
           />
           <img
             src="/assets/images/lg-logo.svg"
             alt="Logo"
             width={35}
             height={40}
-            className="lg:hidden "
+            className={isMessagesPage ? "" : "lg:hidden"}
           />
         </Link>
 
@@ -59,7 +61,7 @@ const LeftSidebar = () => {
             alt="profile"
             className="h-12 w-12 rounded-full max-lg:w-[50px] max-lg:h-[50px] object-cover"
           />
-          <div className="flex flex-col justify-center max-lg:hidden">
+          <div className={`flex flex-col justify-center ${isMessagesPage ? "hidden" : "max-lg:hidden"}`}>
             <p className="base-semibold">{user.name}</p>
             <p className="text-[13px] text-light-1">@{user.username}</p>
           </div>
@@ -67,7 +69,9 @@ const LeftSidebar = () => {
 
         <ul className="flex flex-col gap-4 ">
           {sidebarLinks.map((link: INavLink) => {
-            const isActive = pathname === link.route;
+            const isActive = link.route === "/messages" 
+              ? pathname.startsWith("/messages")
+              : pathname === link.route;
             const isNotifications = link.route === "/notifications";
             const showBadge = isNotifications && unreadCount > 0;
             return (
@@ -99,7 +103,7 @@ const LeftSidebar = () => {
                       </span>
                     )}
                   </div>
-                  <p className="max-lg:hidden body-bold">{link.label}</p>
+                  <p className={isMessagesPage ? "hidden" : "max-lg:hidden body-bold"}>{link.label}</p>
                 </Link>
               </li>
             );
@@ -123,7 +127,7 @@ const LeftSidebar = () => {
                     }`}
                   />
                 </div>
-                <p className="max-lg:hidden body-bold">Admin</p>
+                <p className={isMessagesPage ? "hidden" : "max-lg:hidden body-bold"}>Admin</p>
               </Link>
             </li>
           )}
@@ -142,7 +146,7 @@ const LeftSidebar = () => {
             alt="logout"
           />
           <p
-            className={`base-semibold group-hover:text-black  text-light-1  max-lg:hidden`}
+            className={`base-semibold group-hover:text-black  text-light-1  ${isMessagesPage ? "hidden" : "max-lg:hidden"}`}
           >
             Logout
           </p>
@@ -159,7 +163,7 @@ const LeftSidebar = () => {
                 className="group-hover:invert max-lg:w-[30px] max-lg:h-[30px] "
               />
               <p
-                className={`base-semibold group-hover:text-black  text-light-1  max-lg:hidden`}
+                className={`base-semibold group-hover:text-black  text-light-1  ${isMessagesPage ? "hidden" : "max-lg:hidden"}`}
               >
                 Sign-in
               </p>
@@ -175,7 +179,7 @@ const LeftSidebar = () => {
                 className="group-hover:invert max-lg:w-[30px] max-lg:h-[30px] "
               />
               <p
-                className={`base-semibold group-hover:text-black  text-light-1  max-lg:hidden`}
+                className={`base-semibold group-hover:text-black  text-light-1  ${isMessagesPage ? "hidden" : "max-lg:hidden"}`}
               >
                 Sign-up
               </p>
@@ -183,6 +187,14 @@ const LeftSidebar = () => {
           </Link>
         </div>
       )}
+
+      {/* Privacy Policy Link */}
+      <Link 
+        href="/privacy" 
+        className={`text-light-3 hover:text-light-1 text-xs mt-4 transition ${isMessagesPage ? "hidden" : "max-lg:hidden"}`}
+      >
+        Privacy Policy
+      </Link>
     </nav>
   );
 };
