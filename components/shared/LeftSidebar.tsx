@@ -188,13 +188,20 @@ const LeftSidebar = () => {
         </div>
       )}
 
-      {/* Privacy Policy Link */}
-      <Link 
-        href="/privacy" 
-        className={`text-light-3 hover:text-light-1 text-xs mt-4 transition ${isMessagesPage ? "hidden" : "max-lg:hidden"}`}
-      >
-        Privacy Policy
-      </Link>
+      <div className={`flex gap-4 mt-4 ${isMessagesPage ? "hidden" : "max-lg:hidden"}`}>
+        <Link 
+          href="/about" 
+          className="text-light-3 hover:text-light-1 text-xs transition"
+        >
+          About
+        </Link>
+        <Link 
+          href="/privacy" 
+          className="text-light-3 hover:text-light-1 text-xs transition"
+        >
+          Privacy Policy
+        </Link>
+      </div>
     </nav>
   );
 };

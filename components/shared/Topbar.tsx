@@ -17,17 +17,32 @@ const Topbar = () => {
           />
         </Link>
 
-        {isAuthenticated && (
-          <div className="flex mr-3">
-            <Link href={`/profile/${user.id}`} className="flex-center gap-3">
-              <img
-                src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
-                alt="profile"
-                className="h-12 w-12 rounded-full object-cover"
-              />
-            </Link>
-          </div>
-        )}
+        <div className="flex items-center gap-4">
+          <Link
+            href="/about"
+            className="text-light-1 hover:text-white text-sm base-medium transition-colors"
+          >
+            About
+          </Link>
+          <Link
+            href="/privacy"
+            className="text-light-1 hover:text-white text-sm base-medium transition-colors md:hidden"
+          >
+            Privacy
+          </Link>
+
+          {isAuthenticated && (
+            <div className="flex">
+              <Link href={`/profile/${user.id}`} className="flex-center gap-3">
+                <img
+                  src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
+                  alt="profile"
+                  className="h-12 w-12 rounded-full object-cover"
+                />
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );
