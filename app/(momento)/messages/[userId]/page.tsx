@@ -8,7 +8,9 @@ import {
   useGetUserConversation,
   useSendUserMessage,
   useGetUserById,
+  useMarkConversationAsRead,
 } from "@/lib/react-query/queriesAndMutation";
+import { useQueryClient } from "@tanstack/react-query";
 import MessagesList from "@/components/messages/MessagesList";
 import ChatHeader from "@/components/messages/ChatHeader";
 import MessageBubble from "@/components/messages/MessageBubble";
@@ -30,6 +32,7 @@ const ChatPage = () => {
   const params = useParams();
   const userId = params.userId as string;
   const { user, isAuthenticated, isLoading: authLoading } = useUserContext();
+  const queryClient = useQueryClient();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [showMessagesList, setShowMessagesList] = useState(false);
@@ -41,6 +44,7 @@ const ChatPage = () => {
   const { data: userConversationData, isLoading: conversationLoading } = useGetUserConversation(selectedUserId);
   const { mutate: sendUserMsg, isPending: isSendingUser } = useSendUserMessage();
   const { data: userData } = useGetUserById(selectedUserId || "");
+  const { mutate: markAsRead } = useMarkConversationAsRead();
 
   const aiMessages = chatData?.messages || [];
   const userMessages = userConversationData?.messages || [];
@@ -59,6 +63,13 @@ const ChatPage = () => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [aiMessages, userMessages, isSending, isSendingUser]);
+
+  // Mark messages as read when viewing a conversation
+  useEffect(() => {
+    if (!isAI && selectedUserId && isAuthenticated) {
+      markAsRead(selectedUserId);
+    }
+  }, [selectedUserId, isAI, isAuthenticated, markAsRead]);
 
   const handleBackToList = () => {
     setShowMessagesList(true);

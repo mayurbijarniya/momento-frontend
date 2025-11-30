@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import {
   useSignOutAccount,
   useGetUnreadNotificationCount,
+  useGetUnreadMessageCount,
 } from "@/lib/react-query/queriesAndMutation";
 import { useUserContext } from "@/context/AuthContext";
 import { sidebarLinks } from "@/constants";
@@ -19,6 +20,8 @@ const LeftSidebar = () => {
   const { user, isAuthenticated, signOut } = useUserContext();
   const { data: unreadCountData } = useGetUnreadNotificationCount();
   const unreadCount = unreadCountData?.count || 0;
+  const { data: unreadMessageCountData } = useGetUnreadMessageCount(isAuthenticated);
+  const unreadMessageCount = isAuthenticated ? (unreadMessageCountData?.count ?? 0) : 0;
 
   const isMessagesPage = pathname.startsWith("/messages");
 
@@ -73,7 +76,9 @@ const LeftSidebar = () => {
               ? pathname.startsWith("/messages")
               : pathname === link.route;
             const isNotifications = link.route === "/notifications";
-            const showBadge = isNotifications && unreadCount > 0;
+            const isMessages = link.route === "/messages";
+            const showNotificationBadge = isNotifications && unreadCount > 0;
+            const showMessageBadge = isMessages && unreadMessageCount > 0;
             return (
               <li
                 key={link.label}
@@ -93,11 +98,18 @@ const LeftSidebar = () => {
                         isActive && "invert"
                       }`}
                     />
-                    {showBadge && (
+                    {showNotificationBadge && (
                       <span className={`absolute -top-2 -right-2 bg-blue-500 text-white text-[11px] font-extrabold rounded-full flex items-center justify-center shadow-xl z-20 ${
                         unreadCount > 9 ? "min-w-[24px] h-6 px-1.5" : "w-5 h-5"
                       }`}>
                         {unreadCount > 9 ? "9+" : unreadCount}
+                      </span>
+                    )}
+                    {showMessageBadge && (
+                      <span className={`absolute -top-2 -right-2 bg-blue-500 text-white text-[11px] font-extrabold rounded-full flex items-center justify-center shadow-xl z-20 ${
+                        unreadMessageCount > 9 ? "min-w-[24px] h-6 px-1.5" : "w-5 h-5"
+                      }`}>
+                        {unreadMessageCount > 9 ? "9+" : unreadMessageCount}
                       </span>
                     )}
                   </div>

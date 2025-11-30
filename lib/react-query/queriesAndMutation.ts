@@ -51,6 +51,8 @@ import {
   sendUserMessage,
   getUserConversation,
   getConversationPartners,
+  getUnreadMessageCount,
+  markConversationAsRead,
 } from "../api/client";
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { QUERY_KEYS } from "./queryKeys";
@@ -604,10 +606,16 @@ export const useClearChat = () => {
 };
 
 export const useGetUserConversation = (userId: string | null) => {
+  const queryClient = useQueryClient();
   return useQuery({
     queryKey: ["userConversation", userId],
     queryFn: () => getUserConversation(userId!),
     enabled: !!userId,
+    refetchInterval: 10000, // Refetch every 10 seconds to get new messages
+    onSuccess: () => {
+      // Invalidate unread count when fetching conversation to get latest count
+      queryClient.invalidateQueries({ queryKey: ["unreadMessageCount"] });
+    },
   });
 };
 
@@ -615,6 +623,17 @@ export const useGetConversationPartners = () => {
   return useQuery({
     queryKey: ["conversationPartners"],
     queryFn: () => getConversationPartners(),
+  });
+};
+
+export const useGetUnreadMessageCount = (enabled: boolean = true) => {
+  return useQuery({
+    queryKey: ["unreadMessageCount"],
+    queryFn: () => getUnreadMessageCount(),
+    enabled: enabled,
+    refetchInterval: enabled ? 10000 : false, // Refetch every 10 seconds when enabled
+    refetchOnWindowFocus: enabled, // Refetch when window gains focus
+    retry: 1, // Retry once on failure
   });
 };
 
@@ -626,6 +645,17 @@ export const useSendUserMessage = () => {
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["userConversation", variables.receiverId] });
       queryClient.invalidateQueries({ queryKey: ["conversationPartners"] });
+      queryClient.invalidateQueries({ queryKey: ["unreadMessageCount"] });
+    },
+  });
+};
+
+export const useMarkConversationAsRead = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (userId: string) => markConversationAsRead(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["unreadMessageCount"] });
     },
   });
 };

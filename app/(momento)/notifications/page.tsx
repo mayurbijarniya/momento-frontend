@@ -46,7 +46,7 @@ const Notifications = () => {
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case "LIKE":
-        return <Heart className="w-5 h-5 text-red-500" fill="currentColor" />;
+        return <Heart className="w-5 h-5" fill="#ef4444" stroke="none" strokeWidth={0} />;
       case "FOLLOW":
         return <UserPlus className="w-5 h-5 text-blue-500" />;
       case "REVIEW":
@@ -173,24 +173,22 @@ const Notifications = () => {
                   className="flex items-start gap-4 p-4 rounded-lg"
                 >
                   <div className="flex-shrink-0">
-                    {notification.actor?.imageUrl ? (
-                      <img
-                        src={notification.actor.imageUrl}
-                        alt={notification.actor.name || "User"}
-                        className="w-12 h-12 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-dark-4 flex items-center justify-center">
-                        {getNotificationIcon(notification.type)}
-                      </div>
-                    )}
+                    <img
+                      src={notification.actor?.imageUrl || "/assets/icons/profile-placeholder.svg"}
+                      alt={notification.actor?.name || "User"}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
                   </div>
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          {getNotificationIcon(notification.type)}
+                          {notification.type === "LIKE" ? (
+                            <Heart className="w-5 h-5" fill="#ef4444" stroke="none" strokeWidth={0} />
+                          ) : (
+                            getNotificationIcon(notification.type)
+                          )}
                           <p className={`small-medium lg:base-regular ${
                             isUnread 
                               ? "text-light-1 font-bold" 

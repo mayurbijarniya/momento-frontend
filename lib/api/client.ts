@@ -614,3 +614,18 @@ export const getConversationPartners = async () => {
   const response = await axiosWithCredentials.get(CONVERSATIONS_API);
   return response.data;
 };
+
+export const getUnreadMessageCount = async () => {
+  try {
+    const response = await axiosWithCredentials.get(`${CONVERSATIONS_API}/unread-count`);
+    return response.data || { count: 0 };
+  } catch (error: any) {
+    // Return default structure if error
+    return { count: 0 };
+  }
+};
+
+export const markConversationAsRead = async (userId: string) => {
+  const response = await axiosWithCredentials.put(`${CONVERSATIONS_API}/${userId}/read`);
+  return response.data;
+};
