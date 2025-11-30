@@ -3,6 +3,18 @@ import { useState, useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useGetUsers, useGetFollowing, useGetConversationPartners } from "@/lib/react-query/queriesAndMutation";
 import { useUserContext } from "@/context/AuthContext";
+import { formatMessageTime } from "@/lib/utils";
+
+const isUserActive = (lastLogin: string | Date | null | undefined): boolean => {
+  if (!lastLogin) {
+    return false;
+  }
+  const loginDate = new Date(lastLogin);
+  const now = new Date();
+  const diffInMs = now.getTime() - loginDate.getTime();
+  const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+  return diffInMinutes < 1;
+};
 
 interface MessagesListProps {
   selectedUserId: string | null;
@@ -18,7 +30,21 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
 
   const allUsers = usersData?.documents || [];
   const following = Array.isArray(followingData) ? followingData : [];
-  const conversationPartnerIds = conversationPartnersData?.partnerIds || [];
+  const conversationPartners = conversationPartnersData?.partners || [];
+
+  // Create maps for partner data
+  const partnerDataMap = useMemo(() => {
+    const map = new Map();
+    conversationPartners.forEach((partner: any) => {
+      map.set(partner.partnerId, {
+        lastMessageTime: partner.lastMessageTime,
+        lastMessageContent: partner.lastMessageContent,
+        lastMessageSenderId: partner.lastMessageSenderId,
+        unreadCount: partner.unreadCount || 0,
+      });
+    });
+    return map;
+  }, [conversationPartners]);
 
   // Filter users to show only those we follow or have conversed with
   const filteredUsers = useMemo(() => {
@@ -27,20 +53,36 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
       following.map((user: any) => user._id || user.id)
     );
 
+    // Get IDs from conversation partners
+    const conversationPartnerIds = new Set(
+      conversationPartners.map((partner: any) => partner.partnerId)
+    );
+
     // Combine: users we follow OR users we've had conversations with
     const allowedUserIds = new Set([
       ...Array.from(followingIds),
-      ...conversationPartnerIds,
+      ...Array.from(conversationPartnerIds),
     ]);
 
-    return allUsers.filter(
-      (user: any) =>
-        user.id !== currentUser?.id &&
-        allowedUserIds.has(user.id) &&
-        (user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          user.username.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
-  }, [allUsers, following, conversationPartnerIds, currentUser?.id, searchQuery]);
+    return allUsers
+      .filter(
+        (user: any) =>
+          user.id !== currentUser?.id &&
+          allowedUserIds.has(user.id) &&
+          (user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            user.username.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+      .map((user: any) => {
+        const partnerData = partnerDataMap.get(user.id);
+        return {
+          ...user,
+          lastMessageTime: partnerData?.lastMessageTime,
+          lastMessageContent: partnerData?.lastMessageContent,
+          lastMessageSenderId: partnerData?.lastMessageSenderId,
+          unreadCount: partnerData?.unreadCount || 0,
+        };
+      });
+  }, [allUsers, following, conversationPartners, partnerDataMap, currentUser?.id, searchQuery]);
 
   return (
     <div className="flex flex-col h-full w-full bg-dark-2 border-r border-dark-4">
@@ -105,28 +147,58 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
           </div>
         </div>
 
-        {filteredUsers.map((user: any) => (
-          <div
-            key={user.id}
-            onClick={() => router.push(`/messages/${user.id}`)}
-            className={`flex items-center gap-3 p-4 cursor-pointer hover:bg-dark-3 transition-colors border-b border-dark-4 ${
-              selectedUserId === user.id ? "bg-dark-3" : ""
-            }`}
-          >
-            <img
-              src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
-              alt={user.name}
-              className="w-14 h-14 rounded-full object-cover"
-            />
+        {filteredUsers.map((user: any) => {
+          const userIsActive = isUserActive(user.lastLogin);
+          const hasUnread = user.unreadCount > 0;
+          const isLastMessageFromUser = user.lastMessageSenderId === currentUser?.id;
+          
+          return (
+            <div
+              key={user.id}
+              onClick={() => router.push(`/messages/${user.id}`)}
+              className={`flex items-center gap-3 p-4 cursor-pointer hover:bg-dark-3 transition-colors border-b border-dark-4 ${
+                selectedUserId === user.id ? "bg-dark-3" : hasUnread ? "bg-dark-4/50" : ""
+              }`}
+            >
+              <div className="relative">
+                <img
+                  src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
+                  alt={user.name}
+                  className="w-14 h-14 rounded-full object-cover"
+                />
+                {userIsActive && (
+                  <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-dark-2" />
+                )}
+                {hasUnread && (
+                  <span className={`absolute -top-1 -right-1 bg-blue-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg z-10 ${
+                    user.unreadCount > 9 ? "min-w-[20px] h-5 px-1" : "w-5 h-5"
+                  }`}>
+                    {user.unreadCount > 9 ? "9+" : user.unreadCount}
+                  </span>
+                )}
+              </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between mb-1">
-                <span className="font-semibold text-light-1">{user.name}</span>
-                <span className="text-xs text-light-3">Now</span>
+                <span className={`${hasUnread ? "font-bold" : "font-semibold"} text-light-1`}>
+                  {user.name}
+                </span>
+                {user.lastMessageTime && (
+                  <span className={`text-xs ${hasUnread ? "text-light-1 font-medium" : "text-light-3"}`}>
+                    {formatMessageTime(user.lastMessageTime)}
+                  </span>
+                )}
               </div>
-              <p className="text-sm text-light-3 truncate">@{user.username}</p>
+              {hasUnread && user.lastMessageContent ? (
+                <p className="text-sm text-light-1 font-medium truncate">
+                  {isLastMessageFromUser ? "You: " : ""}{user.lastMessageContent}
+                </p>
+              ) : (
+                <p className="text-sm text-light-3 truncate">@{user.username}</p>
+              )}
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

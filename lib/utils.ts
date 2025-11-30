@@ -43,6 +43,52 @@ export function timeAgo(dateString: string | undefined): string {
   return `${month} ${day}, ${year}`;
 }
 
+export function formatMessageTime(dateString: string | undefined): string {
+  if (!dateString) {
+    return '';
+  }
+
+  const currentDate = new Date();
+  const messageDate = new Date(dateString);
+  const timeDifference = currentDate.getTime() - messageDate.getTime();
+  const hours = Math.floor(timeDifference / (1000 * 60 * 60));
+  const days = Math.floor(hours / 24);
+
+  // Within 24 hours: show time
+  if (hours < 24) {
+    const minutes = Math.floor(timeDifference / (1000 * 60));
+    if (minutes < 1) {
+      return 'Just now';
+    } else if (minutes < 60) {
+      return `${minutes} min${minutes > 1 ? 's' : ''} ago`;
+    } else {
+      return `${hours} hr${hours > 1 ? 's' : ''} ago`;
+    }
+  }
+
+  // After 24 hours but within 7 days: show day
+  if (days < 7) {
+    if (days === 1) {
+      return 'Yesterday';
+    }
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return dayNames[messageDate.getDay()];
+  }
+
+  // After 7 days: show date
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const month = monthNames[messageDate.getMonth()];
+  const day = messageDate.getDate();
+  const year = messageDate.getFullYear();
+  const currentYear = currentDate.getFullYear();
+
+  if (year === currentYear) {
+    return `${month} ${day}`;
+  } else {
+    return `${month} ${day}, ${year}`;
+  }
+}
+
 
 export const checkIsLiked = (likeList: string[], userId: string) => {
   return likeList.includes(userId);

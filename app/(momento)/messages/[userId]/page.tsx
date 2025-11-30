@@ -114,6 +114,7 @@ const ChatPage = () => {
               isAI={isAI}
               onBack={handleBackToList}
               userId={isAI ? undefined : userId}
+              lastLogin={isAI ? undefined : userData?.lastLogin}
             />
           </div>
 
@@ -134,7 +135,20 @@ const ChatPage = () => {
                     feedback: message.feedback,
                     createdAt: message.createdAt,
                   };
-                  return <MessageBubble key={message._id} message={messageForBubble} />;
+                  // For non-user messages, determine the sender image
+                  const senderImage = isUserMessage 
+                    ? undefined 
+                    : isAI 
+                      ? undefined // Will use AI avatar
+                      : userData?.imageUrl || "/assets/icons/profile-placeholder.svg";
+                  return (
+                    <MessageBubble 
+                      key={message._id} 
+                      message={messageForBubble}
+                      isAI={isAI && !isUserMessage}
+                      senderImage={senderImage}
+                    />
+                  );
                 })}
                 {(isAI ? isSending : isSendingUser) && <TypingIndicator />}
               </>

@@ -5,23 +5,30 @@ import ReactMarkdown from "react-markdown";
 
 interface MessageBubbleProps {
   message: IMessage;
+  isAI?: boolean;
+  senderImage?: string;
 }
 
-const MessageBubble = ({ message }: MessageBubbleProps) => {
+const MessageBubble = ({ message, isAI = false, senderImage }: MessageBubbleProps) => {
   const isUser = message.role === "user";
 
   const timeAgo = formatDistanceToNow(new Date(message.createdAt), { 
     addSuffix: false 
   });
 
+  // Determine which avatar to show for non-user messages
+  const avatarSrc = isAI 
+    ? "/assets/images/momento-ai-avatar.svg"
+    : senderImage || "/assets/icons/profile-placeholder.svg";
+
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4`}>
       <div className={`flex ${isUser ? "flex-row-reverse" : "flex-row"} items-end gap-2 max-w-[80%]`}>
         {!isUser && (
           <img
-            src="/assets/images/momento-ai-avatar.svg"
-            alt="AI"
-            className="w-8 h-8 rounded-full flex-shrink-0"
+            src={avatarSrc}
+            alt={isAI ? "AI" : "User"}
+            className="w-8 h-8 rounded-full flex-shrink-0 object-cover"
           />
         )}
         <div>

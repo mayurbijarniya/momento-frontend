@@ -623,6 +623,7 @@ export const useGetConversationPartners = () => {
   return useQuery({
     queryKey: ["conversationPartners"],
     queryFn: () => getConversationPartners(),
+    refetchInterval: 10000, // Refetch every 10 seconds to keep unread counts updated
   });
 };
 
@@ -656,6 +657,7 @@ export const useMarkConversationAsRead = () => {
     mutationFn: (userId: string) => markConversationAsRead(userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["unreadMessageCount"] });
+      queryClient.invalidateQueries({ queryKey: ["conversationPartners"] });
     },
   });
 };

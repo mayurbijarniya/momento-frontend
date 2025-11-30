@@ -76,6 +76,7 @@ export const getUserById = async (userId: string) => {
     email: user.email,
     imageUrl: user.imageUrl || "",
     bio: user.bio || "",
+    lastLogin: user.lastLogin || null,
   };
 };
 
@@ -124,6 +125,7 @@ export const getUsers = async (limit?: number) => {
       email: user.email,
       imageUrl: user.imageUrl || "",
       bio: user.bio || "",
+      lastLogin: user.lastLogin || null,
     })),
   };
 };
