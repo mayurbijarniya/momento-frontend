@@ -2,7 +2,21 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Github, Users, User, Shield, Eye } from "lucide-react";
+import { 
+  ArrowLeft, 
+  Github, 
+  Users, 
+  User, 
+  Shield, 
+  Eye,
+  FileText,
+  Star,
+  UserCircle,
+  Search,
+  Settings,
+  Lock,
+  LogIn
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const AboutPage = () => {
@@ -64,101 +78,290 @@ const AboutPage = () => {
               <h2 className="h2-bold text-light-1 mb-4">User Types</h2>
               <div className="space-y-4">
                 <div className="bg-dark-3 rounded-lg p-4 md:p-5 border border-dark-4">
-                  <div className="flex items-center gap-3 mb-3">
+                  <div className="flex items-center gap-3 mb-4">
                     <User className="w-5 h-5 text-light-1 flex-shrink-0" />
                     <p className="base-semibold text-light-1">Regular Users</p>
                   </div>
-                  <div className="space-y-2 text-light-3 small-regular">
-                    <p className="text-light-1 base-medium mb-2">Content Management:</p>
-                    <ul className="list-disc list-inside space-y-1 ml-2">
-                      <li>Create, edit, and delete own posts</li>
-                      <li>Upload images with captions, tags, and location</li>
-                      <li>Like and unlike posts</li>
-                      <li>Save and unsave posts</li>
-                    </ul>
-                    <p className="text-light-1 base-medium mt-3 mb-2">Social Features:</p>
-                    <ul className="list-disc list-inside space-y-1 ml-2">
-                      <li>Follow and unfollow other users</li>
-                      <li>View followers and following lists</li>
-                      <li>Send messages (AI chat and user-to-user messaging)</li>
-                      <li>View and manage notifications</li>
-                    </ul>
-                    <p className="text-light-1 base-medium mt-3 mb-2">Reviews & Engagement:</p>
-                    <ul className="list-disc list-inside space-y-1 ml-2">
-                      <li>Create reviews for posts and external content</li>
-                      <li>Edit and delete own reviews</li>
-                      <li>Rate content with star ratings (1-5 stars)</li>
-                    </ul>
-                    <p className="text-light-1 base-medium mt-3 mb-2">Profile & Account:</p>
-                    <ul className="list-disc list-inside space-y-1 ml-2">
-                      <li>Update profile information (name, username, bio, image)</li>
-                      <li>View own saved posts collection</li>
-                      <li>View own liked posts collection</li>
-                      <li>Delete own account</li>
-                    </ul>
-                    <p className="text-light-1 base-medium mt-3 mb-2">Content Access:</p>
-                    <ul className="list-disc list-inside space-y-1 ml-2">
-                      <li>Full home feed with all posts</li>
-                      <li>View all posts on any profile</li>
-                      <li>Search local posts and external content (Unsplash)</li>
-                      <li>View external content details</li>
-                    </ul>
+                  <div className="space-y-4">
+                    <div className="bg-dark-4 rounded-md p-3 border-l-4 border-primary-500">
+                      <div className="flex items-center gap-2 mb-2">
+                        <FileText className="w-4 h-4 text-primary-500 flex-shrink-0" />
+                        <p className="text-light-1 base-medium">Content Management:</p>
+                      </div>
+                      <ul className="space-y-1.5 ml-6">
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Create, edit, and delete own posts</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Upload images with captions, tags, and location</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Like and unlike posts</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Save and unsave posts</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="bg-dark-4 rounded-md p-3 border-l-4 border-primary-500">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Users className="w-4 h-4 text-primary-500 flex-shrink-0" />
+                        <p className="text-light-1 base-medium">Social Features:</p>
+                      </div>
+                      <ul className="space-y-1.5 ml-6">
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Follow and unfollow other users</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>View followers and following lists</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Send messages (AI chat and user-to-user messaging)</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>View and manage notifications</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="bg-dark-4 rounded-md p-3 border-l-4 border-primary-500">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Star className="w-4 h-4 text-primary-500 flex-shrink-0" />
+                        <p className="text-light-1 base-medium">Reviews & Engagement:</p>
+                      </div>
+                      <ul className="space-y-1.5 ml-6">
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Create reviews for posts and external content</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Edit and delete own reviews</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Rate content with star ratings (1-5 stars)</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="bg-dark-4 rounded-md p-3 border-l-4 border-primary-500">
+                      <div className="flex items-center gap-2 mb-2">
+                        <UserCircle className="w-4 h-4 text-primary-500 flex-shrink-0" />
+                        <p className="text-light-1 base-medium">Profile & Account:</p>
+                      </div>
+                      <ul className="space-y-1.5 ml-6">
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Update profile information (name, username, bio, image)</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>View own saved posts collection</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>View own liked posts collection</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Delete own account</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="bg-dark-4 rounded-md p-3 border-l-4 border-primary-500">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Search className="w-4 h-4 text-primary-500 flex-shrink-0" />
+                        <p className="text-light-1 base-medium">Content Access:</p>
+                      </div>
+                      <ul className="space-y-1.5 ml-6">
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Full home feed with all posts</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>View all posts on any profile</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Search local posts and external content (Unsplash)</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>View external content details</span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
 
                 <div className="bg-dark-3 rounded-lg p-4 md:p-5 border border-dark-4">
-                  <div className="flex items-center gap-3 mb-3">
+                  <div className="flex items-center gap-3 mb-4">
                     <Shield className="w-5 h-5 text-light-1 flex-shrink-0" />
                     <p className="base-semibold text-light-1">Admin Users</p>
                   </div>
-                  <div className="space-y-2 text-light-3 small-regular">
-                    <p className="text-light-1 base-medium mb-2">All Regular User Capabilities PLUS:</p>
-                    <p className="text-light-1 base-medium mt-3 mb-2">Admin Dashboard Access:</p>
-                    <ul className="list-disc list-inside space-y-1 ml-2">
-                      <li>View all registered users in the system</li>
-                      <li>View all posts created by any user</li>
-                      <li>Delete any user account (except own account)</li>
-                      <li>Delete any post for content moderation</li>
-                      <li>See user roles (USER/ADMIN) in dashboard</li>
-                      <li>Access admin-only navigation and features</li>
-                    </ul>
+                  <div className="space-y-4">
+                    <div className="bg-primary-500/10 rounded-md p-3 border-l-4 border-primary-500">
+                      <p className="text-light-1 base-medium mb-3 flex items-center gap-2">
+                        <span className="text-primary-500">✓</span>
+                        <span>All Regular User Capabilities PLUS:</span>
+                      </p>
+                    </div>
+
+                    <div className="bg-dark-4 rounded-md p-3 border-l-4 border-primary-500">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Settings className="w-4 h-4 text-primary-500 flex-shrink-0" />
+                        <p className="text-light-1 base-medium">Admin Dashboard Access:</p>
+                      </div>
+                      <ul className="space-y-1.5 ml-6">
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>View all registered users in the system</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>View all posts created by any user</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Delete any user account (except own account)</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Delete any post for content moderation</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>See user roles (USER/ADMIN) in dashboard</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Access admin-only navigation and features</span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
 
                 <div className="bg-dark-3 rounded-lg p-4 md:p-5 border border-dark-4">
-                  <div className="flex items-center gap-3 mb-3">
+                  <div className="flex items-center gap-3 mb-4">
                     <Eye className="w-5 h-5 text-light-1 flex-shrink-0" />
                     <p className="base-semibold text-light-1">Anonymous Users</p>
                   </div>
-                  <div className="space-y-2 text-light-3 small-regular">
-                    <p className="text-light-1 base-medium mb-2">Limited Content Access:</p>
-                    <ul className="list-disc list-inside space-y-1 ml-2">
-                      <li>View home feed (limited to 3 posts with sign-in prompt)</li>
-                      <li>View public profiles (limited to 2 posts per profile)</li>
-                      <li>Browse all users page to see community members</li>
-                      <li>Explore page with limited "Popular today" posts (3 posts)</li>
-                      <li>Search local posts (only within visible 3 posts)</li>
-                      <li>Search external content (Unsplash photos)</li>
-                      <li>View external content details</li>
-                      <li>View reviews on external content</li>
-                    </ul>
-                    <p className="text-light-1 base-medium mt-3 mb-2">Restricted Actions:</p>
-                    <ul className="list-disc list-inside space-y-1 ml-2">
-                      <li>Cannot create, edit, or delete posts</li>
-                      <li>Cannot like or save posts</li>
-                      <li>Cannot follow or unfollow users</li>
-                      <li>Cannot view followers/following lists (redirects to sign-in)</li>
-                      <li>Cannot send messages</li>
-                      <li>Cannot view notifications</li>
-                      <li>Cannot update profile</li>
-                      <li>Cannot create reviews</li>
-                    </ul>
-                    <p className="text-light-1 base-medium mt-3 mb-2">Account Access:</p>
-                    <ul className="list-disc list-inside space-y-1 ml-2">
-                      <li>Can sign up to create a new account</li>
-                      <li>Can sign in to existing account</li>
-                      <li>Can view About page and Privacy Policy</li>
-                    </ul>
+                  <div className="space-y-4">
+                    <div className="bg-dark-4 rounded-md p-3 border-l-4 border-primary-500">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Eye className="w-4 h-4 text-primary-500 flex-shrink-0" />
+                        <p className="text-light-1 base-medium">Limited Content Access:</p>
+                      </div>
+                      <ul className="space-y-1.5 ml-6">
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>View home feed (limited to 3 posts with sign-in prompt)</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>View public profiles (limited to 2 posts per profile)</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Browse all users page to see community members</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Explore page with limited "Popular today" posts (3 posts)</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Search local posts (only within visible 3 posts)</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Search external content (Unsplash photos)</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>View external content details</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>View reviews on external content</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="bg-dark-4 rounded-md p-3 border-l-4 border-red-500">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Lock className="w-4 h-4 text-red-500 flex-shrink-0" />
+                        <p className="text-light-1 base-medium">Restricted Actions:</p>
+                      </div>
+                      <ul className="space-y-1.5 ml-6">
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-red-500">•</span>
+                          <span>Cannot create, edit, or delete posts</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-red-500">•</span>
+                          <span>Cannot like or save posts</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-red-500">•</span>
+                          <span>Cannot follow or unfollow users</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-red-500">•</span>
+                          <span>Cannot view followers/following lists (redirects to sign-in)</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-red-500">•</span>
+                          <span>Cannot send messages</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-red-500">•</span>
+                          <span>Cannot view notifications</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-red-500">•</span>
+                          <span>Cannot update profile</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-red-500">•</span>
+                          <span>Cannot create reviews</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="bg-dark-4 rounded-md p-3 border-l-4 border-primary-500">
+                      <div className="flex items-center gap-2 mb-2">
+                        <LogIn className="w-4 h-4 text-primary-500 flex-shrink-0" />
+                        <p className="text-light-1 base-medium">Account Access:</p>
+                      </div>
+                      <ul className="space-y-1.5 ml-6">
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Can sign up to create a new account</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Can sign in to existing account</span>
+                        </li>
+                        <li className="text-light-3 small-regular flex items-center gap-2">
+                          <span className="text-primary-500">•</span>
+                          <span>Can view About page and Privacy Policy</span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
