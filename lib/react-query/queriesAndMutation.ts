@@ -50,6 +50,7 @@ import {
   clearChatHistory,
   sendUserMessage,
   getUserConversation,
+  getConversationPartners,
 } from "../api/client";
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { QUERY_KEYS } from "./queryKeys";
@@ -610,6 +611,13 @@ export const useGetUserConversation = (userId: string | null) => {
   });
 };
 
+export const useGetConversationPartners = () => {
+  return useQuery({
+    queryKey: ["conversationPartners"],
+    queryFn: () => getConversationPartners(),
+  });
+};
+
 export const useSendUserMessage = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -617,6 +625,7 @@ export const useSendUserMessage = () => {
       sendUserMessage(receiverId, content),
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["userConversation", variables.receiverId] });
+      queryClient.invalidateQueries({ queryKey: ["conversationPartners"] });
     },
   });
 };

@@ -609,3 +609,8 @@ export const getUserConversation = async (userId: string) => {
   );
   return response.data;
 };
+
+export const getConversationPartners = async () => {
+  const response = await axiosWithCredentials.get(CONVERSATIONS_API);
+  return response.data;
+};

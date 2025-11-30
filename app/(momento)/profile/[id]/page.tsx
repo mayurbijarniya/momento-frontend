@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import Oops from "@/components/shared/Oops";
 import { useToast } from "@/components/ui/use-toast";
+import { MessageSquare } from "lucide-react";
 
 interface StabBlockProps {
   value: string | number;
@@ -228,24 +229,42 @@ const Profile = () => {
                 {!isOwnProfile && (
                   <div className="flex-center flex-col gap-3">
                     {isAuthenticated ? (
-                      <Button
-                        onClick={isFollowingUser ? handleUnfollow : handleFollow}
-                        disabled={isFollowing || isUnfollowing}
-                        className="h-12 bg-white text-black hover:bg-gray-300 font-semibold px-6"
-                      >
-                        {isFollowing || isUnfollowing
-                          ? "Loading..."
-                          : isFollowingUser
-                          ? "Unfollow"
-                          : "Follow"}
-                      </Button>
+                      <>
+                        <Button
+                          onClick={isFollowingUser ? handleUnfollow : handleFollow}
+                          disabled={isFollowing || isUnfollowing}
+                          className="h-12 bg-white text-black hover:bg-gray-300 font-semibold px-6"
+                        >
+                          {isFollowing || isUnfollowing
+                            ? "Loading..."
+                            : isFollowingUser
+                            ? "Unfollow"
+                            : "Follow"}
+                        </Button>
+                        <Button
+                          onClick={() => router.push(`/messages/${userId}`)}
+                          className="h-12 bg-white text-black hover:bg-gray-300 font-semibold px-6 flex items-center gap-2"
+                        >
+                          <MessageSquare className="w-4 h-4 text-black" />
+                          Message
+                        </Button>
+                      </>
                     ) : (
-                      <Button
-                        onClick={() => router.push("/sign-in")}
-                        className="h-12 bg-white text-black hover:bg-gray-300 font-semibold px-6"
-                      >
-                        Follow
-                      </Button>
+                      <>
+                        <Button
+                          onClick={() => router.push("/sign-in")}
+                          className="h-12 bg-white text-black hover:bg-gray-300 font-semibold px-6"
+                        >
+                          Follow
+                        </Button>
+                        <Button
+                          onClick={() => router.push("/sign-in")}
+                          className="h-12 bg-white text-black hover:bg-gray-300 font-semibold px-6 flex items-center gap-2"
+                        >
+                          <MessageSquare className="w-4 h-4 text-black" />
+                          Message
+                        </Button>
+                      </>
                     )}
                   </div>
                 )}

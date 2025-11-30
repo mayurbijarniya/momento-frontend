@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { useGetUsers } from "@/lib/react-query/queriesAndMutation";
+import { useGetUsers, useGetFollowing, useGetConversationPartners } from "@/lib/react-query/queriesAndMutation";
 import { useUserContext } from "@/context/AuthContext";
 
 interface MessagesListProps {
@@ -13,14 +13,34 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const { data: usersData } = useGetUsers();
   const { user: currentUser } = useUserContext();
+  const { data: followingData } = useGetFollowing(currentUser?.id || "");
+  const { data: conversationPartnersData } = useGetConversationPartners();
 
-  const users = usersData?.documents || [];
-  const filteredUsers = users.filter(
-    (user: any) =>
-      user.id !== currentUser.id &&
-      (user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.username.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  const allUsers = usersData?.documents || [];
+  const following = Array.isArray(followingData) ? followingData : [];
+  const conversationPartnerIds = conversationPartnersData?.partnerIds || [];
+
+  // Filter users to show only those we follow or have conversed with
+  const filteredUsers = useMemo(() => {
+    // Get IDs of users we follow
+    const followingIds = new Set(
+      following.map((user: any) => user._id || user.id)
+    );
+
+    // Combine: users we follow OR users we've had conversations with
+    const allowedUserIds = new Set([
+      ...Array.from(followingIds),
+      ...conversationPartnerIds,
+    ]);
+
+    return allUsers.filter(
+      (user: any) =>
+        user.id !== currentUser?.id &&
+        allowedUserIds.has(user.id) &&
+        (user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          user.username.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+  }, [allUsers, following, conversationPartnerIds, currentUser?.id, searchQuery]);
 
   return (
     <div className="flex flex-col h-full w-full bg-dark-2 border-r border-dark-4">
