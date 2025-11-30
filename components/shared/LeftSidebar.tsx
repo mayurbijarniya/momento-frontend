@@ -94,10 +94,8 @@ const LeftSidebar = () => {
                       }`}
                     />
                     {showBadge && (
-                      <span className={`absolute -top-2 -right-2 bg-red-600 text-[11px] font-extrabold rounded-full min-w-[22px] h-6 px-2 flex items-center justify-center shadow-xl border-2 z-20 ring-2 transition-colors ${
-                        isActive 
-                          ? "text-black border-black ring-black" 
-                          : "text-white border-white group-hover:text-black group-hover:border-black ring-dark-1 group-hover:ring-black"
+                      <span className={`absolute -top-2 -right-2 bg-blue-500 text-white text-[11px] font-extrabold rounded-full flex items-center justify-center shadow-xl z-20 ${
+                        unreadCount > 9 ? "min-w-[24px] h-6 px-1.5" : "w-5 h-5"
                       }`}>
                         {unreadCount > 9 ? "9+" : unreadCount}
                       </span>

@@ -33,10 +33,8 @@ const Bottombar = () => {
                 } h-7`}
               />
               {showBadge && (
-                <span className={`absolute -top-1.5 -right-1.5 bg-red-600 text-[10px] font-extrabold rounded-full min-w-[18px] h-5 px-1.5 flex items-center justify-center shadow-xl border-2 z-20 ring-1 transition-colors ${
-                  isActive 
-                    ? "text-black border-black ring-black" 
-                    : "text-white border-white ring-dark-1"
+                <span className={`absolute -top-1.5 -right-1.5 bg-blue-500 text-white text-[10px] font-extrabold rounded-full flex items-center justify-center shadow-xl z-20 ${
+                  unreadCount > 9 ? "min-w-[20px] h-5 px-1" : "w-4 h-4"
                 }`}>
                   {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
