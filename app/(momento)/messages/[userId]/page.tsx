@@ -66,10 +66,11 @@ const ChatPage = () => {
 
   // Mark messages as read when viewing a conversation
   useEffect(() => {
-    if (!isAI && selectedUserId && isAuthenticated) {
+    if (!isAI && selectedUserId && isAuthenticated && !conversationLoading && userMessages.length > 0) {
+      // Mark as read when conversation is loaded and has messages
       markAsRead(selectedUserId);
     }
-  }, [selectedUserId, isAI, isAuthenticated, markAsRead]);
+  }, [selectedUserId, isAI, isAuthenticated, conversationLoading, userMessages.length, markAsRead]);
 
   const handleBackToList = () => {
     setShowMessagesList(true);

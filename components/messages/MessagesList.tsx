@@ -1,7 +1,12 @@
 "use client";
 import { useState, useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { useGetUsers, useGetFollowing, useGetConversationPartners } from "@/lib/react-query/queriesAndMutation";
+import {
+  useGetUsers,
+  useGetFollowing,
+  useGetConversationPartners,
+  useMarkConversationAsRead,
+} from "@/lib/react-query/queriesAndMutation";
 import { useUserContext } from "@/context/AuthContext";
 import { formatMessageTime } from "@/lib/utils";
 
@@ -27,6 +32,7 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
   const { user: currentUser } = useUserContext();
   const { data: followingData } = useGetFollowing(currentUser?.id || "");
   const { data: conversationPartnersData } = useGetConversationPartners();
+  const { mutate: markAsRead } = useMarkConversationAsRead();
 
   const allUsers = usersData?.documents || [];
   const following = Array.isArray(followingData) ? followingData : [];
@@ -82,7 +88,14 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
           unreadCount: partnerData?.unreadCount || 0,
         };
       });
-  }, [allUsers, following, conversationPartners, partnerDataMap, currentUser?.id, searchQuery]);
+  }, [
+    allUsers,
+    following,
+    conversationPartners,
+    partnerDataMap,
+    currentUser?.id,
+    searchQuery,
+  ]);
 
   return (
     <div className="flex flex-col h-full w-full bg-dark-2 border-r border-dark-4">
@@ -133,7 +146,13 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1 mb-1">
               <span className="font-semibold text-light-1">Momento AI</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -143,21 +162,34 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
                 />
               </svg>
             </div>
-            <p className="text-sm text-light-3 truncate">Your AI assistant for social media</p>
+            <p className="text-sm text-light-3 truncate">
+              Your AI assistant for social media
+            </p>
           </div>
         </div>
 
         {filteredUsers.map((user: any) => {
           const userIsActive = isUserActive(user.lastLogin);
           const hasUnread = user.unreadCount > 0;
-          const isLastMessageFromUser = user.lastMessageSenderId === currentUser?.id;
-          
+          const isLastMessageFromUser =
+            user.lastMessageSenderId === currentUser?.id;
+
           return (
             <div
               key={user.id}
-              onClick={() => router.push(`/messages/${user.id}`)}
+              onClick={() => {
+                // Mark messages as read immediately when clicking on conversation
+                if (user.unreadCount > 0) {
+                  markAsRead(user.id);
+                }
+                router.push(`/messages/${user.id}`);
+              }}
               className={`flex items-center gap-3 p-4 cursor-pointer hover:bg-dark-3 transition-colors border-b border-dark-4 ${
-                selectedUserId === user.id ? "bg-dark-3" : hasUnread ? "bg-dark-4/50" : ""
+                selectedUserId === user.id
+                  ? "bg-dark-3"
+                  : hasUnread
+                  ? "bg-dark-4/50"
+                  : ""
               }`}
             >
               <div className="relative">
@@ -170,33 +202,46 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
                   <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-dark-2" />
                 )}
                 {hasUnread && (
-                  <span className={`absolute -top-1 -right-1 bg-blue-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg z-10 ${
-                    user.unreadCount > 9 ? "min-w-[20px] h-5 px-1" : "w-5 h-5"
-                  }`}>
+                  <span
+                    className={`absolute -top-1 -right-1 bg-blue-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg z-10 ${
+                      user.unreadCount > 9 ? "min-w-[20px] h-5 px-1" : "w-5 h-5"
+                    }`}
+                  >
                     {user.unreadCount > 9 ? "9+" : user.unreadCount}
                   </span>
                 )}
               </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between mb-1">
-                <span className={`${hasUnread ? "font-bold" : "font-semibold"} text-light-1`}>
-                  {user.name}
-                </span>
-                {user.lastMessageTime && (
-                  <span className={`text-xs ${hasUnread ? "text-light-1 font-medium" : "text-light-3"}`}>
-                    {formatMessageTime(user.lastMessageTime)}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-1">
+                  <span
+                    className={`${
+                      hasUnread ? "font-bold" : "font-semibold"
+                    } text-light-1`}
+                  >
+                    {user.name}
                   </span>
+                  {user.lastMessageTime && (
+                    <span
+                      className={`text-xs ${
+                        hasUnread ? "text-light-1 font-medium" : "text-light-3"
+                      }`}
+                    >
+                      {formatMessageTime(user.lastMessageTime)}
+                    </span>
+                  )}
+                </div>
+                {hasUnread && user.lastMessageContent ? (
+                  <p className="text-sm text-light-1 font-medium truncate">
+                    {isLastMessageFromUser ? "You: " : ""}
+                    {user.lastMessageContent}
+                  </p>
+                ) : (
+                  <p className="text-sm text-light-3 truncate">
+                    @{user.username}
+                  </p>
                 )}
               </div>
-              {hasUnread && user.lastMessageContent ? (
-                <p className="text-sm text-light-1 font-medium truncate">
-                  {isLastMessageFromUser ? "You: " : ""}{user.lastMessageContent}
-                </p>
-              ) : (
-                <p className="text-sm text-light-3 truncate">@{user.username}</p>
-              )}
             </div>
-          </div>
           );
         })}
       </div>

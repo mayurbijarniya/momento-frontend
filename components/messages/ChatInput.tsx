@@ -1,5 +1,6 @@
 "use client";
-import { useState, KeyboardEvent } from "react";
+import { useState, KeyboardEvent, useRef, useEffect } from "react";
+import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -8,11 +9,19 @@ interface ChatInputProps {
 
 const ChatInput = ({ onSend, isLoading }: ChatInputProps) => {
   const [message, setMessage] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
 
   const handleSend = () => {
     if (message.trim() && !isLoading) {
       onSend(message.trim());
       setMessage("");
+      setShowEmojiPicker(false); // Close emoji picker when sending
+      // Refocus the input after sending
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
     }
   };
 
@@ -23,10 +32,87 @@ const ChatInput = ({ onSend, isLoading }: ChatInputProps) => {
     }
   };
 
+  // Auto-focus input when component mounts or when not loading
+  useEffect(() => {
+    if (!isLoading) {
+      inputRef.current?.focus();
+    }
+  }, [isLoading]);
+
+  // Close emoji picker when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        emojiPickerRef.current &&
+        !emojiPickerRef.current.contains(event.target as Node) &&
+        !(event.target as HTMLElement).closest('[data-emoji-button]')
+      ) {
+        setShowEmojiPicker(false);
+      }
+    };
+
+    if (showEmojiPicker) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showEmojiPicker]);
+
+  const handleEmojiClick = (emojiData: EmojiClickData) => {
+    setMessage((prev) => prev + emojiData.emoji);
+    inputRef.current?.focus();
+  };
+
+  const toggleEmojiPicker = () => {
+    setShowEmojiPicker((prev) => !prev);
+  };
+
   return (
-    <div className="p-4 border-t border-dark-4 bg-dark-2">
+    <div className="p-4 border-t border-dark-4 bg-dark-2 relative">
+      {showEmojiPicker && (
+        <div
+          ref={emojiPickerRef}
+          className="absolute bottom-full right-4 mb-2 z-50"
+        >
+          <EmojiPicker
+            onEmojiClick={handleEmojiClick}
+            theme="dark"
+            width={350}
+            height={400}
+            previewConfig={{ showPreview: false }}
+            skinTonesDisabled
+          />
+        </div>
+      )}
       <div className="flex items-center gap-3 bg-dark-4 rounded-full px-4 py-2">
+        <button
+          data-emoji-button
+          onClick={toggleEmojiPicker}
+          disabled={isLoading}
+          className={`p-2 rounded-full transition-colors ${
+            showEmojiPicker
+              ? "text-[#0095F6] bg-dark-3"
+              : "text-light-3 hover:text-light-1 hover:bg-dark-3"
+          } disabled:opacity-50 disabled:cursor-not-allowed`}
+          type="button"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-3.5-9c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm7 0c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"
+              fill="currentColor"
+            />
+          </svg>
+        </button>
         <input
+          ref={inputRef}
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
