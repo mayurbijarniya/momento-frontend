@@ -48,7 +48,6 @@ const formatLastLogin = (lastLogin: string | Date | null | undefined): string =>
     const weeks = Math.floor(diffInDays / 7);
     return `${weeks} ${weeks === 1 ? "week" : "weeks"} ago`;
   } else {
-    // Format as date for older logins
     return loginDate.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
@@ -69,7 +68,7 @@ const ChatHeader = ({ userName, userImage, isAI = false, onBack, userId, lastLog
           className="w-10 h-10 rounded-full object-cover" 
         />
         {(isAI || isActive) && (
-          <span className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-dark-2" />
+          <span className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-dark-1" />
         )}
       </div>
       <div>
@@ -88,14 +87,14 @@ const ChatHeader = ({ userName, userImage, isAI = false, onBack, userId, lastLog
           )}
         </div>
         <span className="text-xs text-light-3">
-          {isAI ? "Online" : formatLastLogin(lastLogin)}
+          {isAI ? "Online" : (isActive ? "Online" : formatLastLogin(lastLogin))}
         </span>
       </div>
     </>
   );
 
   return (
-    <div className="flex items-center justify-between p-4 border-b border-dark-4 bg-dark-2">
+    <div className="flex items-center justify-between p-4 border-b border-dark-4 bg-dark-1">
       <div className="flex items-center gap-3">
         {onBack && (
           <button onClick={onBack} className="md:hidden p-2 hover:bg-dark-4 rounded-full">

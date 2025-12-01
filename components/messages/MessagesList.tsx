@@ -38,7 +38,6 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
   const following = Array.isArray(followingData) ? followingData : [];
   const conversationPartners = conversationPartnersData?.partners || [];
 
-  // Create maps for partner data
   const partnerDataMap = useMemo(() => {
     const map = new Map();
     conversationPartners.forEach((partner: any) => {
@@ -52,32 +51,13 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
     return map;
   }, [conversationPartners]);
 
-  // Filter users to show only those we follow or have conversed with
   const filteredUsers = useMemo(() => {
-    // Get IDs of users we follow
     const followingIds = new Set(
       following.map((user: any) => user._id || user.id)
     );
 
-    // Get IDs from conversation partners
-    const conversationPartnerIds = new Set(
-      conversationPartners.map((partner: any) => partner.partnerId)
-    );
-
-    // Combine: users we follow OR users we've had conversations with
-    const allowedUserIds = new Set([
-      ...Array.from(followingIds),
-      ...Array.from(conversationPartnerIds),
-    ]);
-
-    return allUsers
-      .filter(
-        (user: any) =>
-          user.id !== currentUser?.id &&
-          allowedUserIds.has(user.id) &&
-          (user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.username.toLowerCase().includes(searchQuery.toLowerCase()))
-      )
+    const usersWithConversations = allUsers
+      .filter((user: any) => user.id !== currentUser?.id)
       .map((user: any) => {
         const partnerData = partnerDataMap.get(user.id);
         return {
@@ -87,7 +67,57 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
           lastMessageSenderId: partnerData?.lastMessageSenderId,
           unreadCount: partnerData?.unreadCount || 0,
         };
-      });
+      })
+      .filter((user: any) => user.lastMessageTime);
+
+    if (searchQuery.trim()) {
+      const searchLower = searchQuery.toLowerCase();
+      const searchedFollowing = allUsers
+        .filter((user: any) => {
+          return (
+            user.id !== currentUser?.id &&
+            followingIds.has(user.id) &&
+            !partnerDataMap.has(user.id) &&
+            (user.name.toLowerCase().includes(searchLower) ||
+              user.username.toLowerCase().includes(searchLower))
+          );
+        })
+        .map((user: any) => ({
+          ...user,
+          lastMessageTime: null,
+          lastMessageContent: null,
+          lastMessageSenderId: null,
+          unreadCount: 0,
+        }));
+
+      const searchedConversations = usersWithConversations.filter(
+        (user: any) =>
+          user.name.toLowerCase().includes(searchLower) ||
+          user.username.toLowerCase().includes(searchLower)
+      );
+
+      return [...searchedConversations, ...searchedFollowing].sort(
+        (a: any, b: any) => {
+          if (a.lastMessageTime && !b.lastMessageTime) return -1;
+          if (!a.lastMessageTime && b.lastMessageTime) return 1;
+          if (!a.lastMessageTime && !b.lastMessageTime) return 0;
+          return (
+            new Date(b.lastMessageTime).getTime() -
+            new Date(a.lastMessageTime).getTime()
+          );
+        }
+      );
+    }
+
+    return usersWithConversations.sort((a: any, b: any) => {
+      if (!a.lastMessageTime && !b.lastMessageTime) return 0;
+      if (!a.lastMessageTime) return 1;
+      if (!b.lastMessageTime) return -1;
+      return (
+        new Date(b.lastMessageTime).getTime() -
+        new Date(a.lastMessageTime).getTime()
+      );
+    });
   }, [
     allUsers,
     following,
@@ -98,7 +128,7 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
   ]);
 
   return (
-    <div className="flex flex-col h-full w-full bg-dark-2 border-r border-dark-4">
+    <div className="flex flex-col h-full w-full bg-dark-1 border-r border-dark-4">
       <div className="p-4 border-b border-dark-4">
         <h2 className="text-xl font-bold text-light-1 mb-4">Messages</h2>
         <div className="relative">
@@ -107,12 +137,12 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
             placeholder="Search users..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-dark-4 text-light-1 placeholder-light-3 rounded-lg px-4 py-2 pl-10 outline-none focus:ring-2 focus:ring-primary-500"
+            className="w-full bg-dark-4 text-light-1 placeholder-light-3 rounded-lg px-4 py-2.5 pl-10 text-sm outline-none focus:ring-2 focus:ring-primary-500 border border-dark-3"
           />
           <svg
-            className="absolute left-3 top-2.5 text-light-3"
-            width="20"
-            height="20"
+            className="absolute left-3 top-3 text-light-3"
+            width="18"
+            height="18"
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -131,8 +161,8 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
       <div className="flex-1 overflow-y-auto custom-scrollbar">
         <div
           onClick={() => router.push("/messages/ai")}
-          className={`flex items-center gap-3 p-4 cursor-pointer hover:bg-dark-3 transition-colors border-b border-dark-4 ${
-            selectedUserId === null ? "bg-dark-3" : ""
+          className={`flex items-center gap-3 p-4 cursor-pointer hover:bg-dark-2 transition-colors border-b border-dark-4 ${
+            selectedUserId === null ? "bg-dark-2" : ""
           }`}
         >
           <div className="relative">
@@ -141,7 +171,7 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
               alt="Momento AI"
               className="w-14 h-14 rounded-full"
             />
-            <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-dark-2" />
+            <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-dark-1" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1 mb-1">
@@ -184,11 +214,11 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
                 }
                 router.push(`/messages/${user.id}`);
               }}
-              className={`flex items-center gap-3 p-4 cursor-pointer hover:bg-dark-3 transition-colors border-b border-dark-4 ${
+              className={`flex items-center gap-3 p-4 cursor-pointer hover:bg-dark-2 transition-colors border-b border-dark-4 ${
                 selectedUserId === user.id
-                  ? "bg-dark-3"
+                  ? "bg-dark-2"
                   : hasUnread
-                  ? "bg-dark-4/50"
+                  ? "bg-dark-2/50"
                   : ""
               }`}
             >
@@ -196,10 +226,10 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
                 <img
                   src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
                   alt={user.name}
-                  className="w-14 h-14 rounded-full object-cover"
+                  className="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover flex-shrink-0"
                 />
                 {userIsActive && (
-                  <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-dark-2" />
+                  <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-dark-1" />
                 )}
                 {hasUnread && (
                   <span
@@ -224,14 +254,18 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
                     <span
                       className={`text-xs ${
                         hasUnread ? "text-light-1 font-medium" : "text-light-3"
-                      }`}
+                      } whitespace-nowrap ml-2`}
                     >
                       {formatMessageTime(user.lastMessageTime)}
                     </span>
                   )}
                 </div>
-                {hasUnread && user.lastMessageContent ? (
-                  <p className="text-sm text-light-1 font-medium truncate">
+                {user.lastMessageContent ? (
+                  <p
+                    className={`text-sm truncate ${
+                      hasUnread ? "text-light-1 font-medium" : "text-light-3"
+                    }`}
+                  >
                     {isLastMessageFromUser ? "You: " : ""}
                     {user.lastMessageContent}
                   </p>

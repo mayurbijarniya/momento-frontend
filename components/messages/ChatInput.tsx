@@ -70,34 +70,37 @@ const ChatInput = ({ onSend, isLoading }: ChatInputProps) => {
   };
 
   return (
-    <div className="p-4 border-t border-dark-4 bg-dark-2 relative">
-      {showEmojiPicker && (
-        <div
-          ref={emojiPickerRef}
-          className="absolute bottom-full right-4 mb-2 z-50"
-        >
-          <EmojiPicker
-            onEmojiClick={handleEmojiClick}
-            theme="dark"
-            width={350}
-            height={400}
-            previewConfig={{ showPreview: false }}
-            skinTonesDisabled
-          />
-        </div>
-      )}
-      <div className="flex items-center gap-3 bg-dark-4 rounded-full px-4 py-2">
-        <button
-          data-emoji-button
-          onClick={toggleEmojiPicker}
-          disabled={isLoading}
-          className={`p-2 rounded-full transition-colors ${
-            showEmojiPicker
-              ? "text-[#0095F6] bg-dark-3"
-              : "text-light-3 hover:text-light-1 hover:bg-dark-3"
-          } disabled:opacity-50 disabled:cursor-not-allowed`}
-          type="button"
-        >
+    <div className="p-4 border-t border-dark-4 bg-dark-1 relative">
+      <div className="flex items-center gap-3 bg-dark-4 rounded-full px-4 py-2.5">
+        <div className="relative">
+          {showEmojiPicker && (
+            <div
+              ref={emojiPickerRef}
+              className="absolute bottom-full left-0 mb-2 z-50"
+            >
+              <div className="w-[280px] sm:w-[320px] md:w-[350px]">
+                <EmojiPicker
+                  onEmojiClick={handleEmojiClick}
+                  theme="dark"
+                  width="100%"
+                  height={350}
+                  previewConfig={{ showPreview: false }}
+                  skinTonesDisabled
+                />
+              </div>
+            </div>
+          )}
+          <button
+            data-emoji-button
+            onClick={toggleEmojiPicker}
+            disabled={isLoading}
+            className={`p-2 rounded-full transition-colors ${
+              showEmojiPicker
+                ? "text-[#0095F6] bg-dark-3"
+                : "text-light-3 hover:text-light-1 hover:bg-dark-3"
+            } disabled:opacity-50 disabled:cursor-not-allowed`}
+            type="button"
+          >
           <svg
             width="20"
             height="20"
@@ -111,6 +114,7 @@ const ChatInput = ({ onSend, isLoading }: ChatInputProps) => {
             />
           </svg>
         </button>
+        </div>
         <input
           ref={inputRef}
           type="text"
@@ -119,7 +123,7 @@ const ChatInput = ({ onSend, isLoading }: ChatInputProps) => {
           onKeyDown={handleKeyDown}
           placeholder="Message..."
           disabled={isLoading}
-          className="flex-1 bg-transparent text-light-1 placeholder-light-3 outline-none text-sm"
+          className="flex-1 bg-transparent text-light-1 placeholder-light-3 outline-none text-sm sm:text-base"
         />
         <button
           onClick={handleSend}
