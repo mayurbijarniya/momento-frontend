@@ -1,4 +1,15 @@
-<svg width="284" height="567" viewBox="0 0 284 567" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="284" height="567" fill="white"/>
-<text x="142" y="560" font-family="Impact, Trebuchet MS, sans-serif" font-size="280" font-weight="900" letter-spacing="-8" fill="#000000" text-anchor="middle">M</text>
+<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="lgIconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0095F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0066CC;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Icon: Rounded square with gradient -->
+  <!-- Outer rounded square with gradient -->
+  <rect x="2" y="2" width="46" height="46" rx="10" fill="url(#lgIconGradient)"/>
+  <!-- Inner white outline square -->
+  <rect x="10" y="10" width="30" height="30" rx="6" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.4"/>
+  <!-- Center white circle -->
+  <circle cx="25" cy="25" r="7" fill="#FFFFFF"/>
 </svg>
