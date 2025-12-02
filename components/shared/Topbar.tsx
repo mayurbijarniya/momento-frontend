@@ -10,11 +10,13 @@ const Topbar = () => {
       <div className="flex-between py-4 px-5">
         <Link href="/" className="flex gap-3 items-center">
           <img
-            src="/assets/images/logo.svg"
-            alt="Logo"
-            width={130}
-            height={325}
+            src="/assets/images/lg-logo.svg"
+            alt="Momento"
+            className="w-12 h-12"
           />
+          <h1 className="text-[28px] font-bold text-white tracking-tight">
+            Momento
+          </h1>
         </Link>
 
         <div className="flex items-center gap-4">

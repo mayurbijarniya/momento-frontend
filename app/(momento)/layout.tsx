@@ -19,14 +19,15 @@ export default function MomentoLayout({
   }, [pathname]);
 
   return (
-    <div className={`${isMessagesPage ? "w-full" : "md:w-[90vw] xl:w-[70vw] 2xl:w-[58vw]"} max-md:w-full mx-auto md:flex`}>
-      <Topbar />
+    <div className="flex min-h-screen w-full">
       <LeftSidebar />
-      <section className="flex flex-1 md:h-screen min-h-[100vh]">
-        {children}
-      </section>
-      <Bottombar />
+      <div className="flex-1 lg:ml-[245px] transition-all w-full">
+        <Topbar />
+        <section className="flex flex-1 md:h-screen min-h-[100vh] w-full">
+          {children}
+        </section>
+        <Bottombar />
+      </div>
     </div>
   );
 }
-

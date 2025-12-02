@@ -71,11 +71,13 @@ const PostDetails = () => {
         </div>
       ) : (
         <div className="post_details-card ">
-          <img
-            src={(post as any)?.imageUrl}
-            alt="creator"
-            className="post_details-img object-contain size-full"
-          />
+          <div className="post_details-img-wrapper">
+            <img
+              src={(post as any)?.imageUrl}
+              alt="creator"
+              className="post_details-img"
+            />
+          </div>
           <div className="post_details-info">
             <div className="flex-between w-full ">
               <Link

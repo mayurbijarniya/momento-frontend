@@ -55,7 +55,6 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      console.log("Redirecting to sign-in from chat page");
       router.push("/sign-in");
     }
   }, [authLoading, isAuthenticated, router]);
@@ -64,10 +63,8 @@ const ChatPage = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [aiMessages, userMessages, isSending, isSendingUser]);
 
-  // Mark messages as read when viewing a conversation
   useEffect(() => {
     if (!isAI && selectedUserId && isAuthenticated && !conversationLoading && userMessages.length > 0) {
-      // Mark as read when conversation is loaded and has messages
       markAsRead(selectedUserId);
     }
   }, [selectedUserId, isAI, isAuthenticated, conversationLoading, userMessages.length, markAsRead]);
@@ -101,13 +98,13 @@ const ChatPage = () => {
   }
 
   return (
-    <div className="flex flex-1">
-      <div className="flex w-full h-screen max-h-screen bg-dark-1">
-        <div className={`${showMessagesList ? "flex" : "hidden md:flex"} w-full md:w-80 lg:w-96 flex-shrink-0`}>
+    <div className="flex flex-1 w-full bg-dark-1">
+      <div className="flex w-full h-screen max-h-screen">
+        <div className={`${showMessagesList ? "flex" : "hidden md:flex"} w-full sm:w-80 md:w-80 lg:w-96 flex-shrink-0`}>
           <MessagesList selectedUserId={selectedUserId} />
         </div>
 
-        <div className={`${showMessagesList ? "hidden md:flex" : "flex"} flex-1 flex-col h-screen max-h-screen`}>
+        <div className={`${showMessagesList ? "hidden md:flex" : "flex"} flex-1 flex-col h-screen max-h-screen w-full bg-dark-1`}>
           <div className="flex-shrink-0">
             <ChatHeader
               userName={selectedUserName}
@@ -119,7 +116,7 @@ const ChatPage = () => {
             />
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar bg-dark-1">
             {(isAI ? historyLoading : conversationLoading) ? (
               <div className="flex-center w-full h-full">
                 <Loader />
@@ -133,21 +130,27 @@ const ChatPage = () => {
                     userId: message.userId || message.senderId,
                     role: isUserMessage ? "user" : "assistant",
                     content: message.content,
+                    imageUrl: message.imageUrl || null,
                     feedback: message.feedback,
                     createdAt: message.createdAt,
                   };
-                  // For non-user messages, determine the sender image
-                  const senderImage = isUserMessage 
+                  // For messages from other users (left side), use their image
+                  // For user's own messages (right side), use current user's image
+                  const otherUserImage = isUserMessage 
                     ? undefined 
                     : isAI 
-                      ? undefined // Will use AI avatar
+                      ? undefined
                       : userData?.imageUrl || "/assets/icons/profile-placeholder.svg";
+                  const currentUserImage = isUserMessage 
+                    ? user?.imageUrl || "/assets/icons/profile-placeholder.svg"
+                    : undefined;
                   return (
                     <MessageBubble 
                       key={message._id} 
                       message={messageForBubble}
                       isAI={isAI && !isUserMessage}
-                      senderImage={senderImage}
+                      senderImage={otherUserImage}
+                      currentUserImage={currentUserImage}
                     />
                   );
                 })}

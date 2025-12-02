@@ -11,10 +11,8 @@ const MessagesPage = () => {
   useEffect(() => {
     if (!authLoading) {
       if (!isAuthenticated) {
-        console.log("Redirecting to sign-in from /messages");
         router.push("/sign-in");
       } else {
-        console.log("Redirecting to /messages/ai from /messages");
         router.push("/messages/ai");
       }
     }

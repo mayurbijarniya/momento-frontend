@@ -3,7 +3,10 @@
 import Loader from "@/components/shared/Loader";
 import { Button } from "@/components/ui/button";
 import { useUserContext } from "@/context/AuthContext";
-import { useGetExternalDetails, useGetReviewsByExternalContent } from "@/lib/react-query/queriesAndMutation";
+import {
+  useGetExternalDetails,
+  useGetReviewsByExternalContent,
+} from "@/lib/react-query/queriesAndMutation";
 import ReviewList from "@/components/shared/ReviewList";
 import { timeAgo } from "@/lib/utils";
 import { useParams, useRouter } from "next/navigation";
@@ -15,7 +18,8 @@ const ExternalDetails = () => {
   const photoId = Array.isArray(id) ? id[0] : id || "";
   const { data: photo, isPending } = useGetExternalDetails(photoId);
   const { isAuthenticated } = useUserContext();
-  const { data: reviewsData, isLoading: isLoadingReviews } = useGetReviewsByExternalContent(photoId);
+  const { data: reviewsData, isLoading: isLoadingReviews } =
+    useGetReviewsByExternalContent(photoId);
   const reviews = reviewsData?.documents || [];
 
   if (isPending) {
@@ -32,7 +36,9 @@ const ExternalDetails = () => {
         <div className="post_details-card">
           <div className="post_details-info">
             <h2 className="h3-bold md:h2-bold text-light-1">Photo not found</h2>
-            <p className="text-light-3">The photo you're looking for doesn't exist.</p>
+            <p className="text-light-3">
+              The photo you're looking for doesn't exist.
+            </p>
             <Button
               onClick={() => router.push("/explore")}
               className="bg-white text-black hover:bg-gray-300 mt-4"
@@ -58,11 +64,11 @@ const ExternalDetails = () => {
         <span>Back</span>
       </Button>
       <div className="post_details-card">
-        <div className="relative">
+        <div className="post_details-img-wrapper relative">
           <img
             src={photoData?.imageUrl || photoData?.fullUrl}
             alt={photoData?.description || "Photo"}
-            className="post_details-img object-contain"
+            className="post_details-img"
           />
           {photoData?.links?.html && (
             <a
@@ -146,25 +152,31 @@ const ExternalDetails = () => {
               )}
             </div>
 
-            {photoData?.tags && Array.isArray(photoData.tags) && photoData.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
-                {photoData.tags.map((tag: any, index: number) => (
-                  <span
-                    key={index}
-                    className="text-light-3 small-regular bg-dark-4 px-3 py-1 rounded-full"
-                  >
-                    #{tag.title || tag}
-                  </span>
-                ))}
-              </div>
-            )}
+            {photoData?.tags &&
+              Array.isArray(photoData.tags) &&
+              photoData.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {photoData.tags.map((tag: any, index: number) => (
+                    <span
+                      key={index}
+                      className="text-light-3 small-regular bg-dark-4 px-3 py-1 rounded-full"
+                    >
+                      #{tag.title || tag}
+                    </span>
+                  ))}
+                </div>
+              )}
 
             {photoData?.exif && Object.keys(photoData.exif).length > 0 && (
               <div className="mt-4 p-4 bg-dark-4 rounded-lg">
-                <h3 className="small-semibold text-light-1 mb-2">Photo Details</h3>
+                <h3 className="small-semibold text-light-1 mb-2">
+                  Photo Details
+                </h3>
                 <div className="flex flex-col gap-1 text-slate-400 small-regular">
                   {photoData.exif.make && (
-                    <p>Camera: {photoData.exif.make} {photoData.exif.model}</p>
+                    <p>
+                      Camera: {photoData.exif.make} {photoData.exif.model}
+                    </p>
                   )}
                   {photoData.exif.exposure_time && (
                     <p>Exposure: {photoData.exif.exposure_time}s</p>
@@ -195,4 +207,3 @@ const ExternalDetails = () => {
 };
 
 export default ExternalDetails;
-
