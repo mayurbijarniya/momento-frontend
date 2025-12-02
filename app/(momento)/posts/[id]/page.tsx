@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Loader from "@/components/shared/Loader";
 import PostStats from "@/components/shared/PostStats";
 import { Button } from "@/components/ui/button";
@@ -10,12 +11,14 @@ import {
   useGetReviewsByPost,
 } from "@/lib/react-query/queriesAndMutation";
 import ReviewList from "@/components/shared/ReviewList";
+import DeletePostDialog from "@/components/shared/DeletePostDialog";
 import { timeAgo } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 
 const PostDetails = () => {
   const router = useRouter();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const { id } = useParams();
   const postId = Array.isArray(id) ? id[0] : id || "";
@@ -26,16 +29,26 @@ const PostDetails = () => {
 
   const { user, isAuthenticated } = useUserContext();
 
-  const { mutate: deletePost } = useDeletePost();
+  const { mutate: deletePost, isPending: isDeleting } = useDeletePost();
 
-  const handleDeletePost = () => {
+  const handleDeleteClick = () => {
     if (!isAuthenticated) {
       router.push("/sign-in");
       return;
     }
+    setShowDeleteDialog(true);
+  };
+
+  const handleConfirmDelete = () => {
     if (postId && post && (post as any).imageId) {
-      deletePost({ postId: postId, imageId: (post as any).imageId });
-      router.push("/");
+      deletePost(
+        { postId: postId, imageId: (post as any).imageId },
+        {
+          onSuccess: () => {
+            router.push("/");
+          },
+        }
+      );
     }
   };
 
@@ -113,16 +126,11 @@ const PostDetails = () => {
                 </div>
               </Link>
 
-              {isAuthenticated && (
-                <div className="flex-center ">
+              {isAuthenticated && (user.id === ((post as any)?.creator?.$id || (post as any)?.creator?.id)) && (
+                <div className="flex-center gap-3">
                   <Link
                     href={`/update-post/${
                       (post as any)?.$id || (post as any)?.id
-                    }`}
-                    className={`${
-                      user.id !==
-                        ((post as any)?.creator?.$id ||
-                          (post as any)?.creator?.id) && "hidden"
                     }`}
                   >
                     <img
@@ -133,13 +141,9 @@ const PostDetails = () => {
                     />
                   </Link>
                   <Button
-                    onClick={handleDeletePost}
+                    onClick={handleDeleteClick}
                     variant={`ghost`}
-                    className={`ghost_details-delete_btn ${
-                      user.id !==
-                        ((post as any)?.creator.$id ||
-                          (post as any)?.creator.id) && "hidden"
-                    }`}
+                    className="ghost_details-delete_btn"
                   >
                     <img
                       src="/assets/icons/delete.svg"
@@ -178,6 +182,12 @@ const PostDetails = () => {
           </div>
         </div>
       )}
+      <DeletePostDialog
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        onConfirm={handleConfirmDelete}
+        isLoading={isDeleting}
+      />
     </div>
   );
 };

@@ -36,6 +36,31 @@ const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [showMessagesList, setShowMessagesList] = useState(false);
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const handleResize = () => {
+        if (window.innerWidth >= 768) {
+          setShowMessagesList(false);
+        }
+      };
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (!showMessagesList && window.innerWidth < 768) {
+        document.body.classList.add('hide-bottombar');
+      } else {
+        document.body.classList.remove('hide-bottombar');
+      }
+      return () => {
+        document.body.classList.remove('hide-bottombar');
+      };
+    }
+  }, [showMessagesList]);
   const isAI = userId === "ai";
   const selectedUserId = isAI ? null : userId;
 
@@ -105,14 +130,14 @@ const ChatPage = () => {
   }
 
   return (
-    <div className="flex flex-1 w-full bg-dark-1">
-      <div className="flex w-full h-screen max-h-screen">
-        <div className={`${showMessagesList ? "flex" : "hidden md:flex"} w-full sm:w-80 md:w-80 lg:w-96 flex-shrink-0`}>
-          <MessagesList selectedUserId={selectedUserId} />
-        </div>
+    <div className="flex flex-1 w-full bg-dark-1 md:relative">
+        <div className="flex w-full h-screen md:h-[calc(100vh-60px)] max-h-screen">
+          <div className={`${showMessagesList ? "flex" : "hidden md:flex"} w-full md:w-96 lg:w-96 flex-shrink-0`}>
+            <MessagesList selectedUserId={selectedUserId} />
+          </div>
 
-        <div className={`${showMessagesList ? "hidden md:flex" : "flex"} flex-1 flex-col h-screen max-h-screen w-full bg-dark-1`}>
-          <div className="flex-shrink-0">
+          <div className={`${showMessagesList ? "hidden md:flex" : "flex"} flex-1 flex-col h-screen max-h-screen w-full bg-dark-1`}>
+          <div className="flex-shrink-0 sticky top-0 z-40 bg-dark-1">
             <ChatHeader
               userName={selectedUserName}
               userImage={selectedUserImage}
@@ -179,7 +204,7 @@ const ChatPage = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 sticky bottom-0 z-40 bg-dark-1">
             <ChatInput onSend={handleSend} isLoading={isAI ? isSending : isSendingUser} />
           </div>
         </div>

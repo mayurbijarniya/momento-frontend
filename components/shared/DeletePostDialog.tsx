@@ -2,27 +2,27 @@
 
 import { Button } from "../ui/button";
 
-type DeleteReviewDialogProps = {
+type DeletePostDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
   isLoading?: boolean;
 };
 
-const DeleteReviewDialog = ({
+const DeletePostDialog = ({
   isOpen,
   onClose,
   onConfirm,
   isLoading = false,
-}: DeleteReviewDialogProps) => {
+}: DeletePostDialogProps) => {
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="bg-dark-2 rounded-lg p-6 w-full max-w-md mx-4 border border-dark-4">
-        <h2 className="text-xl font-bold text-white mb-2">Delete Review</h2>
+        <h2 className="text-xl font-bold text-white mb-2">Delete Post</h2>
         <p className="text-light-2 mb-4">
-          Are you sure you want to delete this review? This action cannot be undone.
+          Are you sure you want to delete this post? This action cannot be undone.
         </p>
         <div className="flex gap-3 justify-end">
           <Button
@@ -46,5 +46,5 @@ const DeleteReviewDialog = ({
   );
 };
 
-export default DeleteReviewDialog;
+export default DeletePostDialog;
 

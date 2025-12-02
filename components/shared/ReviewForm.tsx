@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { useUserContext } from "@/context/AuthContext";
@@ -27,6 +27,16 @@ const ReviewForm = ({
   const { toast } = useToast();
   const [review, setReview] = useState(editingReview?.review || "");
   const [rating, setRating] = useState(editingReview?.rating || 0);
+
+  useEffect(() => {
+    if (editingReview) {
+      setReview(editingReview.review || "");
+      setRating(editingReview.rating || 0);
+    } else {
+      setReview("");
+      setRating(0);
+    }
+  }, [editingReview]);
 
   const { mutate: createReview, isPending: isCreating } = useCreateReview();
   const { mutate: updateReview, isPending: isUpdating } = useUpdateReview();

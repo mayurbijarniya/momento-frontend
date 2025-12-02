@@ -29,7 +29,7 @@ const PostCard = ({ post }: PostCardProps) => {
 
   return (
     <div className="post-card">
-      <div className="flex-between mb-5 border-b pb-5 border-dark-4">
+      <div className="flex-between mb-3 sm:mb-4 md:mb-5 border-b pb-3 sm:pb-4 md:pb-5 border-dark-4">
         <div className="flex items-center gap-3">
           <Link href={`/profile/${post.creator.$id || post.creator.id}`}>
             <img
@@ -38,17 +38,17 @@ const PostCard = ({ post }: PostCardProps) => {
                 "/assets/icons/profile-placeholder.svg"
               }
               alt="creator"
-              className="rounded-full w-12 h-12 object-cover"
+              className="rounded-full w-10 h-10 sm:w-12 sm:h-12 object-cover"
             />
           </Link>
 
           <div className="flex flex-col">
-            <p className="base-medium lg:body-bold text-light-1">
+            <p className="small-semibold sm:base-medium lg:body-bold text-light-1">
               {post.creator.name}
             </p>
             <div className="flex-center gap-2 text-slate-500">
-              <p className="subtle-semibold lg:small-regular">{timestamp}</p>-
-              <p className="subtle-semibold lg:small-regular">
+              <p className="tiny-medium sm:subtle-semibold lg:small-regular">{timestamp}</p>-
+              <p className="tiny-medium sm:subtle-semibold lg:small-regular">
                 {post.location}
               </p>
             </div>
@@ -73,7 +73,7 @@ const PostCard = ({ post }: PostCardProps) => {
       </div>
 
       <Link href={`/posts/${post.$id || post.id}`}>
-        <div className="relative w-full bg-dark-4 rounded-md overflow-hidden aspect-square">
+        <div className="relative w-full bg-dark-4 rounded-md overflow-hidden aspect-square max-h-[280px] sm:max-h-[280px] md:max-h-[360px] lg:max-h-[380px]">
           {loading && (
             <div className="absolute size-full inset-0 flex justify-center items-center">
               <Loader />
@@ -90,7 +90,7 @@ const PostCard = ({ post }: PostCardProps) => {
           />
         </div>
 
-        <div className="small-medium lg:base-medium py-3 border-t border-dark-4 mt-5">
+        <div className="small-medium lg:base-medium py-2 sm:py-2.5 md:py-3 border-t border-dark-4 mt-3 sm:mt-4 md:mt-5">
           <p>
             <span className="body-bold">{post.creator.username}</span> :{" "}
             <span className="font-extralight">{post.caption}</span>

@@ -57,14 +57,14 @@ const LeftSidebar = () => {
   }, [isSuccess, router, signOut]);
 
   return (
-    <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-[300px] flex-col bg-dark-3 border-r border-dark-4 z-50">
+    <aside className="hidden md:flex fixed left-0 top-0 h-screen w-[80px] lg:w-[300px] flex-col bg-dark-3 border-r border-dark-4 z-50 md:items-center lg:items-stretch">
       {/* Logo Section */}
-      <div className="px-6 pt-6 pb-4">
-        <Link href="/" className="flex items-center gap-3">
+      <div className="px-0 lg:px-6 pt-6 pb-4">
+        <Link href="/" className="flex items-center lg:gap-3 justify-center lg:justify-start">
           <div className="p-2 border border-white rounded-lg flex-shrink-0">
-            <Camera className="h-8 w-8 text-white" />
+            <Camera className="h-7 w-7 lg:h-8 lg:w-8 text-white" />
           </div>
-          <div className="flex flex-col justify-center">
+          <div className="hidden lg:flex flex-col justify-center">
             <span className="text-3xl font-bold text-white tracking-tight leading-tight">
               Momento
             </span>
@@ -77,19 +77,19 @@ const LeftSidebar = () => {
 
       {/* User Profile Section */}
       {isAuthenticated && (
-        <div className="px-6 py-4 border-b border-dark-4">
+        <div className="px-0 lg:px-6 py-4 border-b border-dark-4">
           <Link
             href={`/profile/${user.id}`}
-            className="flex items-center gap-3"
+            className="flex items-center lg:gap-3 justify-center lg:justify-start"
           >
-            <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
+            <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full overflow-hidden flex-shrink-0">
               <img
                 src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
                 alt={user.name}
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="hidden lg:flex flex-1 min-w-0 flex-col">
               <p className="text-sm font-semibold text-white truncate">
                 {user.name}
               </p>
@@ -100,7 +100,7 @@ const LeftSidebar = () => {
       )}
 
       {/* Navigation Links */}
-      <nav className="flex-1 px-3 py-4">
+      <nav className="flex-1 px-0 lg:px-3 py-4">
         <ul className="space-y-1">
           {sidebarLinks.map((link: INavLink) => {
             const isActive =
@@ -117,10 +117,10 @@ const LeftSidebar = () => {
               <li key={link.label}>
                 <Link
                   href={link.route}
-                  className={`flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-200 relative ${
+                  className={`flex items-center justify-center lg:justify-start gap-0 lg:gap-4 px-0 lg:px-4 py-3 transition-all duration-200 relative ${
                     isActive
-                      ? "bg-white text-black font-semibold"
-                      : "text-white hover:bg-dark-4"
+                      ? "md:w-14 md:h-14 md:mx-auto md:rounded-xl md:flex md:items-center md:justify-center lg:w-auto lg:h-auto lg:rounded-lg bg-white text-black font-semibold"
+                      : "text-white md:w-14 md:h-14 md:mx-auto md:rounded-xl md:flex md:items-center md:justify-center lg:w-auto lg:h-auto lg:rounded-lg lg:hover:bg-dark-4"
                   }`}
                 >
                   <div className="relative flex-shrink-0">
@@ -139,7 +139,9 @@ const LeftSidebar = () => {
                       </span>
                     )}
                   </div>
-                  <span className="text-base">{link.label}</span>
+                  <span className="hidden lg:inline text-base">
+                    {link.label}
+                  </span>
                 </Link>
               </li>
             );
@@ -148,10 +150,10 @@ const LeftSidebar = () => {
             <li>
               <Link
                 href="/admin"
-                className={`flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-200 ${
+                className={`flex items-center justify-center lg:justify-start gap-0 lg:gap-4 px-0 lg:px-4 py-3 transition-all duration-200 ${
                   pathname === "/admin"
-                    ? "bg-white text-black font-semibold"
-                    : "text-white hover:bg-dark-4"
+                    ? "md:w-14 md:h-14 md:mx-auto md:rounded-xl md:flex md:items-center md:justify-center lg:w-auto lg:h-auto lg:rounded-lg bg-white text-black font-semibold"
+                    : "text-white md:w-14 md:h-14 md:mx-auto md:rounded-xl md:flex md:items-center md:justify-center lg:w-auto lg:h-auto lg:rounded-lg lg:hover:bg-dark-4"
                 }`}
               >
                 <img
@@ -159,7 +161,7 @@ const LeftSidebar = () => {
                   alt="Admin"
                   className={`w-6 h-6 ${pathname === "/admin" ? "invert" : ""}`}
                 />
-                <span className="text-base">Admin</span>
+                <span className="hidden lg:inline text-base">Admin</span>
               </Link>
             </li>
           )}
@@ -167,27 +169,27 @@ const LeftSidebar = () => {
       </nav>
 
       {/* Logout Button */}
-      <div className="p-3">
+      <div className="p-0 lg:p-3">
         {isAuthenticated ? (
           <button
             onClick={() => signOutMutation()}
-            className="w-full flex items-center gap-4 px-4 py-3 rounded-lg text-white hover:bg-dark-4 transition-all duration-200"
+            className="w-full flex items-center justify-center lg:justify-start gap-0 lg:gap-4 px-0 lg:px-4 py-3 md:w-14 md:h-14 md:mx-auto md:rounded-xl lg:w-full lg:h-auto lg:rounded-lg text-white hover:bg-dark-4 transition-all duration-200"
           >
             <LogOut className="h-6 w-6" strokeWidth={2} />
-            <span className="text-base">Logout</span>
+            <span className="hidden lg:inline text-base">Logout</span>
           </button>
         ) : (
           <div className="flex flex-col gap-2">
             <Link href="/sign-in" className="w-full">
-              <button className="w-full flex items-center gap-4 px-4 py-3 rounded-lg text-white hover:bg-dark-4 transition-all duration-200 border border-dark-4">
+              <button className="w-full flex items-center justify-center lg:justify-start gap-0 lg:gap-4 px-0 lg:px-4 py-3 md:w-14 md:h-14 md:mx-auto md:rounded-xl lg:w-full lg:h-auto lg:rounded-lg text-white hover:bg-dark-4 transition-all duration-200 border border-dark-4">
                 <LogOut className="h-6 w-6" strokeWidth={2} />
-                <span className="text-base">Sign-in</span>
+                <span className="hidden lg:inline text-base">Sign-in</span>
               </button>
             </Link>
             <Link href="/sign-up" className="w-full">
-              <button className="w-full flex items-center gap-4 px-4 py-3 rounded-lg text-white hover:bg-dark-4 transition-all duration-200 border border-dark-4 bg-dark-4">
+              <button className="w-full flex items-center justify-center lg:justify-start gap-0 lg:gap-4 px-0 lg:px-4 py-3 md:w-14 md:h-14 md:mx-auto md:rounded-xl lg:w-full lg:h-auto lg:rounded-lg text-white hover:bg-dark-4 transition-all duration-200 border border-dark-4 bg-dark-4">
                 <LogOut className="h-6 w-6" strokeWidth={2} />
-                <span className="text-base">Sign-up</span>
+                <span className="hidden lg:inline text-base">Sign-up</span>
               </button>
             </Link>
           </div>
@@ -195,13 +197,14 @@ const LeftSidebar = () => {
       </div>
 
       {/* Footer Links */}
-      <div className="px-6 py-4 border-t border-dark-4">
-        <div className="flex gap-4 text-xs text-light-3">
-          <Link href="/about" className="hover:text-white transition-colors">
+      <div className="px-0 lg:px-6 py-4 border-t border-dark-4 mt-2 md:mt-2">
+        <div className="flex flex-col md:items-center lg:flex-row gap-2 md:gap-1 lg:gap-4 text-xs text-light-3">
+          <Link href="/about" className="hover:text-white transition-colors text-center md:text-center lg:text-left">
             About
           </Link>
-          <Link href="/privacy" className="hover:text-white transition-colors">
-            Privacy Policy
+          <Link href="/privacy" className="hover:text-white transition-colors text-center md:text-center lg:text-left">
+            <span className="hidden lg:inline">Privacy Policy</span>
+            <span className="lg:hidden">Privacy</span>
           </Link>
         </div>
       </div>

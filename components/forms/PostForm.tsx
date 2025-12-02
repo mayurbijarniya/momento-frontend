@@ -151,6 +151,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
         <div className="flex gap-3 items-center justify-end mt-2">
           <Button
             type="button"
+            onClick={() => router.back()}
             className="h-10 px-4 text-sm hover:scale-110 transition hover:bg-dark-4 hover:text-white"
           >
             Cancel
