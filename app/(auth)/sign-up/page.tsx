@@ -113,8 +113,20 @@ const SignupForm = () => {
   return (
     <Form {...form}>
       <div className="sm:w-420 flex-center flex-col max-sm:w-[300px] max-sm:p-5">
-        <Link href="/" className="mb-2">
-          <img src="/assets/images/logo.svg" className="h-20 w-auto" />
+        <Link href="/" className="mb-2 flex items-center gap-3 justify-center">
+          <img
+            src="/assets/images/lg-logo.svg"
+            alt="Momento"
+            className="w-12 h-12"
+          />
+          <div className="flex flex-col justify-center">
+            <h1 className="text-[28px] font-bold text-white tracking-tight leading-tight">
+              Momento
+            </h1>
+            <p className="text-[9px] font-normal text-light-3 tracking-wider uppercase leading-tight mt-0.5">
+              CAPTURE EVERY MOMENT
+            </p>
+          </div>
         </Link>
         <h2 className="h3-bold md:h2-bold pt-2 pb-1">Create a new account.</h2>
         <p className="text-slate-400 small-regular mt-1 mb-3">
@@ -184,10 +196,7 @@ const SignupForm = () => {
               <FormItem>
                 <FormLabel className="block mb-3">Account Type</FormLabel>
                 <FormControl>
-                  <select
-                    {...field}
-                    className="shad-input text-white w-full"
-                  >
+                  <select {...field} className="shad-input text-white w-full">
                     <option value="USER">User</option>
                     <option value="ADMIN">Admin</option>
                   </select>

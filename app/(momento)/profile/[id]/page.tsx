@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import Oops from "@/components/shared/Oops";
 import { useToast } from "@/components/ui/use-toast";
+import { MessageSquare, Grid3x3, Heart, Edit, Trash2 } from "lucide-react";
 
 interface StabBlockProps {
   value: string | number;
@@ -35,15 +36,30 @@ const StatBlock = ({
   onClick,
 }: StabBlockProps & { onClick?: () => void }) => (
   <div
-    className={`flex-center gap-2 ${
+    className={`flex items-center gap-1 ${
       onClick ? "cursor-pointer hover:opacity-80 transition" : ""
     }`}
     onClick={onClick}
   >
-    <p className="small-semibold lg:body-bold text-white">{value}</p>
-    <p className="small-medium lg:base-medium text-light-2">{label}</p>
+    <span className="font-semibold text-white">{value}</span>
+    <span className="text-white ml-1">{label}</span>
   </div>
 );
+
+const getLikesArray = (postLikes: any): string[] => {
+  if (!postLikes || !Array.isArray(postLikes)) return [];
+  return postLikes
+    .map((like: any) => {
+      if (typeof like === "string") {
+        return like;
+      }
+      if (like && typeof like === "object") {
+        return like?.$id || like?.id || like;
+      }
+      return null;
+    })
+    .filter((id: any) => id != null && id !== "") as string[];
+};
 
 const Profile = () => {
   const { id } = useParams();
@@ -185,177 +201,234 @@ const Profile = () => {
         isLoading={isDeleting}
       />
       <div className="profile-container">
-          <div className="profile-inner_container">
-            <div className="flex xl:flex-row flex-col max-xl:items-center flex-1 gap-4 xl:gap-6">
-              <img
-                src={
-                  (currentUser as any).imageUrl ||
-                  "/assets/icons/profile-placeholder.svg"
-                }
-                alt="profile"
-                className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 lg:h-36 lg:w-36 rounded-full object-cover flex-shrink-0"
-              />
-              <div className="flex flex-col flex-1 justify-between md:mt-2 min-w-0">
-                <div className="flex flex-col w-full">
-                  <h1 className="text-center xl:text-left h3-bold md:h1-semibold w-full">
+        <div className="max-w-4xl mx-auto px-4 py-8 w-full">
+          {/* Profile Header */}
+          <div className="flex flex-col md:flex-row gap-8 md:gap-12 mb-8">
+            {/* Avatar */}
+            <div className="flex justify-center md:justify-start">
+              <div className="w-[150px] h-[150px] rounded-full overflow-hidden flex items-center justify-center flex-shrink-0">
+                <img
+                  src={
+                    (currentUser as any).imageUrl ||
+                    "/assets/icons/profile-placeholder.svg"
+                  }
+                  alt="profile"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+
+            {/* Profile Info */}
+            <div className="flex-1">
+              {/* Name and Buttons */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
+                <div className="flex-1">
+                  <h1 className="text-2xl font-semibold text-white mb-1">
                     {(currentUser as any).name}
                   </h1>
-                  <p className="small-regular md:body-medium text-slate-400 text-center xl:text-left">
+                  <p className="text-slate-400">
                     @{(currentUser as any).username}
                   </p>
                 </div>
+                <div className="flex gap-2">
+                  {!isOwnProfile && (
+                    <>
+                      {isAuthenticated ? (
+                        <>
+                          <Button
+                            onClick={
+                              isFollowingUser ? handleUnfollow : handleFollow
+                            }
+                            disabled={isFollowing || isUnfollowing}
+                            variant="outline"
+                            size="sm"
+                            className="gap-2 bg-transparent text-light-1 border border-light-1 hover:bg-primary-500 hover:border-primary-500 hover:text-white transition"
+                          >
+                            {isFollowing || isUnfollowing
+                              ? "Loading..."
+                              : isFollowingUser
+                              ? "Unfollow"
+                              : "Follow"}
+                          </Button>
+                          <Button
+                            onClick={() => router.push(`/messages/${userId}`)}
+                            variant="outline"
+                            size="sm"
+                            className="gap-2 bg-transparent text-light-1 border border-light-1 hover:bg-primary-500 hover:border-primary-500 hover:text-white transition"
+                          >
+                            <MessageSquare className="h-4 w-4" />
+                            Message
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            onClick={() => router.push("/sign-in")}
+                            variant="outline"
+                            size="sm"
+                            className="gap-2 bg-transparent text-light-1 border border-light-1 hover:bg-primary-500 hover:border-primary-500 hover:text-white transition"
+                          >
+                            Follow
+                          </Button>
+                          <Button
+                            onClick={() => router.push("/sign-in")}
+                            variant="outline"
+                            size="sm"
+                            className="gap-2 bg-transparent text-light-1 border border-light-1 hover:bg-primary-500 hover:border-primary-500 hover:text-white transition"
+                          >
+                            <MessageSquare className="h-4 w-4" />
+                            Message
+                          </Button>
+                        </>
+                      )}
+                    </>
+                  )}
 
-                <div className="flex flex-col gap-8 mt-6 items-start max-xl:items-center justify-center p-2 xl:justify-start flex-wrap z-20">
-                  <StatBlock value={posts.length} label="Posts" />
-                  <StatBlock
-                    value={Array.isArray(followers) ? followers.length : 0}
-                    label="Followers"
-                    onClick={handleFollowersClick}
-                  />
-                  <StatBlock
-                    value={Array.isArray(following) ? following.length : 0}
-                    label="Following"
-                    onClick={handleFollowingClick}
-                  />
-                </div>
-
-                <p className="small-medium md:base-medium text-center xl:text-left mt-4 max-w-screen-sm">
-                  {(currentUser as any).bio}
-                </p>
-              </div>
-
-              <div className="flex justify-center gap-4">
-                {!isOwnProfile && (
-                  <div className="flex-center flex-col gap-3">
-                    {isAuthenticated ? (
-                      <Button
-                        onClick={isFollowingUser ? handleUnfollow : handleFollow}
-                        disabled={isFollowing || isUnfollowing}
-                        className="h-12 bg-white text-black hover:bg-gray-300 font-semibold px-6"
+                  {isOwnProfile && (
+                    <>
+                      <Link
+                        href={`/update-profile/${
+                          (currentUser as any).$id ||
+                          (currentUser as any).id ||
+                          userId
+                        }`}
                       >
-                        {isFollowing || isUnfollowing
-                          ? "Loading..."
-                          : isFollowingUser
-                          ? "Unfollow"
-                          : "Follow"}
-                      </Button>
-                    ) : (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="gap-2 bg-transparent text-light-1 border border-light-1 hover:bg-primary-500 hover:border-primary-500 hover:text-white transition"
+                        >
+                          <Edit className="h-4 w-4" />
+                          Edit Profile
+                        </Button>
+                      </Link>
                       <Button
-                        onClick={() => router.push("/sign-in")}
-                        className="h-12 bg-white text-black hover:bg-gray-300 font-semibold px-6"
+                        onClick={() => setIsDeleteDialogOpen(true)}
+                        variant="outline"
+                        size="sm"
+                        className="gap-2 bg-transparent text-light-1 border border-light-1 hover:bg-primary-500 hover:border-primary-500 hover:text-white transition"
                       >
-                        Follow
-                      </Button>
-                    )}
-                  </div>
-                )}
-
-                {isOwnProfile && (
-                  <div className="flex-center flex-col gap-3">
-                    <Link
-                      href={`/update-profile/${
-                        (currentUser as any).$id ||
-                        (currentUser as any).id ||
-                        userId
-                      }`}
-                      className={`h-12 hover:bg-dark-4 bg-white group  flex-center gap-2 rounded-lg w-32`}
-                    >
-                      <img
-                        src={"/assets/icons/edit.svg"}
-                        alt="edit"
-                        width={20}
-                        height={20}
-                        className=" invert group-hover:invert-0 "
-                      />
-                      <p className="font-semibold whitespace-nowrap group-hover:text-white text-black ">
-                        Edit Profile
-                      </p>
-                    </Link>
-                    <button
-                      onClick={() => setIsDeleteDialogOpen(true)}
-                      className="h-12 hover:bg-dark-4 bg-white group flex-center gap-2 rounded-lg w-auto px-4 mt-2"
-                    >
-                      <img
-                        src={"/assets/icons/delete.svg"}
-                        alt="delete"
-                        width={20}
-                        height={20}
-                        className="brightness-0 transition-all duration-200 group-hover:invert"
-                      />
-                      <p className="font-semibold whitespace-nowrap group-hover:text-white text-black ">
+                        <Trash2 className="h-4 w-4" />
                         Delete Account
-                      </p>
-                    </button>
-                    <Button
-                      variant="ghost"
-                      className="hover:bg-dark-4 group w-24 mt-2 md:hidden"
-                      onClick={() => signOutMutation()}
-                    >
-                      <img src="/assets/icons/logout.svg" alt="logout" />
-                      <p className=" ml-2 font-semibold">Logout</p>
-                    </Button>
-                  </div>
-                )}
+                      </Button>
+                    </>
+                  )}
+                </div>
               </div>
+
+              {/* Stats */}
+              <div className="flex gap-8 mb-6">
+                <StatBlock value={posts.length} label="Posts" />
+                <StatBlock
+                  value={Array.isArray(followers) ? followers.length : 0}
+                  label="Followers"
+                  onClick={handleFollowersClick}
+                />
+                <StatBlock
+                  value={Array.isArray(following) ? following.length : 0}
+                  label="Following"
+                  onClick={handleFollowingClick}
+                />
+              </div>
+
+              {/* Bio */}
+              {(currentUser as any).bio && (
+                <p className="text-white">{(currentUser as any).bio}</p>
+              )}
             </div>
           </div>
 
+          {/* Tabs */}
           {isOwnProfile && (
-            <div className="flex max-w-5xl justify-center w-full">
-              <Link
-                href={`/profile/${userId}`}
-                className={`profile-tab rounded-l-lg ${
-                  pathname === `/profile/${userId}` && "!bg-dark-4"
-                }`}
-              >
-                <img
-                  src={"/assets/icons/posts.svg"}
-                  alt="posts"
-                  width={20}
-                  height={20}
-                />
-                Posts
-              </Link>
-              <Link
-                href={`/profile/${userId}/liked-posts`}
-                className={`profile-tab rounded-r-lg ${
-                  pathname === `/profile/${userId}/liked-posts` && "!bg-dark-4"
-                }`}
-              >
-                <img
-                  src={"/assets/icons/like.svg"}
-                  alt="like"
-                  width={20}
-                  height={20}
-                />
-                Liked Posts
-              </Link>
+            <div className="w-full border-t border-dark-4">
+              <div className="flex justify-center">
+                <Link
+                  href={`/profile/${userId}`}
+                  className={`flex items-center gap-2 px-6 py-3 border-t-2 transition-colors ${
+                    pathname === `/profile/${userId}`
+                      ? "border-white text-white"
+                      : "border-transparent text-slate-400 hover:text-white"
+                  }`}
+                >
+                  <Grid3x3 className="h-4 w-4" />
+                  Posts
+                </Link>
+                <Link
+                  href={`/profile/${userId}/liked-posts`}
+                  className={`flex items-center gap-2 px-6 py-3 border-t-2 transition-colors ${
+                    pathname === `/profile/${userId}/liked-posts`
+                      ? "border-white text-white"
+                      : "border-transparent text-slate-400 hover:text-white"
+                  }`}
+                >
+                  <Heart className="h-4 w-4" />
+                  Liked Posts
+                </Link>
+              </div>
             </div>
           )}
 
-          {pathname === `/profile/${userId}/liked-posts` ? (
-            isOwnProfile ? (
-              <LikedPosts />
-            ) : null
-          ) : (
-            <>
-              <GridPostList posts={limitedPosts} showUser={false} />
-              {!isAuthenticated && posts.length > 2 && (
-                <div className="flex-center flex-col gap-4 mt-8 p-6 border border-dark-4 rounded-lg bg-dark-2">
-                  <p className="text-light-1 base-medium">
-                    Sign in to see more posts
-                  </p>
-                  <Button
-                    onClick={() => router.push("/sign-in")}
-                    className="bg-white text-black hover:bg-gray-300"
-                  >
-                    Sign In
-                  </Button>
-                </div>
-              )}
-            </>
-          )}
+          {/* Posts Grid */}
+          <div className="mt-6">
+            {pathname === `/profile/${userId}/liked-posts` ? (
+              isOwnProfile ? (
+                <LikedPosts />
+              ) : null
+            ) : (
+              <>
+                {limitedPosts.length > 0 ? (
+                  <div className="grid grid-cols-3 gap-1">
+                    {limitedPosts.map((post: any) => (
+                      <Link
+                        key={post.$id || post.id}
+                        href={`/posts/${post.$id || post.id}`}
+                        className="relative aspect-square group cursor-pointer overflow-hidden"
+                      >
+                        <img
+                          src={
+                            post.imageUrl ||
+                            "/assets/icons/profile-placeholder.svg"
+                          }
+                          alt="Post"
+                          className="w-full h-full object-cover"
+                        />
+                        {/* Hover Overlay */}
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                          <div className="flex items-center gap-6 text-white">
+                            <div className="flex items-center gap-2">
+                              <Heart className="h-6 w-6 fill-white" />
+                              <span className="font-semibold">
+                                {getLikesArray(post.likes).length}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-slate-400">
+                    No posts yet
+                  </div>
+                )}
+                {!isAuthenticated && posts.length > 2 && (
+                  <div className="flex-center flex-col gap-4 mt-8 p-6 border border-dark-4 rounded-lg bg-dark-2">
+                    <p className="text-light-1 base-medium">
+                      Sign in to see more posts
+                    </p>
+                    <Button
+                      onClick={() => router.push("/sign-in")}
+                      className="bg-white text-black hover:bg-gray-300"
+                    >
+                      Sign In
+                    </Button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
+      </div>
 
       <FollowersFollowingDialog
         isOpen={followersDialogOpen}

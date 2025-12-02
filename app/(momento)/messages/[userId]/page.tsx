@@ -8,7 +8,9 @@ import {
   useGetUserConversation,
   useSendUserMessage,
   useGetUserById,
+  useMarkConversationAsRead,
 } from "@/lib/react-query/queriesAndMutation";
+import { useQueryClient } from "@tanstack/react-query";
 import MessagesList from "@/components/messages/MessagesList";
 import ChatHeader from "@/components/messages/ChatHeader";
 import MessageBubble from "@/components/messages/MessageBubble";
@@ -30,6 +32,7 @@ const ChatPage = () => {
   const params = useParams();
   const userId = params.userId as string;
   const { user, isAuthenticated, isLoading: authLoading } = useUserContext();
+  const queryClient = useQueryClient();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [showMessagesList, setShowMessagesList] = useState(false);
@@ -41,6 +44,7 @@ const ChatPage = () => {
   const { data: userConversationData, isLoading: conversationLoading } = useGetUserConversation(selectedUserId);
   const { mutate: sendUserMsg, isPending: isSendingUser } = useSendUserMessage();
   const { data: userData } = useGetUserById(selectedUserId || "");
+  const { mutate: markAsRead } = useMarkConversationAsRead();
 
   const aiMessages = chatData?.messages || [];
   const userMessages = userConversationData?.messages || [];
@@ -51,7 +55,6 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      console.log("Redirecting to sign-in from chat page");
       router.push("/sign-in");
     }
   }, [authLoading, isAuthenticated, router]);
@@ -59,6 +62,12 @@ const ChatPage = () => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [aiMessages, userMessages, isSending, isSendingUser]);
+
+  useEffect(() => {
+    if (!isAI && selectedUserId && isAuthenticated && !conversationLoading && userMessages.length > 0) {
+      markAsRead(selectedUserId);
+    }
+  }, [selectedUserId, isAI, isAuthenticated, conversationLoading, userMessages.length, markAsRead]);
 
   const handleBackToList = () => {
     setShowMessagesList(true);
@@ -89,13 +98,13 @@ const ChatPage = () => {
   }
 
   return (
-    <div className="flex flex-1">
-      <div className="flex w-full h-screen max-h-screen bg-dark-1">
-        <div className={`${showMessagesList ? "flex" : "hidden md:flex"} w-full md:w-80 lg:w-96 flex-shrink-0`}>
+    <div className="flex flex-1 w-full bg-dark-1">
+      <div className="flex w-full h-screen max-h-screen">
+        <div className={`${showMessagesList ? "flex" : "hidden md:flex"} w-full sm:w-80 md:w-80 lg:w-96 flex-shrink-0`}>
           <MessagesList selectedUserId={selectedUserId} />
         </div>
 
-        <div className={`${showMessagesList ? "hidden md:flex" : "flex"} flex-1 flex-col h-screen max-h-screen`}>
+        <div className={`${showMessagesList ? "hidden md:flex" : "flex"} flex-1 flex-col h-screen max-h-screen w-full bg-dark-1`}>
           <div className="flex-shrink-0">
             <ChatHeader
               userName={selectedUserName}
@@ -103,10 +112,11 @@ const ChatPage = () => {
               isAI={isAI}
               onBack={handleBackToList}
               userId={isAI ? undefined : userId}
+              lastLogin={isAI ? undefined : userData?.lastLogin}
             />
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar bg-dark-1">
             {(isAI ? historyLoading : conversationLoading) ? (
               <div className="flex-center w-full h-full">
                 <Loader />
@@ -120,10 +130,29 @@ const ChatPage = () => {
                     userId: message.userId || message.senderId,
                     role: isUserMessage ? "user" : "assistant",
                     content: message.content,
+                    imageUrl: message.imageUrl || null,
                     feedback: message.feedback,
                     createdAt: message.createdAt,
                   };
-                  return <MessageBubble key={message._id} message={messageForBubble} />;
+                  // For messages from other users (left side), use their image
+                  // For user's own messages (right side), use current user's image
+                  const otherUserImage = isUserMessage 
+                    ? undefined 
+                    : isAI 
+                      ? undefined
+                      : userData?.imageUrl || "/assets/icons/profile-placeholder.svg";
+                  const currentUserImage = isUserMessage 
+                    ? user?.imageUrl || "/assets/icons/profile-placeholder.svg"
+                    : undefined;
+                  return (
+                    <MessageBubble 
+                      key={message._id} 
+                      message={messageForBubble}
+                      isAI={isAI && !isUserMessage}
+                      senderImage={otherUserImage}
+                      currentUserImage={currentUserImage}
+                    />
+                  );
                 })}
                 {(isAI ? isSending : isSendingUser) && <TypingIndicator />}
               </>

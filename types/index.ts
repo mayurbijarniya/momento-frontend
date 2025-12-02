@@ -54,6 +54,7 @@ export interface IMessage {
   userId: string;
   role: "user" | "assistant";
   content: string;
+  imageUrl?: string | null;
   feedback?: "up" | "down" | null;
   createdAt: string;
 }

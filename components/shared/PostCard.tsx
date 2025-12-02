@@ -62,13 +62,18 @@ const PostCard = ({ post }: PostCardProps) => {
               user.id !== (post.creator.$id || post.creator.id) && "hidden"
             }`}
           >
-            <img src="/assets/icons/edit.svg" alt="edit" width={18} height={18} />
+            <img
+              src="/assets/icons/edit.svg"
+              alt="edit"
+              width={18}
+              height={18}
+            />
           </Link>
         )}
       </div>
 
       <Link href={`/posts/${post.$id || post.id}`}>
-        <div className="relative w-full bg-dark-4 rounded-md overflow-hidden">
+        <div className="relative w-full bg-dark-4 rounded-md overflow-hidden aspect-square">
           {loading && (
             <div className="absolute size-full inset-0 flex justify-center items-center">
               <Loader />
@@ -77,7 +82,7 @@ const PostCard = ({ post }: PostCardProps) => {
           <img
             src={post.imageUrl || "/assets/icons/profile-placeholder.svg"}
             alt="post image"
-            className={`w-full h-auto object-contain ${
+            className={`w-full h-full object-cover ${
               loading ? "opacity-0" : "opacity-100"
             }`}
             onLoad={handleImageLoad}

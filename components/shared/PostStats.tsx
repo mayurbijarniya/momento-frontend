@@ -95,9 +95,6 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
           onSuccess: () => {
             setIsSaved(false);
           },
-          onError: (error) => {
-            console.error("Failed to unsave post:", error);
-          },
         });
       } else {
         savePost(
@@ -105,9 +102,6 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
           {
             onSuccess: () => {
               setIsSaved(true);
-            },
-            onError: (error) => {
-              console.error("Failed to save post:", error);
             },
           }
         );

@@ -149,7 +149,7 @@ const AdminDashboard = () => {
               {users.map((userItem: any) => (
                 <div
                   key={userItem._id || userItem.id}
-                  className="user-card relative"
+                  className="relative"
                 >
                   <UserCard user={userItem} />
                   {userItem._id !== user.id && (

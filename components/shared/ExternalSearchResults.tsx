@@ -15,17 +15,28 @@ const ExternalSearchResults = ({
     return <Loader />;
   }
 
-  if (searchedPhotos && searchedPhotos.documents && searchedPhotos.documents.length > 0) {
+  if (
+    searchedPhotos &&
+    searchedPhotos.documents &&
+    searchedPhotos.documents.length > 0
+  ) {
     return (
       <ul className="grid-container p-10 max-md:p-5">
         {searchedPhotos.documents.map((photo: any) => (
-          <li key={photo.id || photo.$id} className="relative min-w-80 h-70">
+          <li
+            key={photo.id || photo.$id}
+            className="relative w-full aspect-square"
+          >
             <Link
               href={`/details/${photo.id || photo.$id}`}
-              className="grid-post_link"
+              className="grid-post_link h-full"
             >
               <img
-                src={photo.imageUrl || photo.thumbnailUrl || "/assets/icons/profile-placeholder.svg"}
+                src={
+                  photo.imageUrl ||
+                  photo.thumbnailUrl ||
+                  "/assets/icons/profile-placeholder.svg"
+                }
                 alt={photo.description || "Photo"}
                 className="h-full w-full object-cover"
               />
@@ -40,7 +51,9 @@ const ExternalSearchResults = ({
                     className="h-8 w-8 rounded-full object-cover"
                   />
                 )}
-                <p className="line-clamp-1">{photo.user?.name || "Unknown Photographer"}</p>
+                <p className="line-clamp-1">
+                  {photo.user?.name || "Unknown Photographer"}
+                </p>
               </div>
               <div className="flex items-center gap-2">
                 <Heart className="w-4 h-4 text-white" />
@@ -59,5 +72,3 @@ const ExternalSearchResults = ({
 };
 
 export default ExternalSearchResults;
-
-

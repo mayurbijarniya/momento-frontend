@@ -1,7 +1,12 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useGetNotifications, useMarkNotificationAsRead, useMarkAllNotificationsAsRead, useDeleteNotification } from "@/lib/react-query/queriesAndMutation";
+import {
+  useGetNotifications,
+  useMarkNotificationAsRead,
+  useMarkAllNotificationsAsRead,
+  useDeleteNotification,
+} from "@/lib/react-query/queriesAndMutation";
 import Loader from "@/components/shared/Loader";
 import { useUserContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -46,13 +51,20 @@ const Notifications = () => {
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case "LIKE":
-        return <Heart className="w-5 h-5 text-red-500" fill="currentColor" />;
+        return (
+          <Heart
+            className="w-4 h-4"
+            fill="#ef4444"
+            stroke="none"
+            strokeWidth={0}
+          />
+        );
       case "FOLLOW":
-        return <UserPlus className="w-5 h-5 text-blue-500" />;
+        return <UserPlus className="w-4 h-4 text-blue-500" />;
       case "REVIEW":
-        return <MessageSquare className="w-5 h-5 text-yellow-500" />;
+        return <MessageSquare className="w-4 h-4 text-yellow-500" />;
       default:
-        return <MessageSquare className="w-5 h-5 text-gray-500" />;
+        return <MessageSquare className="w-4 h-4 text-gray-500" />;
     }
   };
 
@@ -70,13 +82,15 @@ const Notifications = () => {
       case "FOLLOW":
         return (
           <>
-            <span className="font-semibold">{actorName}</span> started following you
+            <span className="font-semibold">{actorName}</span> started following
+            you
           </>
         );
       case "REVIEW":
         return (
           <>
-            <span className="font-semibold">{actorName}</span> reviewed your post
+            <span className="font-semibold">{actorName}</span> reviewed your
+            post
           </>
         );
       default:
@@ -86,10 +100,14 @@ const Notifications = () => {
 
   const getNotificationLink = (notification: any) => {
     if (notification.type === "FOLLOW") {
-      return `/profile/${notification.actor?._id || notification.actor?.id || notification.actor}`;
+      return `/profile/${
+        notification.actor?._id || notification.actor?.id || notification.actor
+      }`;
     }
     if (notification.post) {
-      return `/posts/${notification.post._id || notification.post.id || notification.post}`;
+      return `/posts/${
+        notification.post._id || notification.post.id || notification.post
+      }`;
     }
     return "#";
   };
@@ -149,12 +167,13 @@ const Notifications = () => {
           <p className="text-light-3 text-center">No notifications yet</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-3 w-full max-w-5xl">
+        <div className="flex flex-col gap-2 w-full max-w-5xl">
           {notifications.map((notification: any) => {
             const notificationId = notification._id || notification.id;
             const isUnread = !notification.read;
             const link = getNotificationLink(notification);
             const isDeleting = deletingIds.has(notificationId);
+            const hasPostImage = notification.post?.imageUrl && (notification.type === "LIKE" || notification.type === "REVIEW");
 
             return (
               <div
@@ -170,51 +189,57 @@ const Notifications = () => {
                 <Link
                   href={link}
                   onClick={() => handleNotificationClick(notification)}
-                  className="flex items-start gap-4 p-4 rounded-lg"
+                  className="flex items-center gap-3 p-3 rounded-lg"
                 >
                   <div className="flex-shrink-0">
-                    {notification.actor?.imageUrl ? (
-                      <img
-                        src={notification.actor.imageUrl}
-                        alt={notification.actor.name || "User"}
-                        className="w-12 h-12 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-dark-4 flex items-center justify-center">
-                        {getNotificationIcon(notification.type)}
-                      </div>
-                    )}
+                    <img
+                      src={
+                        notification.actor?.imageUrl ||
+                        "/assets/icons/profile-placeholder.svg"
+                      }
+                      alt={notification.actor?.name || "User"}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          {getNotificationIcon(notification.type)}
-                          <p className={`small-medium lg:base-regular ${
-                            isUnread 
-                              ? "text-light-1 font-bold" 
-                              : "text-light-3 font-normal"
-                          }`}>
-                            {getNotificationMessage(notification)}
-                          </p>
-                        </div>
-                        <p className="text-light-3 text-xs">
-                          {timeAgo(notification.createdAt)}
-                        </p>
-                      </div>
-                    </div>
-
-                    {notification.post?.imageUrl && (
-                      <div className="mt-2">
-                        <img
-                          src={notification.post.imageUrl}
-                          alt="Post"
-                          className="w-16 h-16 rounded-md object-cover"
+                    <div className="flex items-center gap-2">
+                      {notification.type === "LIKE" ? (
+                        <Heart
+                          className="w-4 h-4 flex-shrink-0"
+                          fill="#ef4444"
+                          stroke="none"
+                          strokeWidth={0}
                         />
-                      </div>
-                    )}
+                      ) : (
+                        <div className="flex-shrink-0">
+                          {getNotificationIcon(notification.type)}
+                        </div>
+                      )}
+                      <p
+                        className={`text-sm ${
+                          isUnread
+                            ? "text-light-1 font-semibold"
+                            : "text-light-3 font-normal"
+                        }`}
+                      >
+                        {getNotificationMessage(notification)}
+                      </p>
+                    </div>
+                    <p className="text-light-3 text-xs mt-0.5">
+                      {timeAgo(notification.createdAt)}
+                    </p>
                   </div>
+
+                  {hasPostImage && (
+                    <div className="flex-shrink-0 flex items-center gap-2">
+                      <img
+                        src={notification.post.imageUrl}
+                        alt="Post"
+                        className="w-14 h-14 rounded-md object-cover"
+                      />
+                    </div>
+                  )}
                 </Link>
                 <button
                   onClick={(e) => {
@@ -230,7 +255,7 @@ const Notifications = () => {
                       });
                     }, 200);
                   }}
-                  className="absolute top-3 right-3 flex-shrink-0 p-1.5 hover:bg-dark-4 rounded-full transition-colors z-10"
+                  className="absolute top-2 right-2 flex-shrink-0 p-1.5 hover:bg-dark-4 rounded-full transition-colors z-10"
                   aria-label="Delete notification"
                 >
                   <X className="w-4 h-4 text-light-3 hover:text-light-1" />
@@ -245,4 +270,3 @@ const Notifications = () => {
 };
 
 export default Notifications;
-

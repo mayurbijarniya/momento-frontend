@@ -27,23 +27,27 @@ Momento Frontend is a responsive web application that provides a complete social
 ## Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
 cd momento-frontend
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Create a `.env.local` file in the root directory:
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:4000/api
 NEXT_PUBLIC_EXTERNAL_API_KEY=your-unsplash-api-key
 ```
 
 4. Run the development server:
+
 ```bash
 npm run dev
 ```
@@ -93,6 +97,7 @@ momento-frontend/
 ## Features
 
 ### Authentication
+
 - User registration with role selection (USER, ADMIN)
 - Email/password authentication
 - Session-based authentication
@@ -100,6 +105,7 @@ momento-frontend/
 - Anonymous user support
 
 ### Content Management
+
 - Create, edit, and delete posts
 - Image uploads with preview
 - Post likes and saves
@@ -107,6 +113,7 @@ momento-frontend/
 - Infinite scroll pagination
 
 ### Social Features
+
 - User profiles with customizable information
 - Follow/unfollow users
 - View followers and following lists
@@ -114,32 +121,41 @@ momento-frontend/
 - Liked posts collection
 
 ### External Content Integration
+
 - Search Unsplash photos
 - View external photo details
 - Add reviews to external content
 - Star ratings (1-5 stars)
 
 ### Reviews System
+
 - Create reviews for posts and external content
 - Edit and delete own reviews
 - Star rating system
 - View all reviews with user information
 
 ### Notifications
+
 - Real-time notification updates
 - Unread notification count
 - Mark as read functionality
 - Notification types: LIKE, FOLLOW, REVIEW
 
 ### Messaging
-- AI assistant chat with OpenRouter integration
+
+- AI assistant chat with OpenRouter integration (Momento AI)
+- AI image generation capabilities
 - User-to-user direct messaging
-- Real-time message display
+- Real-time message display with auto-refresh
 - Message history and conversation threads
+- Unread message count tracking
 - Typing indicators
-- Message feedback system
+- Message feedback system (thumbs up/down)
+- Conversation partner list
+- Mark conversations as read
 
 ### Admin Dashboard
+
 - View all users
 - Delete users (except own account)
 - View all posts
@@ -159,6 +175,7 @@ The frontend follows a component-based architecture with clear separation of con
 ## State Management
 
 The application uses React Query (TanStack Query) for server state management and data fetching. This provides:
+
 - Automatic caching and background updates
 - Optimistic updates
 - Request deduplication
@@ -169,6 +186,7 @@ Authentication state is managed through React Context (`AuthContext`) for global
 ## API Integration
 
 All API calls are centralized in `lib/api/client.ts` using Axios with credentials enabled for session-based authentication. The client handles:
+
 - Request/response transformation
 - Error handling
 - Session management
@@ -177,6 +195,7 @@ All API calls are centralized in `lib/api/client.ts` using Axios with credential
 ## Routing
 
 The application uses Next.js App Router with route groups:
+
 - `(auth)` - Authentication pages (sign-in, sign-up)
 - `(momento)` - Main application pages
 
@@ -185,6 +204,7 @@ This allows for different layouts and authentication requirements per route grou
 ## Styling
 
 The application uses Tailwind CSS for styling with:
+
 - Responsive design (mobile-first approach)
 - Custom color scheme (dark theme)
 - Consistent spacing and typography
@@ -192,29 +212,33 @@ The application uses Tailwind CSS for styling with:
 
 ## Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `NEXT_PUBLIC_API_URL` | Backend API base URL | http://localhost:4000/api |
+| Variable                       | Description             | Default                   |
+| ------------------------------ | ----------------------- | ------------------------- |
+| `NEXT_PUBLIC_API_URL`          | Backend API base URL    | http://localhost:4000/api |
 | `NEXT_PUBLIC_EXTERNAL_API_KEY` | Unsplash API access key | Required for external API |
 
 ## Development
 
 ### Running in Development Mode
+
 ```bash
 npm run dev
 ```
 
 ### Building for Production
+
 ```bash
 npm run build
 ```
 
 ### Starting Production Server
+
 ```bash
 npm start
 ```
 
 ### Linting
+
 ```bash
 npm run lint
 ```
@@ -222,6 +246,7 @@ npm run lint
 ## Responsive Design
 
 The application is fully responsive and optimized for:
+
 - Desktop (1920px and above)
 - Laptop (1024px - 1919px)
 - Tablet (768px - 1023px)
@@ -253,11 +278,14 @@ The application is fully responsive and optimized for:
 ## Error Handling
 
 The application includes comprehensive error handling:
-- API error responses
-- Form validation errors
-- Network error handling
-- User-friendly error messages
+
+- All API functions wrapped in try-catch blocks for proper error propagation
+- API error responses with user-friendly messages
+- Form validation errors with Zod schema validation
+- Network error handling with retry logic via React Query
 - Loading states for async operations
+- Error boundaries for component-level error handling
+- Graceful fallbacks for failed API calls
 
 ## License
 

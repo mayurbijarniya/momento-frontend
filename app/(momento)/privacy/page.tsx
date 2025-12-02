@@ -2,7 +2,19 @@
 
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Shield, Lock, Eye, Database, Mail } from "lucide-react";
+import { 
+  ArrowLeft, 
+  Shield, 
+  Lock, 
+  Eye, 
+  Database, 
+  Mail,
+  User,
+  FileText,
+  Users,
+  CheckCircle,
+  Globe
+} from "lucide-react";
 
 const PrivacyPolicy = () => {
   const router = useRouter();
@@ -49,29 +61,65 @@ const PrivacyPolicy = () => {
               <Database className="w-5 h-5 text-light-1 flex-shrink-0" />
               Information We Collect
             </h2>
-            <div className="space-y-4 text-light-3 small-regular">
-              <div>
-                <h3 className="base-medium text-light-1 mb-2">Account Information</h3>
-                <ul className="list-disc list-inside space-y-1 ml-2">
-                  <li>Name and username</li>
-                  <li>Email address</li>
-                  <li>Profile picture</li>
-                  <li>Bio/description</li>
+            <div className="space-y-4">
+              <div className="bg-dark-4 rounded-md p-3 border-l-4 border-primary-500">
+                <div className="flex items-center gap-2 mb-2">
+                  <User className="w-4 h-4 text-primary-500 flex-shrink-0" />
+                  <h3 className="base-medium text-light-1">Account Information</h3>
+                </div>
+                <ul className="space-y-1.5 ml-6">
+                  <li className="text-light-3 small-regular flex items-center gap-2">
+                    <span className="text-primary-500">•</span>
+                    <span>Name and username</span>
+                  </li>
+                  <li className="text-light-3 small-regular flex items-center gap-2">
+                    <span className="text-primary-500">•</span>
+                    <span>Email address</span>
+                  </li>
+                  <li className="text-light-3 small-regular flex items-center gap-2">
+                    <span className="text-primary-500">•</span>
+                    <span>Profile picture</span>
+                  </li>
+                  <li className="text-light-3 small-regular flex items-center gap-2">
+                    <span className="text-primary-500">•</span>
+                    <span>Bio/description</span>
+                  </li>
                 </ul>
               </div>
-              <div>
-                <h3 className="base-medium text-light-1 mb-2">Content You Create</h3>
-                <ul className="list-disc list-inside space-y-1 ml-2">
-                  <li>Posts and images you upload</li>
-                  <li>Reviews and comments</li>
-                  <li>Likes and saved posts</li>
+              <div className="bg-dark-4 rounded-md p-3 border-l-4 border-primary-500">
+                <div className="flex items-center gap-2 mb-2">
+                  <FileText className="w-4 h-4 text-primary-500 flex-shrink-0" />
+                  <h3 className="base-medium text-light-1">Content You Create</h3>
+                </div>
+                <ul className="space-y-1.5 ml-6">
+                  <li className="text-light-3 small-regular flex items-center gap-2">
+                    <span className="text-primary-500">•</span>
+                    <span>Posts and images you upload</span>
+                  </li>
+                  <li className="text-light-3 small-regular flex items-center gap-2">
+                    <span className="text-primary-500">•</span>
+                    <span>Reviews and comments</span>
+                  </li>
+                  <li className="text-light-3 small-regular flex items-center gap-2">
+                    <span className="text-primary-500">•</span>
+                    <span>Likes and saved posts</span>
+                  </li>
                 </ul>
               </div>
-              <div>
-                <h3 className="base-medium text-light-1 mb-2">Social Connections</h3>
-                <ul className="list-disc list-inside space-y-1 ml-2">
-                  <li>Users you follow</li>
-                  <li>Users who follow you</li>
+              <div className="bg-dark-4 rounded-md p-3 border-l-4 border-primary-500">
+                <div className="flex items-center gap-2 mb-2">
+                  <Users className="w-4 h-4 text-primary-500 flex-shrink-0" />
+                  <h3 className="base-medium text-light-1">Social Connections</h3>
+                </div>
+                <ul className="space-y-1.5 ml-6">
+                  <li className="text-light-3 small-regular flex items-center gap-2">
+                    <span className="text-primary-500">•</span>
+                    <span>Users you follow</span>
+                  </li>
+                  <li className="text-light-3 small-regular flex items-center gap-2">
+                    <span className="text-primary-500">•</span>
+                    <span>Users who follow you</span>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -83,34 +131,68 @@ const PrivacyPolicy = () => {
               <Lock className="w-5 h-5 text-light-1 flex-shrink-0" />
               How We Protect Your Data
             </h2>
-            <div className="space-y-3 text-light-3 small-regular">
-              <p>We implement security measures to protect your personal information:</p>
-              <ul className="list-disc list-inside space-y-1 ml-2">
-                <li>Passwords are encrypted using industry-standard hashing (bcrypt)</li>
-                <li>Private information (like email) is hidden from other users viewing your profile</li>
-                <li>Secure session management for authenticated users</li>
-                <li>Only you can edit or delete your own content</li>
-              </ul>
+            <div className="space-y-4">
+              <p className="text-light-3 small-regular">We implement security measures to protect your personal information:</p>
+              <div className="bg-dark-4 rounded-md p-3 border-l-4 border-primary-500">
+                <ul className="space-y-1.5 ml-6">
+                  <li className="text-light-3 small-regular flex items-center gap-2">
+                    <span className="text-primary-500">•</span>
+                    <span>Passwords are encrypted using industry-standard hashing (bcrypt)</span>
+                  </li>
+                  <li className="text-light-3 small-regular flex items-center gap-2">
+                    <span className="text-primary-500">•</span>
+                    <span>Private information (like email) is hidden from other users viewing your profile</span>
+                  </li>
+                  <li className="text-light-3 small-regular flex items-center gap-2">
+                    <span className="text-primary-500">•</span>
+                    <span>Secure session management for authenticated users</span>
+                  </li>
+                  <li className="text-light-3 small-regular flex items-center gap-2">
+                    <span className="text-primary-500">•</span>
+                    <span>Only you can edit or delete your own content</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </section>
 
           {/* Your Rights */}
           <section className="bg-dark-3 rounded-lg p-4 md:p-5 border border-dark-4">
-            <h2 className="h2-bold text-light-1 mb-4">Your Rights</h2>
-            <div className="space-y-3 text-light-3 small-regular">
-              <p>You have the right to:</p>
-              <ul className="list-disc list-inside space-y-1 ml-2">
-                <li>Access your personal data through your profile</li>
-                <li>Update your profile information at any time</li>
-                <li>Delete your account and all associated data</li>
-                <li>Control who sees your content through privacy settings</li>
-              </ul>
+            <h2 className="h2-bold text-light-1 mb-4 flex items-center gap-2">
+              <CheckCircle className="w-5 h-5 text-light-1 flex-shrink-0" />
+              Your Rights
+            </h2>
+            <div className="space-y-4">
+              <p className="text-light-3 small-regular">You have the right to:</p>
+              <div className="bg-dark-4 rounded-md p-3 border-l-4 border-primary-500">
+                <ul className="space-y-1.5 ml-6">
+                  <li className="text-light-3 small-regular flex items-center gap-2">
+                    <span className="text-primary-500">•</span>
+                    <span>Access your personal data through your profile</span>
+                  </li>
+                  <li className="text-light-3 small-regular flex items-center gap-2">
+                    <span className="text-primary-500">•</span>
+                    <span>Update your profile information at any time</span>
+                  </li>
+                  <li className="text-light-3 small-regular flex items-center gap-2">
+                    <span className="text-primary-500">•</span>
+                    <span>Delete your account and all associated data</span>
+                  </li>
+                  <li className="text-light-3 small-regular flex items-center gap-2">
+                    <span className="text-primary-500">•</span>
+                    <span>Control who sees your content through privacy settings</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </section>
 
           {/* Third-Party Services */}
           <section className="bg-dark-3 rounded-lg p-4 md:p-5 border border-dark-4">
-            <h2 className="h2-bold text-light-1 mb-4">Third-Party Services</h2>
+            <h2 className="h2-bold text-light-1 mb-4 flex items-center gap-2">
+              <Globe className="w-5 h-5 text-light-1 flex-shrink-0" />
+              Third-Party Services
+            </h2>
             <p className="text-light-3 small-regular leading-relaxed">
               Momento integrates with Unsplash API to provide external photo search functionality. 
               When you search for external photos, your search queries are sent to Unsplash. 

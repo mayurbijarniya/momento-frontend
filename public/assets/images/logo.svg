@@ -1,6 +1,28 @@
-<svg width="1380" height="637" viewBox="0 0 1380 637" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="284" height="637" fill="white"/>
-<rect x="284" y="0" width="1096" height="637" fill="#101012"/>
-<text x="142" y="630" font-family="Impact, Trebuchet MS, sans-serif" font-size="280" font-weight="900" letter-spacing="-8" fill="#000000" text-anchor="middle">M</text>
-<text x="310" y="630" font-family="Impact, Trebuchet MS, sans-serif" font-size="240" font-weight="900" letter-spacing="-4" fill="#ffffff">omento</text>
+<svg width="280" height="65" viewBox="0 0 280 65" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0095F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0066CC;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0095F6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Icon Group -->
+  <g>
+    <!-- Outer rounded square with gradient (white to blue) -->
+    <rect x="2" y="10" width="48" height="48" rx="10" fill="url(#iconGradient)"/>
+    <!-- Inner white outline square -->
+    <rect x="10" y="18" width="32" height="32" rx="6" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.4"/>
+    <!-- Center white circle -->
+    <circle cx="26" cy="34" r="7" fill="#FFFFFF"/>
+  </g>
+  
+  <!-- Momento Text with gradient -->
+  <text x="60" y="40" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="url(#textGradient)" letter-spacing="-0.5">Momento</text>
+  
+  <!-- Tagline -->
+  <text x="60" y="56" font-family="Arial, sans-serif" font-size="9" font-weight="400" fill="#7878A3" letter-spacing="1.2">CAPTURE EVERY MOMENT</text>
 </svg>

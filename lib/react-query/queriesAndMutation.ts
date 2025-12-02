@@ -50,6 +50,9 @@ import {
   clearChatHistory,
   sendUserMessage,
   getUserConversation,
+  getConversationPartners,
+  getUnreadMessageCount,
+  markConversationAsRead,
 } from "../api/client";
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { QUERY_KEYS } from "./queryKeys";
@@ -176,9 +179,9 @@ export const useGetPostById = (postId: string) => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_POST_BY_ID, postId],
     queryFn: () => getPostById(postId),
-    enabled: !!postId, //enabled is used to stop refetching, also !! is basically ternary operator. ##enable is true when we fetch data for a new postid
-    retry: 1, // Only retry once on failure
-    retryOnMount: false, // Don't retry when component remounts
+    enabled: !!postId,
+    retry: 1,
+    retryOnMount: false,
   });
 };
 
@@ -247,9 +250,9 @@ export const useGetPosts = () => {
 
 export const useSearchPosts = (searchTerm: string) => {
   return useQuery({
-    queryKey: [QUERY_KEYS.SEARCH_POSTS, searchTerm], //validate query again onces searchTerm changes
+    queryKey: [QUERY_KEYS.SEARCH_POSTS, searchTerm],
     queryFn: () => searchPosts(searchTerm),
-    enabled: !!searchTerm, // refetch when searchTerm chhanges
+    enabled: !!searchTerm,
   });
 };
 
@@ -257,9 +260,9 @@ export const useGetCurrentUser = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_CURRENT_USER],
     queryFn: getCurrentUser,
-    staleTime: 0, // Always consider data stale to ensure fresh fetches
-    refetchOnMount: true, // Always refetch when component mounts
-    refetchOnWindowFocus: false, // Don't refetch on window focus
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -406,8 +409,8 @@ export const useGetReviewsByPost = (postId: string) => {
     queryKey: [QUERY_KEYS.GET_REVIEWS_BY_POST, postId],
     queryFn: () => getReviewsByPost(postId),
     enabled: !!postId,
-    staleTime: 0, // Always fetch fresh data
-    refetchOnMount: true, // Refetch when component mounts
+    staleTime: 0,
+    refetchOnMount: true,
   });
 };
 
@@ -466,7 +469,9 @@ export const useGetNotifications = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_NOTIFICATIONS],
     queryFn: getNotifications,
-    refetchInterval: 30000 // Refetch every 30 seconds
+    refetchInterval: 5000,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 };
 
@@ -474,7 +479,9 @@ export const useGetUnreadNotificationCount = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_UNREAD_NOTIFICATION_COUNT],
     queryFn: getUnreadNotificationCount,
-    refetchInterval: 30000 // Refetch every 30 seconds
+    refetchInterval: 5000,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 };
 
@@ -566,6 +573,9 @@ export const useGetChatHistory = () => {
   return useQuery({
     queryKey: ["chatHistory"],
     queryFn: getChatHistory,
+    refetchInterval: 3000,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 };
 
@@ -603,10 +613,39 @@ export const useClearChat = () => {
 };
 
 export const useGetUserConversation = (userId: string | null) => {
+  const queryClient = useQueryClient();
   return useQuery({
     queryKey: ["userConversation", userId],
     queryFn: () => getUserConversation(userId!),
     enabled: !!userId,
+    refetchInterval: 3000,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["unreadMessageCount"] });
+    },
+  });
+};
+
+export const useGetConversationPartners = () => {
+  return useQuery({
+    queryKey: ["conversationPartners"],
+    queryFn: () => getConversationPartners(),
+    refetchInterval: 5000,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+  });
+};
+
+export const useGetUnreadMessageCount = (enabled: boolean = true) => {
+  return useQuery({
+    queryKey: ["unreadMessageCount"],
+    queryFn: () => getUnreadMessageCount(),
+    enabled: enabled,
+    refetchInterval: enabled ? 5000 : false,
+    refetchOnWindowFocus: enabled,
+    refetchOnMount: enabled,
+    retry: 1,
   });
 };
 
@@ -617,6 +656,21 @@ export const useSendUserMessage = () => {
       sendUserMessage(receiverId, content),
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["userConversation", variables.receiverId] });
+      queryClient.invalidateQueries({ queryKey: ["conversationPartners"] });
+      queryClient.invalidateQueries({ queryKey: ["unreadMessageCount"] });
+    },
+  });
+};
+
+export const useMarkConversationAsRead = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (userId: string) => markConversationAsRead(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["unreadMessageCount"] });
+      queryClient.invalidateQueries({ queryKey: ["conversationPartners"] });
+      queryClient.refetchQueries({ queryKey: ["conversationPartners"] });
+      queryClient.refetchQueries({ queryKey: ["unreadMessageCount"] });
     },
   });
 };
