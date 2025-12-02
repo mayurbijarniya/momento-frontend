@@ -12,6 +12,26 @@ import {
 import { useUserContext } from "@/context/AuthContext";
 import { sidebarLinks } from "@/constants";
 import { INavLink } from "@/types";
+import {
+  Home,
+  Compass,
+  Users,
+  Bookmark,
+  PlusSquare,
+  MessageCircle,
+  Bell,
+  LogOut,
+} from "lucide-react";
+
+const iconMap: Record<string, any> = {
+  "/": Home,
+  "/explore": Compass,
+  "/all-users": Users,
+  "/messages": MessageCircle,
+  "/notifications": Bell,
+  "/saved": Bookmark,
+  "/create-post": PlusSquare,
+};
 
 const LeftSidebar = () => {
   const pathname = usePathname();
@@ -20,8 +40,11 @@ const LeftSidebar = () => {
   const { user, isAuthenticated, signOut } = useUserContext();
   const { data: unreadCountData } = useGetUnreadNotificationCount();
   const unreadCount = unreadCountData?.count || 0;
-  const { data: unreadMessageCountData } = useGetUnreadMessageCount(isAuthenticated);
-  const unreadMessageCount = isAuthenticated ? (unreadMessageCountData?.count ?? 0) : 0;
+  const { data: unreadMessageCountData } =
+    useGetUnreadMessageCount(isAuthenticated);
+  const unreadMessageCount = isAuthenticated
+    ? unreadMessageCountData?.count ?? 0
+    : 0;
 
   const isMessagesPage = pathname.startsWith("/messages");
 
@@ -34,185 +57,157 @@ const LeftSidebar = () => {
   }, [isSuccess, router, signOut]);
 
   return (
-    <nav className="leftsidebar">
-      <div className="flex flex-col gap-6 items-center lg:pr-10">
-        <Link href="/" className="flex gap-3 items-center">
-          <img
-            src="/assets/images/logo.svg"
-            alt="Logo"
-            width={200}
-            height={36}
-            className={isMessagesPage ? "hidden" : "max-lg:hidden"}
-          />
+    <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-[245px] flex-col bg-dark-3 border-r border-dark-4 z-50">
+      {/* Logo Section */}
+      <div className="px-6 pt-6 pb-4">
+        <Link href="/" className="flex items-center gap-3">
           <img
             src="/assets/images/lg-logo.svg"
-            alt="Logo"
-            width={35}
-            height={40}
-            className={isMessagesPage ? "" : "lg:hidden"}
+            alt="Momento"
+            className="w-14 h-14 flex-shrink-0"
           />
-        </Link>
-
-        <Link
-          href={`/profile/${user.id}`}
-          className={`flex gap-3 item-center ${
-            isAuthenticated ? "" : "hidden"
-          }`}
-        >
-          <img
-            src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
-            alt="profile"
-            className="h-12 w-12 rounded-full max-lg:w-[50px] max-lg:h-[50px] object-cover"
-          />
-          <div className={`flex flex-col justify-center ${isMessagesPage ? "hidden" : "max-lg:hidden"}`}>
-            <p className="base-semibold">{user.name}</p>
-            <p className="text-[13px] text-light-1">@{user.username}</p>
+          <div className="flex flex-col justify-center">
+            <h1 className="text-[28px] font-bold text-white tracking-tight leading-tight">
+              Momento
+            </h1>
+            <p className="text-[9px] font-normal text-light-3 tracking-wider uppercase leading-tight mt-0.5">
+              CAPTURE EVERY MOMENT
+            </p>
           </div>
         </Link>
+      </div>
 
-        <ul className="flex flex-col gap-4 ">
+      {/* User Profile Section */}
+      {isAuthenticated && (
+        <div className="px-6 py-4 border-b border-dark-4">
+          <Link
+            href={`/profile/${user.id}`}
+            className="flex items-center gap-3"
+          >
+            <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
+              <img
+                src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
+                alt={user.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-white truncate">
+                {user.name}
+              </p>
+              <p className="text-xs text-light-3 truncate">@{user.username}</p>
+            </div>
+          </Link>
+        </div>
+      )}
+
+      {/* Navigation Links */}
+      <nav className="flex-1 px-3 py-4">
+        <ul className="space-y-1">
           {sidebarLinks.map((link: INavLink) => {
-            const isActive = link.route === "/messages" 
-              ? pathname.startsWith("/messages")
-              : pathname === link.route;
+            const isActive =
+              link.route === "/messages"
+                ? pathname.startsWith("/messages")
+                : pathname === link.route;
             const isNotifications = link.route === "/notifications";
             const isMessages = link.route === "/messages";
             const showNotificationBadge = isNotifications && unreadCount > 0;
             const showMessageBadge = isMessages && unreadMessageCount > 0;
+            const IconComponent = iconMap[link.route] || Home;
+
             return (
-              <li
-                key={link.label}
-                className={` group body-bold leftsidebar-link ${
-                  isActive ? "text-black bg-white " : " text-light-1"
-                }`}
-              >
+              <li key={link.label}>
                 <Link
                   href={link.route}
-                  className="flex gap-2 item-center p-2 relative"
+                  className={`flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-200 relative ${
+                    isActive
+                      ? "bg-white text-black font-semibold"
+                      : "text-white hover:bg-dark-4"
+                  }`}
                 >
-                  <div className="relative">
-                    <img
-                      src={link.imgURL}
-                      alt={link.label}
-                      className={`group-hover:invert max-lg:w-[30px] max-lg:h-[30px] ${
-                        isActive && "invert"
-                      }`}
+                  <div className="relative flex-shrink-0">
+                    <IconComponent
+                      className="h-6 w-6"
+                      strokeWidth={isActive ? 2.5 : 2}
                     />
                     {showNotificationBadge && (
-                      <span className={`absolute -top-2 -right-2 bg-blue-500 text-white text-[11px] font-extrabold rounded-full flex items-center justify-center shadow-xl z-20 ${
-                        unreadCount > 9 ? "min-w-[24px] h-6 px-1.5" : "w-5 h-5"
-                      }`}>
+                      <span className="absolute -top-1.5 -right-1.5 bg-blue-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center min-w-[18px] h-4.5 px-1">
                         {unreadCount > 9 ? "9+" : unreadCount}
                       </span>
                     )}
                     {showMessageBadge && (
-                      <span className={`absolute -top-2 -right-2 bg-blue-500 text-white text-[11px] font-extrabold rounded-full flex items-center justify-center shadow-xl z-20 ${
-                        unreadMessageCount > 9 ? "min-w-[24px] h-6 px-1.5" : "w-5 h-5"
-                      }`}>
+                      <span className="absolute -top-1.5 -right-1.5 bg-blue-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center min-w-[18px] h-4.5 px-1">
                         {unreadMessageCount > 9 ? "9+" : unreadMessageCount}
                       </span>
                     )}
                   </div>
-                  <p className={isMessagesPage ? "hidden" : "max-lg:hidden body-bold"}>{link.label}</p>
+                  <span className="text-base">{link.label}</span>
                 </Link>
               </li>
             );
           })}
           {isAuthenticated && user.role === "ADMIN" && (
-            <li
-              className={`group body-bold leftsidebar-link ${
-                pathname === "/admin" ? "text-black bg-white " : " text-light-1"
-              }`}
-            >
+            <li>
               <Link
                 href="/admin"
-                className="flex gap-2 item-center p-2 relative"
+                className={`flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-200 ${
+                  pathname === "/admin"
+                    ? "bg-white text-black font-semibold"
+                    : "text-white hover:bg-dark-4"
+                }`}
               >
-                <div className="relative">
-                  <img
-                    src="/assets/icons/filter.svg"
-                    alt="Admin"
-                    className={`invert group-hover:invert max-lg:w-[30px] max-lg:h-[30px] ${
-                      pathname === "/admin" && "invert"
-                    }`}
-                  />
-                </div>
-                <p className={isMessagesPage ? "hidden" : "max-lg:hidden body-bold"}>Admin</p>
+                <img
+                  src="/assets/icons/filter.svg"
+                  alt="Admin"
+                  className={`w-6 h-6 ${pathname === "/admin" ? "invert" : ""}`}
+                />
+                <span className="text-base">Admin</span>
               </Link>
             </li>
           )}
         </ul>
+      </nav>
+
+      {/* Logout Button */}
+      <div className="p-3">
+        {isAuthenticated ? (
+          <button
+            onClick={() => signOutMutation()}
+            className="w-full flex items-center gap-4 px-4 py-3 rounded-lg text-white hover:bg-dark-4 transition-all duration-200"
+          >
+            <LogOut className="h-6 w-6" strokeWidth={2} />
+            <span className="text-base">Logout</span>
+          </button>
+        ) : (
+          <div className="flex flex-col gap-2">
+            <Link href="/sign-in" className="w-full">
+              <button className="w-full flex items-center gap-4 px-4 py-3 rounded-lg text-white hover:bg-dark-4 transition-all duration-200 border border-dark-4">
+                <LogOut className="h-6 w-6" strokeWidth={2} />
+                <span className="text-base">Sign-in</span>
+              </button>
+            </Link>
+            <Link href="/sign-up" className="w-full">
+              <button className="w-full flex items-center gap-4 px-4 py-3 rounded-lg text-white hover:bg-dark-4 transition-all duration-200 border border-dark-4 bg-dark-4">
+                <LogOut className="h-6 w-6" strokeWidth={2} />
+                <span className="text-base">Sign-up</span>
+              </button>
+            </Link>
+          </div>
+        )}
       </div>
 
-      {isAuthenticated ? (
-        <Button
-          variant="ghost"
-          className="hover:bg-white group flex justify-start gap-3 py-2"
-          onClick={() => signOutMutation()}
-        >
-          <img
-            className="group-hover:invert max-lg:w-[30px] max-lg:h-[30px] "
-            src="/assets/icons/logout.svg"
-            alt="logout"
-          />
-          <p
-            className={`base-semibold group-hover:text-black  text-light-1  ${isMessagesPage ? "hidden" : "max-lg:hidden"}`}
-          >
-            Logout
-          </p>
-        </Button>
-      ) : (
-        <div className="flex flex-col gap-3">
-          <Link href="/sign-in">
-            <Button
-              variant="ghost"
-              className="hover:bg-white group flex justify-start border border-dark-4 w-full gap-3 py-2"
-            >
-              <img
-                src="/assets/icons/account.svg"
-                className="group-hover:invert max-lg:w-[30px] max-lg:h-[30px] "
-              />
-              <p
-                className={`base-semibold group-hover:text-black  text-light-1  ${isMessagesPage ? "hidden" : "max-lg:hidden"}`}
-              >
-                Sign-in
-              </p>
-            </Button>
+      {/* Footer Links */}
+      <div className="px-6 py-4 border-t border-dark-4">
+        <div className="flex gap-4 text-xs text-light-3">
+          <Link href="/about" className="hover:text-white transition-colors">
+            About
           </Link>
-          <Link href="/sign-up">
-            <Button
-              variant="ghost"
-              className="hover:bg-white group flex justify-start bg-dark-4 border border-dark-4  w-full gap-3 py-2"
-            >
-              <img
-                src="/assets/icons/sign-up.svg"
-                className="group-hover:invert max-lg:w-[30px] max-lg:h-[30px] "
-              />
-              <p
-                className={`base-semibold group-hover:text-black  text-light-1  ${isMessagesPage ? "hidden" : "max-lg:hidden"}`}
-              >
-                Sign-up
-              </p>
-            </Button>
+          <Link href="/privacy" className="hover:text-white transition-colors">
+            Privacy Policy
           </Link>
         </div>
-      )}
-
-      <div className={`flex gap-4 mt-4 ${isMessagesPage ? "hidden" : "max-lg:hidden"}`}>
-        <Link 
-          href="/about" 
-          className="text-light-3 hover:text-light-1 text-xs transition"
-        >
-          About
-        </Link>
-        <Link 
-          href="/privacy" 
-          className="text-light-3 hover:text-light-1 text-xs transition"
-        >
-          Privacy Policy
-        </Link>
       </div>
-    </nav>
+    </aside>
   );
 };
 
