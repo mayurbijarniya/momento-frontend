@@ -5,6 +5,38 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 6%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 47%;
+
+    --accent: 200 100% 48%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 100% 63%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 12%;
+    --input: 0 0% 12%;
+    --ring: 200 100% 48%;
+
+    --radius: 0.5rem;
+  }
+
   * {
     @apply box-border list-none p-0 m-0 scroll-smooth;
   }
@@ -15,7 +47,6 @@
 }
 
 @layer utilities {
-  /* TYPOGRAPHY */
   .h1-bold {
     @apply text-[36px] font-bold leading-[140%] tracking-tighter;
   }
@@ -72,7 +103,6 @@
     @apply text-[10px] font-medium leading-[140%];
   }
 
-  /* UTILITIES */
   .invert-white {
     @apply invert brightness-0 transition;
   }
@@ -116,7 +146,6 @@
     @apply flex flex-col flex-1 items-center gap-4 overflow-hidden py-4 px-4 sm:px-5 md:px-8 lg:px-14;
   }
 
-  /* All Users */
   .user-container {
     @apply max-w-5xl flex flex-col items-start w-full gap-6 md:gap-9;
   }
@@ -125,7 +154,6 @@
     @apply w-full grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-7 max-w-5xl;
   }
 
-  /* Explore */
   .explore-container {
     @apply flex flex-col flex-1 items-center overflow-scroll py-6 sm:py-10 px-4 sm:px-5 md:p-14 custom-scrollbar;
   }
@@ -138,7 +166,6 @@
     @apply h-12 bg-dark-2 border-none placeholder:text-light-1 focus-visible:ring-0 focus-visible:ring-offset-0 ring-offset-0 !important;
   }
 
-  /* Home */
   .home-container {
     @apply flex flex-col flex-1 items-center gap-6 sm:gap-10 overflow-scroll py-6 sm:py-10 px-4 sm:px-5 md:px-8 lg:p-14 custom-scrollbar;
   }
@@ -151,7 +178,6 @@
     @apply hidden xl:flex flex-col w-72 2xl:w-465 px-6 py-10 gap-10  overflow-scroll custom-scrollbar;
   }
 
-  /* Post Details */
   .post_details-container {
     @apply flex flex-col flex-1 gap-6 sm:gap-10 overflow-scroll py-6 sm:py-10 px-4 sm:px-5 md:p-14 custom-scrollbar items-center;
   }
@@ -176,7 +202,6 @@
     @apply p-0 flex gap-3 hover:bg-transparent hover:text-light-1  text-light-1 small-medium lg:base-medium;
   }
 
-  /* Profile */
   .profile-container {
     @apply flex flex-col items-center flex-1 gap-4 sm:gap-6 overflow-scroll py-6 sm:py-10 px-4 sm:px-5 md:p-14 custom-scrollbar;
   }
@@ -189,27 +214,22 @@
     @apply flex-center gap-3 py-4 w-48 bg-dark-2  transition flex-1 xl:flex-initial;
   }
 
-  /* Saved */
   .saved-container {
     @apply flex flex-col flex-1 items-center gap-6 sm:gap-10 overflow-scroll py-6 sm:py-10 px-4 sm:px-5 md:p-14 custom-scrollbar;
   }
 
-  /* Notifications */
   .notifications-container {
     @apply flex flex-col flex-1 items-center gap-6 sm:gap-10 overflow-scroll py-6 sm:py-10 px-4 sm:px-5 md:p-14 custom-scrollbar;
   }
 
-  /* Admin */
   .admin-container {
     @apply flex flex-col flex-1 items-center gap-6 sm:gap-10 overflow-scroll py-6 sm:py-10 px-4 sm:px-5 md:p-14 custom-scrollbar;
   }
 
-  /* Bottom bar */
   .bottom-bar {
     @apply z-50 flex justify-around items-center w-full sticky bottom-0  bg-dark-3 border-t border-zinc-800 px-5 py-4 md:hidden rounded-t-[50px];
   }
 
-  /* File uploader */
   .file_uploader-img {
     @apply h-48 lg:h-64 w-full rounded-[24px] object-cover object-top;
   }
@@ -222,7 +242,6 @@
     @apply flex-center flex-col p-4 h-48 lg:h-64;
   }
 
-  /* Grid Post List */
   .grid-container {
     @apply w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-7 max-w-5xl;
   }
@@ -235,7 +254,6 @@
     @apply absolute bottom-0 p-5 flex-between w-full bg-gradient-to-t from-dark-3 to-transparent rounded-b-[24px] gap-2;
   }
 
-  /* Left sidebar */
   .leftsidebar {
     @apply hidden md:flex px-6 py-8 flex-col w-[280px] border-r border-dark-4 h-screen overflow-y-auto bg-dark-1;
   }
@@ -244,7 +262,6 @@
     @apply rounded-lg base-medium hover:text-black hover:bg-white  transition;
   }
 
-  /* Post Card */
   .post-card {
     @apply bg-zinc-900 rounded-xl border border-dark-4 p-4 sm:p-5 lg:p-6 w-full max-w-screen-sm;
   }
@@ -253,12 +270,10 @@
     @apply h-64 xs:h-[400px] lg:h-[450px] w-full rounded-[24px] object-cover mb-5;
   }
 
-  /* Topbar */
   .topbar {
     @apply sticky top-0 z-50 md:hidden bg-dark-3 border-b border-dark-4 w-full;
   }
 
-  /* User card */
   .user-card-wrapper {
     @apply w-full h-full;
   }
@@ -269,8 +284,6 @@
 }
 
 @layer components {
-  /* SHADCN COMPONENTS */
-  /* Form */
   .shad-form_label {
     @apply text-white !important;
   }
@@ -287,7 +300,6 @@
     @apply h-20 bg-dark-3 rounded-xl border-none focus-visible:ring-1 focus-visible:ring-offset-1 ring-offset-light-3 !important;
   }
 
-  /* Button */
   .shad-button_primary {
     @apply bg-primary-500 hover:bg-primary-500 text-light-1 flex gap-2 !important;
   }

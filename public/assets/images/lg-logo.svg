@@ -1,15 +1,17 @@
 <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="lgIconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0095F6;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#0066CC;stop-opacity:1" />
-    </linearGradient>
-  </defs>
-  <!-- Icon: Rounded square with gradient -->
-  <!-- Outer rounded square with gradient -->
-  <rect x="2" y="2" width="46" height="46" rx="10" fill="url(#lgIconGradient)"/>
-  <!-- Inner white outline square -->
-  <rect x="10" y="10" width="30" height="30" rx="6" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.4"/>
-  <!-- Center white circle -->
-  <circle cx="25" cy="25" r="7" fill="#FFFFFF"/>
+  <!-- Outer rounded square outline -->
+  <rect x="2" y="2" width="46" height="46" rx="10" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+  
+  <!-- Camera icon (matching lucide-react Camera icon) -->
+  <!-- Viewfinder/flash housing on top (slightly to the right, typical lucide style) -->
+  <path d="M 20 10 L 20 12 L 30 12 L 30 10" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Camera body (main rectangle with rounded corners) -->
+  <rect x="11" y="16" width="28" height="20" rx="2" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Circular lens (centered in camera body) -->
+  <circle cx="25" cy="26" r="6" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Inner lens circle -->
+  <circle cx="25" cy="26" r="3" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

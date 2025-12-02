@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Button } from "../ui/button";
 import {
   useSignOutAccount,
   useGetUnreadNotificationCount,
@@ -21,6 +20,7 @@ import {
   MessageCircle,
   Bell,
   LogOut,
+  Camera,
 } from "lucide-react";
 
 const iconMap: Record<string, any> = {
@@ -57,22 +57,20 @@ const LeftSidebar = () => {
   }, [isSuccess, router, signOut]);
 
   return (
-    <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-[245px] flex-col bg-dark-3 border-r border-dark-4 z-50">
+    <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-[300px] flex-col bg-dark-3 border-r border-dark-4 z-50">
       {/* Logo Section */}
       <div className="px-6 pt-6 pb-4">
         <Link href="/" className="flex items-center gap-3">
-          <img
-            src="/assets/images/lg-logo.svg"
-            alt="Momento"
-            className="w-14 h-14 flex-shrink-0"
-          />
+          <div className="p-2 border border-white rounded-lg flex-shrink-0">
+            <Camera className="h-8 w-8 text-white" />
+          </div>
           <div className="flex flex-col justify-center">
-            <h1 className="text-[28px] font-bold text-white tracking-tight leading-tight">
+            <span className="text-3xl font-bold text-white tracking-tight leading-tight">
               Momento
-            </h1>
-            <p className="text-[9px] font-normal text-light-3 tracking-wider uppercase leading-tight mt-0.5">
+            </span>
+            <span className="text-xs text-accent tracking-widest leading-tight">
               CAPTURE EVERY MOMENT
-            </p>
+            </span>
           </div>
         </Link>
       </div>
