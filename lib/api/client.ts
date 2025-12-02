@@ -437,14 +437,16 @@ export const deletePost = async (postId: string, imageId: string) => {
 
 export const getInfinitePosts = async ({
   pageParam = 0,
+  sortBy = "latest",
 }: {
   pageParam?: number;
+  sortBy?: string;
 }) => {
   try {
     const limit = 10;
     const skip = pageParam * limit;
     const response = await axiosWithCredentials.get(
-      `${POSTS_API}?limit=${limit}&skip=${skip}`
+      `${POSTS_API}?limit=${limit}&skip=${skip}&sortBy=${sortBy}`
     );
     const posts = response.data.documents || [];
     return {

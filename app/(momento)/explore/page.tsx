@@ -11,19 +11,25 @@ import {
   useSearchPosts,
   useSearchExternal,
 } from "@/lib/react-query/queriesAndMutation";
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useUserContext } from "@/context/AuthContext";
 
 type SearchType = "local" | "external";
+type SortOption = "latest" | "oldest" | "mostLiked" | "mostReviewed";
 
 const ExploreContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [ref, InView] = useInView();
   const { isAuthenticated } = useUserContext();
-  const { data: posts, fetchNextPage, hasNextPage } = useGetPosts();
+  const [sortBy, setSortBy] = useState<SortOption>(
+    (searchParams.get("sort") as SortOption) || "latest"
+  );
+  const [showFilterMenu, setShowFilterMenu] = useState(false);
+  const filterMenuRef = useRef<HTMLDivElement>(null);
+  const { data: posts, fetchNextPage, hasNextPage } = useGetPosts(sortBy);
 
   const [searchValue, setsearchValue] = useState(
     searchParams.get("q") || ""
@@ -57,6 +63,52 @@ const ExploreContent = () => {
       fetchNextPage();
     }
   }, [InView, searchValue, hasNextPage, fetchNextPage, searchType]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        filterMenuRef.current &&
+        !filterMenuRef.current.contains(event.target as Node)
+      ) {
+        setShowFilterMenu(false);
+      }
+    };
+
+    if (showFilterMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showFilterMenu]);
+
+  const handleSortChange = (option: SortOption) => {
+    setSortBy(option);
+    setShowFilterMenu(false);
+    const params = new URLSearchParams(searchParams.toString());
+    if (option !== "latest") {
+      params.set("sort", option);
+    } else {
+      params.delete("sort");
+    }
+    router.replace(`/explore?${params.toString()}`, { scroll: false });
+  };
+
+  const getSortLabel = (option: SortOption) => {
+    switch (option) {
+      case "latest":
+        return "Latest";
+      case "oldest":
+        return "Oldest";
+      case "mostLiked":
+        return "Most Liked";
+      case "mostReviewed":
+        return "Most Reviewed";
+      default:
+        return "Latest";
+    }
+  };
 
   if (!posts) {
     return (
@@ -139,17 +191,66 @@ const ExploreContent = () => {
         </h3>
 
         {!shouldShowSearchResults && (
-          <button
-            className="flex-center gap-3 bg-dark-3 rounded-xl px-4 py-2 cursor-pointer hover:bg-dark-4 transition"
-          >
-            <p className="small-medium md:base-medium text-light-2">All</p>
-            <img
-              src="/assets/icons/filter.svg"
-              width={20}
-              height={20}
-              alt="filter"
-            />
-          </button>
+          <div className="relative" ref={filterMenuRef}>
+            <button
+              onClick={() => setShowFilterMenu(!showFilterMenu)}
+              className="flex-center gap-3 bg-dark-3 rounded-xl px-4 py-2 cursor-pointer hover:bg-dark-4 transition"
+            >
+              <p className="small-medium md:base-medium text-light-2">
+                {getSortLabel(sortBy)}
+              </p>
+              <img
+                src="/assets/icons/filter.svg"
+                width={20}
+                height={20}
+                alt="filter"
+              />
+            </button>
+            {showFilterMenu && (
+              <div className="absolute right-0 mt-2 w-48 bg-dark-2 border border-dark-4 rounded-lg shadow-lg z-50">
+                <button
+                  onClick={() => handleSortChange("latest")}
+                  className={`w-full text-left px-4 py-3 text-sm hover:bg-dark-3 transition ${
+                    sortBy === "latest"
+                      ? "text-white bg-dark-3"
+                      : "text-light-2"
+                  }`}
+                >
+                  Latest
+                </button>
+                <button
+                  onClick={() => handleSortChange("oldest")}
+                  className={`w-full text-left px-4 py-3 text-sm hover:bg-dark-3 transition ${
+                    sortBy === "oldest"
+                      ? "text-white bg-dark-3"
+                      : "text-light-2"
+                  }`}
+                >
+                  Oldest
+                </button>
+                <button
+                  onClick={() => handleSortChange("mostLiked")}
+                  className={`w-full text-left px-4 py-3 text-sm hover:bg-dark-3 transition ${
+                    sortBy === "mostLiked"
+                      ? "text-white bg-dark-3"
+                      : "text-light-2"
+                  }`}
+                >
+                  Most Liked
+                </button>
+                <button
+                  onClick={() => handleSortChange("mostReviewed")}
+                  className={`w-full text-left px-4 py-3 text-sm hover:bg-dark-3 transition ${
+                    sortBy === "mostReviewed"
+                      ? "text-white bg-dark-3"
+                      : "text-light-2"
+                  }`}
+                >
+                  Most Reviewed
+                </button>
+              </div>
+            )}
+          </div>
         )}
       </div>
 

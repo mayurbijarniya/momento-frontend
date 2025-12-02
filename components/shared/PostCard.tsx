@@ -13,11 +13,17 @@ type PostCardProps = {
 
 const PostCard = ({ post }: PostCardProps) => {
   const [loading, setLoading] = useState(true);
+  const [showAllTags, setShowAllTags] = useState(false);
   const dateString: string = post.$createdAt || post.createdAt;
   const timestamp: string = timeAgo(dateString);
 
   const { user, isAuthenticated } = useUserContext();
   if (!post.creator) return null;
+
+  const tags = post.tags || [];
+  const maxVisibleTags = 3;
+  const hasMoreTags = tags.length > maxVisibleTags;
+  const visibleTags = showAllTags ? tags : tags.slice(0, maxVisibleTags);
 
   const handleImageLoad = () => {
     setLoading(false);
@@ -95,13 +101,29 @@ const PostCard = ({ post }: PostCardProps) => {
             <span className="body-bold">{post.creator.username}</span> :{" "}
             <span className="font-extralight">{post.caption}</span>
           </p>
-          <ul className="flex gap-1 mt-2">
-            {post.tags.map((tag: string) => (
-              <li key={tag} className="text-light-4">
-                {tag ? `#${tag}` : ""}
-              </li>
-            ))}
-          </ul>
+          {tags.length > 0 && (
+            <div className="mt-2">
+              <ul className="flex flex-wrap gap-1">
+                {visibleTags.map((tag: string) => (
+                  <li key={tag} className="text-light-4">
+                    {tag ? `#${tag}` : ""}
+                  </li>
+                ))}
+              </ul>
+              {hasMoreTags && (
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowAllTags(!showAllTags);
+                  }}
+                  className="text-light-3 hover:text-light-1 text-xs mt-1"
+                >
+                  {showAllTags ? "show less" : "show more"}
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </Link>
 

@@ -231,10 +231,10 @@ export const useDeletePost = () => {
   });
 };
 
-export const useGetPosts = () => {
+export const useGetPosts = (sortBy: string = "latest") => {
   return useInfiniteQuery({
-    queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
-    queryFn: getInfinitePosts as any,
+    queryKey: [QUERY_KEYS.GET_INFINITE_POSTS, sortBy],
+    queryFn: ({ pageParam }) => getInfinitePosts({ pageParam, sortBy }) as any,
     getNextPageParam: (lastPage: any, allPages: any[]) => {
       if (lastPage && lastPage.documents.length === 0) {
         return undefined;

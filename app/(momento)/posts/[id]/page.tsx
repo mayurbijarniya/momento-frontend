@@ -160,13 +160,15 @@ const PostDetails = () => {
 
             <div className="flex flex-col flex-1 w-full small-medium lg:base-regular">
               <p>{(post as any)?.caption}</p>
-              <ul className="flex gap-1 mt-2">
-                {(post as any)?.tags?.map((tag: string) => (
-                  <li key={tag} className="text-light-3">
-                    {tag ? `#${tag}` : ""}
-                  </li>
-                ))}
-              </ul>
+              {(post as any)?.tags?.length > 0 && (
+                <ul className="flex flex-wrap gap-1 mt-2">
+                  {(post as any)?.tags?.map((tag: string) => (
+                    <li key={tag} className="text-light-3">
+                      {tag ? `#${tag}` : ""}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
             <div className="w-full">
               <PostStats post={post as any} userId={user?.id || ""} />
