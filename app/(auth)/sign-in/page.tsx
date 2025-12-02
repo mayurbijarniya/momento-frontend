@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -20,6 +19,8 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { useSignInAccount } from "@/lib/react-query/queriesAndMutation";
 import { useUserContext } from "@/context/AuthContext";
+import { Camera } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const SigninForm = () => {
   const { toast } = useToast();
@@ -80,92 +81,111 @@ const SigninForm = () => {
   }
 
   return (
-    <Form {...form}>
-      <div className="sm:w-420 flex-center flex-col max-sm:w-[300px] max-sm:p-5">
-        <Link href="/" className="mb-2 flex items-center gap-3 justify-center">
-          <img
-            src="/assets/images/lg-logo.svg"
-            alt="Momento"
-            className="w-12 h-12"
-          />
-          <div className="flex flex-col justify-center">
-            <h1 className="text-[28px] font-bold text-white tracking-tight leading-tight">
-              Momento
+    <div className="min-h-screen bg-dark-3 flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        <Form {...form}>
+          {/* Logo */}
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <div className="p-2 border border-border rounded-lg flex-shrink-0">
+              <Camera className="h-8 w-8 text-foreground" />
+            </div>
+            <div className="flex flex-col justify-center">
+              <span className="text-3xl font-bold text-foreground tracking-tight leading-tight">
+                Momento
+              </span>
+              <span className="text-xs text-accent tracking-widest leading-tight">
+                CAPTURE EVERY MOMENT
+              </span>
+            </div>
+          </div>
+
+          {/* Title */}
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-bold text-foreground mb-2">
+              Log In to account.
             </h1>
-            <p className="text-[9px] font-normal text-light-3 tracking-wider uppercase leading-tight mt-0.5">
-              CAPTURE EVERY MOMENT
+            <p className="text-muted-foreground">
+              Welcome Back! enter your account details
             </p>
           </div>
-        </Link>
-        <h2 className="h3-bold md:h2-bold pt-2 pb-1">Log In to account.</h2>
-        <p className="text-slate-400 small-regular mt-1 mb-3">
-          Welcome Back! enter your account details
-        </p>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-3 w-full"
-        >
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email or Username</FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    className="shad-input"
-                    placeholder="Enter email or username"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input
-                    type="password"
-                    className="shad-input"
-                    placeholder="Enter password"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button
-            type="submit"
-            className="bg-white text-black font-bold mt-1 hover:bg-gray-300 h-10"
-          >
-            {isSigningIn ? (
-              <div className="flex-center gap-2">
-                <Loader />
-                Loading...
-              </div>
-            ) : (
-              "Sign-In"
-            )}
-          </Button>
-          <p className="text-small-regular text-light-2 text-center mt-3">
-            Dont have an account?
+
+          {/* Form */}
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="space-y-2">
+                    <FormLabel htmlFor="email" className="text-foreground">
+                      Email or Username
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        id="email"
+                        type="text"
+                        placeholder="Enter email or username"
+                        className="bg-secondary/50 border-border text-foreground placeholder:text-muted-foreground"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="space-y-2">
+                    <FormLabel htmlFor="password" className="text-foreground">
+                      Password
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        id="password"
+                        type="password"
+                        placeholder="Enter password"
+                        className="bg-secondary/50 border-border text-foreground placeholder:text-muted-foreground"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
+            <Button
+              type="submit"
+              disabled={isSigningIn}
+              className="w-full bg-foreground text-background hover:bg-foreground/90 font-medium"
+            >
+              {isSigningIn ? (
+                <div className="flex items-center justify-center gap-2">
+                  <Loader />
+                  <span>Signing in...</span>
+                </div>
+              ) : (
+                "Sign-In"
+              )}
+            </Button>
+          </form>
+
+          {/* Sign Up Link */}
+          <p className="text-center mt-6 text-muted-foreground">
+            Don't have an account?{" "}
             <Link
               href="/sign-up"
-              className="text-white body-bold underline text-small-semibold ml-1"
+              className="text-foreground font-medium underline hover:no-underline"
             >
               Create an account
             </Link>
           </p>
-        </form>
+        </Form>
       </div>
-    </Form>
+    </div>
   );
 };
 

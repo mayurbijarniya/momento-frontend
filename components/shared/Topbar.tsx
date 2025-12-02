@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useUserContext } from "@/context/AuthContext";
-import { Button } from "../ui/button";
+import { Camera } from "lucide-react";
 
 const Topbar = () => {
   const { user, isAuthenticated } = useUserContext();
@@ -8,15 +8,18 @@ const Topbar = () => {
   return (
     <section className="topbar">
       <div className="flex-between py-4 px-5">
-        <Link href="/" className="flex gap-3 items-center">
-          <img
-            src="/assets/images/lg-logo.svg"
-            alt="Momento"
-            className="w-12 h-12"
-          />
-          <h1 className="text-[28px] font-bold text-white tracking-tight">
-            Momento
-          </h1>
+        <Link href="/" className="flex items-center gap-3">
+          <div className="p-2 border border-white rounded-lg flex-shrink-0">
+            <Camera className="h-8 w-8 text-white" />
+          </div>
+          <div className="flex flex-col justify-center">
+            <span className="text-3xl font-bold text-white tracking-tight leading-tight">
+              Momento
+            </span>
+            <span className="text-xs text-accent tracking-widest leading-tight">
+              CAPTURE EVERY MOMENT
+            </span>
+          </div>
         </Link>
 
         <div className="flex items-center gap-4">
