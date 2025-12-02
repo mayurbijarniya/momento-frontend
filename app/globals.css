@@ -41,8 +41,12 @@
     @apply box-border list-none p-0 m-0 scroll-smooth;
   }
 
+  html {
+    @apply overflow-x-hidden;
+  }
+
   body {
-    @apply bg-dark-3 text-white min-h-screen font-inter;
+    @apply bg-dark-3 text-white min-h-screen font-inter overflow-x-hidden;
   }
 }
 
@@ -139,7 +143,7 @@
   }
 
   .common-container {
-    @apply flex flex-col flex-1 items-center gap-6 sm:gap-10 overflow-scroll py-6 sm:py-10 px-4 sm:px-5 md:px-8 lg:p-14 custom-scrollbar;
+    @apply flex flex-col flex-1 items-center gap-6 sm:gap-10 overflow-y-auto overflow-x-hidden py-6 sm:py-10 px-4 sm:px-5 md:px-8 lg:p-14 custom-scrollbar;
   }
 
   .common-container-create {
@@ -155,7 +159,7 @@
   }
 
   .explore-container {
-    @apply flex flex-col flex-1 items-center overflow-scroll py-6 sm:py-10 px-4 sm:px-5 md:p-14 custom-scrollbar;
+    @apply flex flex-col flex-1 items-center overflow-y-auto overflow-x-hidden py-6 sm:py-10 px-4 sm:px-5 md:p-14 custom-scrollbar;
   }
 
   .explore-inner_container {
@@ -167,7 +171,7 @@
   }
 
   .home-container {
-    @apply flex flex-col flex-1 items-center gap-6 sm:gap-10 overflow-scroll py-6 sm:py-10 px-4 sm:px-5 md:px-8 lg:p-14 custom-scrollbar;
+    @apply flex flex-col flex-1 items-center gap-6 sm:gap-10 overflow-y-auto overflow-x-hidden py-6 sm:py-10 px-4 sm:px-5 md:px-8 lg:p-14 custom-scrollbar;
   }
 
   .home-posts {
@@ -175,7 +179,7 @@
   }
 
   .home-creators {
-    @apply hidden xl:flex flex-col w-72 2xl:w-465 px-6 py-10 gap-10  overflow-scroll custom-scrollbar;
+    @apply hidden xl:flex flex-col w-72 2xl:w-465 px-6 py-10 gap-10  overflow-y-auto overflow-x-hidden custom-scrollbar;
   }
 
   .post_details-container {
@@ -204,7 +208,7 @@
   }
 
   .profile-container {
-    @apply flex flex-col items-center flex-1 gap-4 sm:gap-6 overflow-scroll py-6 sm:py-10 px-4 sm:px-5 md:p-14 custom-scrollbar;
+    @apply flex flex-col items-center flex-1 gap-4 sm:gap-6 overflow-y-auto overflow-x-hidden py-6 sm:py-10 px-4 sm:px-5 md:p-14 custom-scrollbar;
   }
 
   .profile-inner_container {
@@ -216,15 +220,15 @@
   }
 
   .saved-container {
-    @apply flex flex-col flex-1 items-center gap-6 sm:gap-10 overflow-scroll py-6 sm:py-10 px-4 sm:px-5 md:p-14 custom-scrollbar;
+    @apply flex flex-col flex-1 items-center gap-6 sm:gap-10 overflow-y-auto overflow-x-hidden py-6 sm:py-10 px-4 sm:px-5 md:p-14 custom-scrollbar;
   }
 
   .notifications-container {
-    @apply flex flex-col flex-1 items-center gap-6 sm:gap-10 overflow-scroll py-6 sm:py-10 px-4 sm:px-5 md:p-14 custom-scrollbar;
+    @apply flex flex-col flex-1 items-center gap-6 sm:gap-10 overflow-y-auto overflow-x-hidden py-6 sm:py-10 px-4 sm:px-5 md:p-14 custom-scrollbar;
   }
 
   .admin-container {
-    @apply flex flex-col flex-1 items-center gap-6 sm:gap-10 overflow-scroll py-6 sm:py-10 px-4 sm:px-5 md:p-14 custom-scrollbar;
+    @apply flex flex-col flex-1 items-center gap-6 sm:gap-10 overflow-y-auto overflow-x-hidden py-6 sm:py-10 px-4 sm:px-5 md:p-14 custom-scrollbar;
   }
 
   .bottom-bar {
