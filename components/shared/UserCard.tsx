@@ -8,30 +8,36 @@ type UserCardProps = {
 
 const UserCard = ({ user }: UserCardProps) => {
   return (
-    <Link href={`/profile/${user.$id || user.id}`} className="user-card">
+    <div className="user-card-wrapper">
+      <div className="user-card">
       <img
         src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
         alt="creator"
-        className="rounded-full w-14 h-14 object-cover"
+          className="rounded-full w-20 h-20 object-cover mb-4"
       />
 
-      <div className="flex-center flex-col gap-1">
-        <p className="base-medium text-light-1 text-center line-clamp-1">
+        <div className="flex-center flex-col gap-2 mb-6">
+          <p className="base-medium text-light-1 text-center line-clamp-1 font-bold">
           {user.name}
         </p>
-        <p className="small-regular text-slate-400 text-center line-clamp-1">
+          <p className="small-regular text-light-3 text-center line-clamp-1">
           @{user.username}
         </p>
       </div>
 
+        <div className="flex-center w-full">
+          <Link href={`/profile/${user.$id || user.id}`}>
       <Button
         type="button"
         size="sm"
-        className="bg-white text-black px-5 hover:scale-110 transition hover:bg-dark-4 hover:text-white `"
+              className="bg-dark-3 text-light-1 hover:bg-primary-500 hover:text-white transition rounded-lg px-5 py-2 font-medium"
       >
         Visit Profile
       </Button>
     </Link>
+        </div>
+      </div>
+    </div>
   );
 };
 
