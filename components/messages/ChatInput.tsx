@@ -1,6 +1,6 @@
 "use client";
 import { useState, KeyboardEvent, useRef, useEffect } from "react";
-import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -81,7 +81,7 @@ const ChatInput = ({ onSend, isLoading }: ChatInputProps) => {
               <div className="w-[280px] sm:w-[320px] md:w-[350px]">
                 <EmojiPicker
                   onEmojiClick={handleEmojiClick}
-                  theme="dark"
+                  theme={Theme.DARK}
                   width="100%"
                   height={350}
                   previewConfig={{ showPreview: false }}

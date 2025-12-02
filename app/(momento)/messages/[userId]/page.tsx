@@ -17,7 +17,7 @@ import MessageBubble from "@/components/messages/MessageBubble";
 import ChatInput from "@/components/messages/ChatInput";
 import TypingIndicator from "@/components/messages/TypingIndicator";
 import Loader from "@/components/shared/Loader";
-import { IMessage } from "@/types";
+import { IMessage, IUserConversation } from "@/types";
 
 const INITIAL_GREETING: IMessage = {
   _id: "greeting",
@@ -47,7 +47,7 @@ const ChatPage = () => {
   const { mutate: markAsRead } = useMarkConversationAsRead();
 
   const aiMessages = chatData?.messages || [];
-  const userMessages = userConversationData?.messages || [];
+  const userMessages = (userConversationData as IUserConversation | undefined)?.messages || [];
   const displayMessages = isAI ? (aiMessages.length > 0 ? aiMessages : [INITIAL_GREETING]) : userMessages;
 
   const selectedUserName = isAI ? "Momento AI" : userData?.name || "User";
@@ -68,6 +68,13 @@ const ChatPage = () => {
       markAsRead(selectedUserId);
     }
   }, [selectedUserId, isAI, isAuthenticated, conversationLoading, userMessages.length, markAsRead]);
+
+  // Invalidate unread message count when conversation data is loaded
+  useEffect(() => {
+    if (!isAI && selectedUserId && userConversationData && !conversationLoading) {
+      queryClient.invalidateQueries({ queryKey: ["unreadMessageCount"] });
+    }
+  }, [isAI, selectedUserId, userConversationData, conversationLoading, queryClient]);
 
   const handleBackToList = () => {
     setShowMessagesList(true);
