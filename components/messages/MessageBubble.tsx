@@ -21,10 +21,6 @@ const MessageBubble = ({ message, isAI = false, senderImage, currentUserImage }:
     addSuffix: false 
   });
 
-  const avatarSrc = isAI 
-    ? "/assets/images/momento-ai-avatar.svg"
-    : senderImage || "/assets/icons/profile-placeholder.svg";
-
   const handleDownloadImage = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!message.imageUrl) return;
@@ -93,25 +89,9 @@ const MessageBubble = ({ message, isAI = false, senderImage, currentUserImage }:
     };
   }, [isImageModalOpen]);
 
-  const currentUserAvatar = isUser ? (currentUserImage || "/assets/icons/profile-placeholder.svg") : undefined;
-
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4`}>
-      <div className={`flex ${isUser ? "flex-row-reverse" : "flex-row"} items-end gap-2 max-w-[85%] sm:max-w-[80%]`}>
-        {!isUser && (
-          <img
-            src={avatarSrc}
-            alt={isAI ? "AI" : "User"}
-            className="w-8 h-8 rounded-full flex-shrink-0 object-cover border border-dark-4"
-          />
-        )}
-        {isUser && (
-          <img
-            src={currentUserAvatar}
-            alt="You"
-            className="w-8 h-8 rounded-full flex-shrink-0 object-cover border border-dark-4"
-          />
-        )}
+      <div className={`flex ${isUser ? "flex-row-reverse" : "flex-row"} items-end max-w-[85%] sm:max-w-[80%]`}>
         <div>
           <div
             className={`px-4 py-2.5 rounded-2xl text-sm sm:text-base ${

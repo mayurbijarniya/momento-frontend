@@ -229,7 +229,7 @@ const UpdateProfile = () => {
             <div className="flex gap-4 items-center justify-end">
               <Button
                 type="button"
-                className="bg-dark-4 hover:bg-white hover:text-black transition text-white"
+                className="h-10 px-4 text-sm hover:scale-110 transition hover:bg-dark-4 hover:text-white"
                 onClick={() => router.back()}
               >
                 Cancel

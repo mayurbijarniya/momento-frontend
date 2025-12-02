@@ -71,14 +71,14 @@ const DeleteAccountDialog = ({
             variant="ghost"
             onClick={onClose}
             disabled={isLoading}
-            className="hover:bg-dark-4"
+            className="bg-dark-3 hover:bg-dark-1 text-light-1 border border-dark-4"
           >
             Cancel
           </Button>
           <Button
             onClick={handleConfirm}
             disabled={isLoading || confirmText.toLowerCase() !== CONFIRM_TEXT}
-            className="bg-red-600 hover:bg-red-700 text-white"
+            className="bg-[#0095F6] hover:bg-[#0066CC] text-white"
           >
             {isLoading ? "Deleting..." : buttonText}
           </Button>
