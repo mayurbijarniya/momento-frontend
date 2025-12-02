@@ -179,9 +179,9 @@ export const useGetPostById = (postId: string) => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_POST_BY_ID, postId],
     queryFn: () => getPostById(postId),
-    enabled: !!postId, //enabled is used to stop refetching, also !! is basically ternary operator. ##enable is true when we fetch data for a new postid
-    retry: 1, // Only retry once on failure
-    retryOnMount: false, // Don't retry when component remounts
+    enabled: !!postId,
+    retry: 1,
+    retryOnMount: false,
   });
 };
 
@@ -250,9 +250,9 @@ export const useGetPosts = () => {
 
 export const useSearchPosts = (searchTerm: string) => {
   return useQuery({
-    queryKey: [QUERY_KEYS.SEARCH_POSTS, searchTerm], //validate query again onces searchTerm changes
+    queryKey: [QUERY_KEYS.SEARCH_POSTS, searchTerm],
     queryFn: () => searchPosts(searchTerm),
-    enabled: !!searchTerm, // refetch when searchTerm chhanges
+    enabled: !!searchTerm,
   });
 };
 
@@ -260,9 +260,9 @@ export const useGetCurrentUser = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_CURRENT_USER],
     queryFn: getCurrentUser,
-    staleTime: 0, // Always consider data stale to ensure fresh fetches
-    refetchOnMount: true, // Always refetch when component mounts
-    refetchOnWindowFocus: false, // Don't refetch on window focus
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -409,8 +409,8 @@ export const useGetReviewsByPost = (postId: string) => {
     queryKey: [QUERY_KEYS.GET_REVIEWS_BY_POST, postId],
     queryFn: () => getReviewsByPost(postId),
     enabled: !!postId,
-    staleTime: 0, // Always fetch fresh data
-    refetchOnMount: true, // Refetch when component mounts
+    staleTime: 0,
+    refetchOnMount: true,
   });
 };
 
@@ -469,9 +469,9 @@ export const useGetNotifications = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_NOTIFICATIONS],
     queryFn: getNotifications,
-    refetchInterval: 5000, // Refetch every 5 seconds for real-time updates
-    refetchOnWindowFocus: true, // Refetch when window gains focus
-    refetchOnMount: true, // Refetch when component mounts
+    refetchInterval: 5000,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 };
 
@@ -479,9 +479,9 @@ export const useGetUnreadNotificationCount = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_UNREAD_NOTIFICATION_COUNT],
     queryFn: getUnreadNotificationCount,
-    refetchInterval: 5000, // Refetch every 5 seconds for real-time updates
-    refetchOnWindowFocus: true, // Refetch when window gains focus
-    refetchOnMount: true, // Refetch when component mounts
+    refetchInterval: 5000,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 };
 
@@ -573,9 +573,9 @@ export const useGetChatHistory = () => {
   return useQuery({
     queryKey: ["chatHistory"],
     queryFn: getChatHistory,
-    refetchInterval: 3000, // Refetch every 3 seconds for real-time AI chat updates
-    refetchOnWindowFocus: true, // Refetch when window gains focus
-    refetchOnMount: true, // Refetch when component mounts
+    refetchInterval: 3000,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 };
 
@@ -618,11 +618,10 @@ export const useGetUserConversation = (userId: string | null) => {
     queryKey: ["userConversation", userId],
     queryFn: () => getUserConversation(userId!),
     enabled: !!userId,
-    refetchInterval: 3000, // Refetch every 3 seconds for real-time message updates
-    refetchOnWindowFocus: true, // Refetch when window gains focus
-    refetchOnMount: true, // Refetch when component mounts
+    refetchInterval: 3000,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
     onSuccess: () => {
-      // Invalidate unread count when fetching conversation to get latest count
       queryClient.invalidateQueries({ queryKey: ["unreadMessageCount"] });
     },
   });
@@ -632,9 +631,9 @@ export const useGetConversationPartners = () => {
   return useQuery({
     queryKey: ["conversationPartners"],
     queryFn: () => getConversationPartners(),
-    refetchInterval: 5000, // Refetch every 5 seconds to keep unread counts updated
-    refetchOnWindowFocus: true, // Refetch when window gains focus
-    refetchOnMount: true, // Refetch when component mounts
+    refetchInterval: 5000,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 };
 
@@ -643,10 +642,10 @@ export const useGetUnreadMessageCount = (enabled: boolean = true) => {
     queryKey: ["unreadMessageCount"],
     queryFn: () => getUnreadMessageCount(),
     enabled: enabled,
-    refetchInterval: enabled ? 5000 : false, // Refetch every 5 seconds for real-time updates
-    refetchOnWindowFocus: enabled, // Refetch when window gains focus
-    refetchOnMount: enabled, // Refetch when component mounts
-    retry: 1, // Retry once on failure
+    refetchInterval: enabled ? 5000 : false,
+    refetchOnWindowFocus: enabled,
+    refetchOnMount: enabled,
+    retry: 1,
   });
 };
 
@@ -668,10 +667,8 @@ export const useMarkConversationAsRead = () => {
   return useMutation({
     mutationFn: (userId: string) => markConversationAsRead(userId),
     onSuccess: () => {
-      // Immediately refetch to update unread counts and badges
       queryClient.invalidateQueries({ queryKey: ["unreadMessageCount"] });
       queryClient.invalidateQueries({ queryKey: ["conversationPartners"] });
-      // Force immediate refetch instead of waiting for next poll
       queryClient.refetchQueries({ queryKey: ["conversationPartners"] });
       queryClient.refetchQueries({ queryKey: ["unreadMessageCount"] });
     },

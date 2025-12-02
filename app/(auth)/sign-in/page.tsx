@@ -45,10 +45,11 @@ const SigninForm = () => {
       });
 
       if (!session) {
-        return toast({ 
-          title: "Sign-In failed", 
-          description: "Invalid credentials. Please check your email/username and password.",
-          variant: "destructive"
+        return toast({
+          title: "Sign-In failed",
+          description:
+            "Invalid credentials. Please check your email/username and password.",
+          variant: "destructive",
         });
       }
 
@@ -58,17 +59,18 @@ const SigninForm = () => {
         form.reset();
         router.push("/");
       } else {
-        toast({ 
-          title: "Sign-In failed", 
+        toast({
+          title: "Sign-In failed",
           description: "Unable to verify your session. Please try again.",
-          variant: "destructive"
+          variant: "destructive",
         });
       }
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || 
-                          error?.message || 
-                          "Invalid email/username or password. Please try again.";
-      
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Invalid email/username or password. Please try again.";
+
       toast({
         title: "Sign-In failed",
         description: errorMessage,
@@ -80,8 +82,20 @@ const SigninForm = () => {
   return (
     <Form {...form}>
       <div className="sm:w-420 flex-center flex-col max-sm:w-[300px] max-sm:p-5">
-        <Link href="/" className="mb-2">
-          <img src="/assets/images/logo.svg" className="h-20 w-auto" />
+        <Link href="/" className="mb-2 flex items-center gap-3 justify-center">
+          <img
+            src="/assets/images/lg-logo.svg"
+            alt="Momento"
+            className="w-12 h-12"
+          />
+          <div className="flex flex-col justify-center">
+            <h1 className="text-[28px] font-bold text-white tracking-tight leading-tight">
+              Momento
+            </h1>
+            <p className="text-[9px] font-normal text-light-3 tracking-wider uppercase leading-tight mt-0.5">
+              CAPTURE EVERY MOMENT
+            </p>
+          </div>
         </Link>
         <h2 className="h3-bold md:h2-bold pt-2 pb-1">Log In to account.</h2>
         <p className="text-slate-400 small-regular mt-1 mb-3">
