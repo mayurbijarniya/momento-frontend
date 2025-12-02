@@ -613,7 +613,6 @@ export const useClearChat = () => {
 };
 
 export const useGetUserConversation = (userId: string | null) => {
-  const queryClient = useQueryClient();
   return useQuery({
     queryKey: ["userConversation", userId],
     queryFn: () => getUserConversation(userId!),
@@ -621,9 +620,6 @@ export const useGetUserConversation = (userId: string | null) => {
     refetchInterval: 3000,
     refetchOnWindowFocus: true,
     refetchOnMount: true,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["unreadMessageCount"] });
-    },
   });
 };
 
