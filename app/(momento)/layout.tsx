@@ -25,7 +25,7 @@ export default function MomentoLayout({
       <LeftSidebar />
       <div className="flex-1 md:ml-[80px] lg:ml-[300px] transition-all w-full">
         <Topbar />
-        <section className="flex flex-1 md:h-screen min-h-[100vh] w-full">
+        <section className="flex flex-1 md:h-screen min-h-[100vh] w-full pb-20 md:pb-0">
           <div className={`flex flex-1 ${isChatPage || isPostDetailsPage ? '' : 'justify-center'}`}>
             <div className={`w-full ${isChatPage || isPostDetailsPage ? '' : 'max-w-5xl'}`}>{children}</div>
           </div>

@@ -26,7 +26,7 @@ export default function RootPage() {
       <LeftSidebar />
       <div className="flex-1 md:ml-[80px] lg:ml-[300px] transition-all w-full">
         <Topbar />
-        <section className="flex flex-1 md:h-screen min-h-[100vh] w-full">
+        <section className="flex flex-1 md:h-screen min-h-[100vh] w-full pb-20 md:pb-0">
           <div className="flex flex-1 justify-center">
             <div className="w-full max-w-5xl">
               <div className="home-container px-0 md:px-0 lg:px-0">

@@ -117,7 +117,7 @@ const AdminDashboard = () => {
           className={`flex-1 ${
             activeTab === "users"
               ? "bg-white text-black hover:bg-gray-300"
-              : "bg-dark-4 text-light-1 hover:bg-dark-3"
+              : "bg-dark-4 text-light-1 hover:bg-gray-800"
           }`}
         >
           <Users className="w-4 h-4 mr-2" />
@@ -128,7 +128,7 @@ const AdminDashboard = () => {
           className={`flex-1 ${
             activeTab === "posts"
               ? "bg-white text-black hover:bg-gray-300"
-              : "bg-dark-4 text-light-1 hover:bg-dark-3"
+              : "bg-dark-4 text-light-1 hover:bg-gray-800"
           }`}
         >
           <FileText className="w-4 h-4 mr-2" />

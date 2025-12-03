@@ -161,7 +161,7 @@ const ExploreContent = () => {
             className={`px-4 py-2 rounded-lg transition ${
               searchType === "local"
                 ? "bg-white text-black"
-                : "bg-dark-4 text-light-2 hover:bg-dark-3"
+                : "bg-dark-4 text-light-2 hover:bg-gray-800"
             }`}
           >
             <p className="small-medium md:base-medium">Local Posts</p>
@@ -173,7 +173,7 @@ const ExploreContent = () => {
             className={`px-4 py-2 rounded-lg transition ${
               searchType === "external"
                 ? "bg-white text-black"
-                : "bg-dark-4 text-light-2 hover:bg-dark-1"
+                : "bg-dark-4 text-light-2 hover:bg-gray-800"
             }`}
           >
             <p className="small-medium md:base-medium">External Photos</p>
