@@ -8,8 +8,10 @@ export type IUpdateUser = {
   userId: string;
   name: string;
   bio: string;
-  imageId: string;
-  imageUrl: URL | string;
+  imageId?: string;
+  imageUrl?: URL | string;
+  imageData?: string;
+  imageMimeType?: string;
   file: File[];
 };
 

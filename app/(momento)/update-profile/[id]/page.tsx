@@ -66,12 +66,16 @@ const UpdateProfile = () => {
     if (isAuthenticated) {
       let imageUrl = (currentUser as any).imageUrl;
       let imageId = (currentUser as any).imageId;
+      let imageData = (currentUser as any).imageData;
+      let imageMimeType = (currentUser as any).imageMimeType;
 
       if (value.file && value.file.length > 0) {
         try {
           const uploadResult = await uploadProfileImage(value.file[0]);
           imageUrl = uploadResult.imageUrl;
           imageId = uploadResult.imageId;
+          imageData = uploadResult.imageData;
+          imageMimeType = uploadResult.imageMimeType;
         } catch (error) {
           toast({
             title: "Failed to upload image. Please try again.",
@@ -80,14 +84,19 @@ const UpdateProfile = () => {
         }
       }
 
-      const updatedUser = await updateUser({
+      const updatePayload: any = {
         userId: (currentUser as any).$id || (currentUser as any).id || userId,
         name: value.name,
         bio: value.bio,
         file: value.file,
-        imageUrl: imageUrl,
-        imageId: imageId,
-      });
+      };
+
+      if (imageUrl) updatePayload.imageUrl = imageUrl;
+      if (imageId) updatePayload.imageId = imageId;
+      if (imageData) updatePayload.imageData = imageData;
+      if (imageMimeType) updatePayload.imageMimeType = imageMimeType;
+
+      const updatedUser = await updateUser(updatePayload);
 
       if (!updatedUser) {
         toast({

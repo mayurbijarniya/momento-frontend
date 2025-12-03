@@ -135,6 +135,8 @@ export const updateUser = async (user: IUpdateUser) => {
         bio: user.bio,
         imageUrl: user.imageUrl,
         imageId: user.imageId,
+        imageData: user.imageData,
+        imageMimeType: user.imageMimeType,
       }
     );
     const updatedUser = response.data;
