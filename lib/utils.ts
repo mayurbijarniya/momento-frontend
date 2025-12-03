@@ -54,7 +54,6 @@ export function formatMessageTime(dateString: string | undefined): string {
   const hours = Math.floor(timeDifference / (1000 * 60 * 60));
   const days = Math.floor(hours / 24);
 
-  // Within 24 hours: show time
   if (hours < 24) {
     const minutes = Math.floor(timeDifference / (1000 * 60));
     if (minutes < 1) {
@@ -66,7 +65,6 @@ export function formatMessageTime(dateString: string | undefined): string {
     }
   }
 
-  // After 24 hours but within 7 days: show day
   if (days < 7) {
     if (days === 1) {
       return 'Yesterday';
@@ -75,7 +73,6 @@ export function formatMessageTime(dateString: string | undefined): string {
     return dayNames[messageDate.getDay()];
   }
 
-  // After 7 days: show date
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const month = monthNames[messageDate.getMonth()];
   const day = messageDate.getDate();

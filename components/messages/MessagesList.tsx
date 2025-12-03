@@ -208,7 +208,6 @@ const MessagesList = ({ selectedUserId }: MessagesListProps) => {
             <div
               key={user.id}
               onClick={() => {
-                // Mark messages as read immediately when clicking on conversation
                 if (user.unreadCount > 0) {
                   markAsRead(user.id);
                 }

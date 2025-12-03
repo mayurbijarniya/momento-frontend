@@ -17,8 +17,7 @@ const ChatInput = ({ onSend, isLoading }: ChatInputProps) => {
     if (message.trim() && !isLoading) {
       onSend(message.trim());
       setMessage("");
-      setShowEmojiPicker(false); // Close emoji picker when sending
-      // Refocus the input after sending
+      setShowEmojiPicker(false);
       setTimeout(() => {
         inputRef.current?.focus();
       }, 0);
@@ -32,14 +31,12 @@ const ChatInput = ({ onSend, isLoading }: ChatInputProps) => {
     }
   };
 
-  // Auto-focus input when component mounts or when not loading
   useEffect(() => {
     if (!isLoading) {
       inputRef.current?.focus();
     }
   }, [isLoading]);
 
-  // Close emoji picker when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (

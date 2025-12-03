@@ -32,8 +32,6 @@ type PostFormProps = {
 };
 
 const PostForm = ({ post, action }: PostFormProps) => {
-  //gave prop (posts) a type
-
   const { mutateAsync: createPost, isPending: isLoadingCreate } =
     useCreatePost();
   const { mutateAsync: updatePost, isPending: isLoadingUpdate } =

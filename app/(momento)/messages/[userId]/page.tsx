@@ -94,7 +94,6 @@ const ChatPage = () => {
     }
   }, [selectedUserId, isAI, isAuthenticated, conversationLoading, userMessages.length, markAsRead]);
 
-  // Invalidate unread message count when conversation data is loaded
   useEffect(() => {
     if (!isAI && selectedUserId && userConversationData && !conversationLoading) {
       queryClient.invalidateQueries({ queryKey: ["unreadMessageCount"] });
@@ -166,8 +165,6 @@ const ChatPage = () => {
                     feedback: message.feedback,
                     createdAt: message.createdAt,
                   };
-                  // For messages from other users (left side), use their image
-                  // For user's own messages (right side), use current user's image
                   const otherUserImage = isUserMessage 
                     ? undefined 
                     : isAI 
