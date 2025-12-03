@@ -193,8 +193,11 @@ const AdminDashboard = () => {
           ) : (
             <ul className="flex flex-col flex-1 gap-9 w-full 2xl:px-10 lg:px-6 md:px-5 sm:px-2">
               {posts.map((post: any) => (
-                <li key={post.$id || post.id} className="relative">
-                  <div className="relative">
+                <li
+                  key={post.$id || post.id}
+                  className="relative flex justify-center"
+                >
+                  <div className="relative w-fit">
                     <PostCard post={post} />
                     <Button
                       onClick={() =>
