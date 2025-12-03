@@ -116,7 +116,7 @@ const SignupForm = () => {
       <div className="w-full max-w-md">
         <Form {...form}>
           {/* Logo */}
-          <div className="flex items-center justify-center gap-3 mb-8">
+          <div className="flex items-center justify-center gap-3 mb-4">
             <div className="p-2 border border-border rounded-lg flex-shrink-0">
               <Camera className="h-8 w-8 text-foreground" />
             </div>
@@ -131,7 +131,7 @@ const SignupForm = () => {
           </div>
 
           {/* Title */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-4">
             <h1 className="text-2xl font-bold text-foreground mb-2">
               Create a new account.
             </h1>
@@ -141,7 +141,7 @@ const SignupForm = () => {
           </div>
 
           {/* Form */}
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
             <FormField
               control={form.control}
               name="name"
@@ -282,7 +282,7 @@ const SignupForm = () => {
           </form>
 
           {/* Sign In Link */}
-          <p className="text-center mt-6 text-muted-foreground">
+          <p className="text-center mt-4 text-muted-foreground">
             Already have an account?{" "}
             <Link
               href="/sign-in"
