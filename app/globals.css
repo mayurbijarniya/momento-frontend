@@ -321,3 +321,16 @@
     @apply flex gap-4 items-center justify-start hover:bg-transparent hover:text-white !important;
   }
 }
+
+.epr-category-nav button.epr-active,
+.epr-category-nav button.epr-active::after,
+.epr-category-nav button.epr-active::before {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.epr-category-nav button::after,
+.epr-category-nav button::before {
+  display: none !important;
+}

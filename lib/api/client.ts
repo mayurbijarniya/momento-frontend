@@ -128,16 +128,22 @@ export const uploadProfileImage = async (file: File) => {
 
 export const updateUser = async (user: IUpdateUser) => {
   try {
+    const payload: any = {
+      name: user.name,
+      bio: user.bio,
+      imageUrl: user.imageUrl,
+      imageId: user.imageId,
+      imageData: user.imageData,
+      imageMimeType: user.imageMimeType,
+    };
+    
+    if (user.password && user.password.trim() !== "") {
+      payload.password = user.password;
+    }
+
     const response = await axiosWithCredentials.put(
       `${USERS_API}/${user.userId}`,
-      {
-        name: user.name,
-        bio: user.bio,
-        imageUrl: user.imageUrl,
-        imageId: user.imageId,
-        imageData: user.imageData,
-        imageMimeType: user.imageMimeType,
-      }
+      payload
     );
     const updatedUser = response.data;
     return {

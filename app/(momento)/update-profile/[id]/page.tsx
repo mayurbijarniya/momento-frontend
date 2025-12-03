@@ -48,6 +48,7 @@ const UpdateProfile = () => {
       username: user.username,
       email: user.email,
       bio: user.bio || "",
+      password: "",
     },
   });
 
@@ -90,6 +91,10 @@ const UpdateProfile = () => {
         bio: value.bio,
         file: value.file,
       };
+
+      if (value.password && value.password.trim() !== "") {
+        updatePayload.password = value.password;
+      }
 
       if (imageUrl) updatePayload.imageUrl = imageUrl;
       if (imageId) updatePayload.imageId = imageId;
@@ -227,6 +232,27 @@ const UpdateProfile = () => {
                   <FormControl>
                     <Textarea
                       className="shad-textarea custom-scrollbar !bg-dark-4"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage className="shad-form_message" />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="shad-form_label">
+                    New Password (leave blank to keep current password)
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      className="shad-input !bg-dark-4"
+                      placeholder="Enter new password (min 8 characters)"
                       {...field}
                     />
                   </FormControl>

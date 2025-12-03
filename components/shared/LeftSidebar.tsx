@@ -21,6 +21,7 @@ import {
   Bell,
   LogOut,
   Camera,
+  Menu,
 } from "lucide-react";
 
 const iconMap: Record<string, any> = {
@@ -150,17 +151,18 @@ const LeftSidebar = () => {
             <li>
               <Link
                 href="/admin"
-                className={`flex items-center justify-center lg:justify-start gap-0 lg:gap-4 px-0 lg:px-4 py-3 transition-all duration-200 ${
+                className={`flex items-center justify-center lg:justify-start gap-0 lg:gap-4 px-0 lg:px-4 py-3 transition-all duration-200 relative ${
                   pathname === "/admin"
                     ? "md:w-14 md:h-14 md:mx-auto md:rounded-xl md:flex md:items-center md:justify-center lg:w-auto lg:h-auto lg:rounded-lg bg-white text-black font-semibold"
                     : "text-white md:w-14 md:h-14 md:mx-auto md:rounded-xl md:flex md:items-center md:justify-center lg:w-auto lg:h-auto lg:rounded-lg lg:hover:bg-dark-4"
                 }`}
               >
-                <img
-                  src="/assets/icons/filter.svg"
-                  alt="Admin"
-                  className={`w-6 h-6 ${pathname === "/admin" ? "invert" : ""}`}
-                />
+                <div className="relative flex-shrink-0">
+                  <Menu
+                    className="h-6 w-6"
+                    strokeWidth={pathname === "/admin" ? 2.5 : 2}
+                  />
+                </div>
                 <span className="hidden lg:inline text-base">Admin</span>
               </Link>
             </li>

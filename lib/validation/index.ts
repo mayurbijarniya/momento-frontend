@@ -32,4 +32,11 @@ export const ProfileValidation = z.object({
     .min(3, { message: "Name must be at least 3 characters." }),
   email: z.string().email(),
   bio: z.string(),
+  password: z
+    .string()
+    .optional()
+    .refine(
+      (val) => !val || val.trim() === "" || val.length >= 8,
+      { message: "Password must be at least 8 characters." }
+    ),
 });
