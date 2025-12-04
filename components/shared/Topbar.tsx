@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useUserContext } from "@/context/AuthContext";
-import { Camera, LogOut, Menu, User } from "lucide-react";
+import { Camera, LogOut, Menu, User, Info, Shield } from "lucide-react";
 import { useSignOutAccount } from "@/lib/react-query/queriesAndMutation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
@@ -99,6 +99,22 @@ const Topbar = () => {
                       <LogOut className="h-5 w-5" strokeWidth={2} />
                       <span className="text-sm base-medium">Logout</span>
                     </button>
+                    <Link
+                      href="/about"
+                      onClick={() => setShowProfileMenu(false)}
+                      className="flex items-center gap-3 px-4 py-3 text-white hover:bg-dark-4 transition-colors border-t border-dark-4"
+                    >
+                      <Info className="h-5 w-5" strokeWidth={2} />
+                      <span className="text-sm base-medium">About</span>
+                    </Link>
+                    <Link
+                      href="/privacy"
+                      onClick={() => setShowProfileMenu(false)}
+                      className="flex items-center gap-3 px-4 py-3 text-white hover:bg-dark-4 transition-colors border-t border-dark-4"
+                    >
+                      <Shield className="h-5 w-5" strokeWidth={2} />
+                      <span className="text-sm base-medium">Privacy Policy</span>
+                    </Link>
                   </div>
                 )}
               </div>
