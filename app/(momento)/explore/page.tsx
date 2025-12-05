@@ -273,17 +273,13 @@ const ExploreContent = () => {
           <p className="text-light-1 mt-10 text-center w-full">End of Posts</p>
         ) : (
           <>
-            {posts.pages.map((item, index) => {
-              const postsToShow = isAuthenticated
-                ? item.documents
-                : index === 0
-                ? item.documents.slice(0, 3)
-                : [];
-              if (postsToShow.length === 0) return null;
-              return (
-                <GridPostList key={`page-${index}`} posts={postsToShow} />
-              );
-            })}
+            <GridPostList
+              posts={
+                isAuthenticated
+                  ? posts.pages.flatMap((item) => item.documents || [])
+                  : firstPagePosts.slice(0, 3)
+              }
+            />
             {!isAuthenticated && firstPagePosts.length > 3 && (
               <div className="flex-center flex-col gap-4 mt-8 p-6 border border-dark-4 rounded-lg bg-dark-2 w-full max-w-md mx-auto">
                 <p className="text-light-1 base-medium text-center">
