@@ -183,7 +183,7 @@ const ChatPage = () => {
                     />
                   );
                 })}
-                {(isAI ? isSending : isSendingUser) && <TypingIndicator />}
+                {isAI && isSending && <TypingIndicator />}
               </>
             ) : (
               <div className="flex-center w-full h-full">
