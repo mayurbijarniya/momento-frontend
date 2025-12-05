@@ -195,20 +195,24 @@ const AdminDashboard = () => {
               {posts.map((post: any) => (
                 <li
                   key={post.$id || post.id}
-                  className="relative flex justify-center"
+                  className="relative flex justify-center w-full"
                 >
-                  <div className="relative w-fit">
-                    <PostCard post={post} />
-                    <Button
-                      onClick={() =>
-                        handleDeletePost(post.$id || post.id, post.imageId)
+                  <div className="relative w-full flex justify-center">
+                    <PostCard
+                      post={post}
+                      adminActions={
+                        <Button
+                          onClick={() =>
+                            handleDeletePost(post.$id || post.id, post.imageId)
+                          }
+                          variant="ghost"
+                          className="p-2 hover:bg-red-500/20 rounded-full"
+                          title="Delete post"
+                        >
+                          <Trash2 className="w-4 h-4 text-red-500" />
+                        </Button>
                       }
-                      variant="ghost"
-                      className="absolute top-4 right-4 p-2 hover:bg-red-500/20 rounded-full z-10"
-                      title="Delete post"
-                    >
-                      <Trash2 className="w-5 h-5 text-red-500" />
-                    </Button>
+                    />
                   </div>
                 </li>
               ))}

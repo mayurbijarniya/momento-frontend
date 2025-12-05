@@ -9,9 +9,10 @@ import Loader from "./Loader";
 
 type PostCardProps = {
   post: any;
+  adminActions?: React.ReactNode;
 };
 
-const PostCard = ({ post }: PostCardProps) => {
+const PostCard = ({ post, adminActions }: PostCardProps) => {
   const [loading, setLoading] = useState(true);
   const [showAllTags, setShowAllTags] = useState(false);
   const dateString: string = post.$createdAt || post.createdAt;
@@ -61,21 +62,24 @@ const PostCard = ({ post }: PostCardProps) => {
           </div>
         </div>
 
-        {isAuthenticated && (
-          <Link
-            href={`/update-post/${post.$id || post.id}`}
-            className={`${
-              user.id !== (post.creator.$id || post.creator.id) && "hidden"
-            }`}
-          >
-            <img
-              src="/assets/icons/edit.svg"
-              alt="edit"
-              width={18}
-              height={18}
-            />
-          </Link>
-        )}
+        <div className="flex items-center gap-2">
+          {isAuthenticated && (
+            <Link
+              href={`/update-post/${post.$id || post.id}`}
+              className={`${
+                user.id !== (post.creator.$id || post.creator.id) && "hidden"
+              }`}
+            >
+              <img
+                src="/assets/icons/edit.svg"
+                alt="edit"
+                width={18}
+                height={18}
+              />
+            </Link>
+          )}
+          {adminActions}
+        </div>
       </div>
 
       <Link href={`/posts/${post.$id || post.id}`}>
