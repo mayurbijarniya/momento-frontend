@@ -26,7 +26,7 @@ const UserCard = ({ user }: UserCardProps) => {
       </div>
 
         <div className="flex-center w-full">
-          <Link href={`/profile/${user.$id || user.id}`}>
+          <Link href={`/profile/${user.$id || user.id || user._id}`}>
       <Button
         type="button"
         size="sm"
