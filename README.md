@@ -102,7 +102,8 @@ The app is available at `http://localhost:3000`.
 
 - Frontend repository: [`momento-frontend`](https://github.com/mayurbijarniya/momento-frontend)
 - Backend repository: [`momento-backend`](https://github.com/mayurbijarniya/momento-backend)
-- Deployed frontend: `https://momento-frontend.vercel.app`
+- Deployed frontend: [`momento-frontend.vercel.app`](https://momento-frontend.vercel.app/)
+- Deployed backend: [`momento-backend-8rrm.onrender.com`](https://momento-backend-8rrm.onrender.com/)
 
 ## Environment Variables
 
