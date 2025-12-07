@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import Oops from "@/components/shared/Oops";
 import { useToast } from "@/components/ui/use-toast";
-import { MessageSquare, Grid3x3, Heart, Edit, Trash2 } from "lucide-react";
+import { Grid3x3, Heart, Edit, Trash2 } from "lucide-react";
 
 interface StabBlockProps {
   value: string | number;
@@ -250,15 +250,6 @@ const Profile = () => {
                               ? "Unfollow"
                               : "Follow"}
                           </Button>
-                          <Button
-                            onClick={() => router.push(`/messages/${userId}`)}
-                            variant="outline"
-                            size="sm"
-                            className="gap-2 bg-transparent text-light-1 border border-light-1 hover:bg-primary-500 hover:border-primary-500 hover:text-white transition"
-                          >
-                            <MessageSquare className="h-4 w-4" />
-                            Message
-                          </Button>
                         </>
                       ) : (
                         <>
@@ -269,15 +260,6 @@ const Profile = () => {
                             className="gap-2 bg-transparent text-light-1 border border-light-1 hover:bg-primary-500 hover:border-primary-500 hover:text-white transition"
                           >
                             Follow
-                          </Button>
-                          <Button
-                            onClick={() => router.push("/sign-in")}
-                            variant="outline"
-                            size="sm"
-                            className="gap-2 bg-transparent text-light-1 border border-light-1 hover:bg-primary-500 hover:border-primary-500 hover:text-white transition"
-                          >
-                            <MessageSquare className="h-4 w-4" />
-                            Message
                           </Button>
                         </>
                       )}

@@ -4,7 +4,7 @@ Frontend for the Momento Social Network, built with Next.js, React, TypeScript, 
 
 ## Overview
 
-Momento is a responsive social network that supports anonymous browsing, role-based access (USER, ADMIN), rich posting, reviews, messaging, and an AI assistant.  
+Momento is a responsive social network that supports anonymous browsing, role-based access (USER, ADMIN), rich posting, and reviews.  
 This repository contains the client-side application powered by the Next.js App Router and React Query.
 
 ## Tech Stack
@@ -32,12 +32,6 @@ This repository contains the client-side application powered by the Next.js App 
 - Likes, saves, and post-level review system with star ratings
 - User profiles (own and others) with grouped sections for posts, followers, following, saved, and reviews
 - Explore page with filters (latest, oldest, most liked, most reviewed)
-
-### Messaging and Notifications
-
-- Direct user-to-user messaging with conversation list, unread counts, and read tracking
-- Momento AI assistant chat using the backend OpenRouter integration
-- Typing indicator, message timestamps, and responsive chat layout
 - In-app notifications for likes, follows, and reviews with unread badge counts and mark-as-read
 
 ### External Content Integration
@@ -55,18 +49,17 @@ This repository contains the client-side application powered by the Next.js App 
 
 - Fully responsive layout for mobile, tablet, and desktop
 - Icon-only sidebar on tablet, full sidebar on desktop, bottom navigation on mobile
-- Consistent dark theme and professional styling across authentication, home, profile, details, messages, and admin pages
+- Consistent dark theme and professional styling across authentication, home, profile, details, and admin pages
 
 ## Project Structure (High Level)
 
 ```
 app/
   (auth)/          Authentication (sign-in, sign-up)
-  (momento)/       Main application (home, explore, posts, profile, messages, admin, about, privacy)
+  (momento)/       Main application (home, explore, posts, profile, admin, about, privacy)
 components/
   shared/          Shared UI (cards, navigation, dialogs, etc.)
   forms/           Post, profile, review, and auth forms
-  messages/        Messaging UI
 lib/
   api/             Axios API client
   react-query/     Query and mutation hooks

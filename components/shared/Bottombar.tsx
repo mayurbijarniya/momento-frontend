@@ -3,7 +3,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   useGetUnreadNotificationCount,
-  useGetUnreadMessageCount,
 } from "@/lib/react-query/queriesAndMutation";
 import { useUserContext } from "@/context/AuthContext";
 import {
@@ -12,7 +11,6 @@ import {
   Users,
   Bookmark,
   PlusSquare,
-  MessageCircle,
   Bell,
 } from "lucide-react";
 
@@ -20,7 +18,6 @@ const iconMap: Record<string, any> = {
   "/": Home,
   "/explore": Compass,
   "/all-users": Users,
-  "/messages": MessageCircle,
   "/notifications": Bell,
   "/saved": Bookmark,
   "/create-post": PlusSquare,
@@ -31,23 +28,13 @@ const Bottombar = () => {
   const { isAuthenticated } = useUserContext();
   const { data: unreadCountData } = useGetUnreadNotificationCount();
   const unreadCount = unreadCountData?.count || 0;
-  const { data: unreadMessageCountData } =
-    useGetUnreadMessageCount(isAuthenticated);
-  const unreadMessageCount = isAuthenticated
-    ? unreadMessageCountData?.count ?? 0
-    : 0;
 
   return (
     <section className="bottom-bar">
       {bottombarLinks.map((link) => {
-        const isActive =
-          link.route === "/messages"
-            ? pathname.startsWith("/messages")
-            : pathname === link.route;
+        const isActive = pathname === link.route;
         const isNotifications = link.route === "/notifications";
-        const isMessages = link.route === "/messages";
         const showNotificationBadge = isNotifications && unreadCount > 0;
-        const showMessageBadge = isMessages && unreadMessageCount > 0;
         const IconComponent = iconMap[link.route] || Home;
 
         return (
@@ -72,15 +59,6 @@ const Bottombar = () => {
                   }`}
                 >
                   {unreadCount > 9 ? "9+" : unreadCount}
-                </span>
-              )}
-              {showMessageBadge && (
-                <span
-                  className={`absolute -top-1.5 -right-1.5 bg-blue-500 text-white text-[10px] font-extrabold rounded-full flex items-center justify-center shadow-xl z-20 ${
-                    unreadMessageCount > 9 ? "min-w-[20px] h-5 px-1" : "w-4 h-4"
-                  }`}
-                >
-                  {unreadMessageCount > 9 ? "9+" : unreadMessageCount}
                 </span>
               )}
             </div>

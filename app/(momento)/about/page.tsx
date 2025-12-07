@@ -84,7 +84,6 @@ const AboutPage = () => {
       items: [
         "Follow and unfollow other users",
         "View followers and following lists",
-        "Send messages (AI chat and user-to-user messaging)",
         "View and manage notifications",
       ],
     },
@@ -163,7 +162,6 @@ const AboutPage = () => {
         "Cannot like or save posts",
         "Cannot follow or unfollow users",
         "Cannot view followers/following lists (redirects to sign-in)",
-        "Cannot send messages",
         "Cannot view notifications",
         "Cannot update profile",
         "Cannot create reviews",

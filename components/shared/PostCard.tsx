@@ -108,8 +108,8 @@ const PostCard = ({ post, adminActions }: PostCardProps) => {
           {tags.length > 0 && (
             <div className="mt-2">
               <ul className="flex flex-wrap gap-1">
-                {visibleTags.map((tag: string) => (
-                  <li key={tag} className="text-light-4">
+                {visibleTags.map((tag: string, idx: number) => (
+                  <li key={`${tag}-${idx}`} className="text-light-4">
                     {tag ? `#${tag}` : ""}
                   </li>
                 ))}

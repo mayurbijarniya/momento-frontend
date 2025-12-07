@@ -44,15 +44,6 @@ import {
   getAllUsersAdmin,
   deleteUserAdmin,
   deletePostAdmin,
-  sendMessageToAI,
-  getChatHistory,
-  updateMessageFeedback,
-  clearChatHistory,
-  sendUserMessage,
-  getUserConversation,
-  getConversationPartners,
-  getUnreadMessageCount,
-  markConversationAsRead,
 } from "../api/client";
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { QUERY_KEYS } from "./queryKeys";
@@ -565,108 +556,6 @@ export const useDeletePostAdmin = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
       });
-    },
-  });
-};
-
-export const useGetChatHistory = () => {
-  return useQuery({
-    queryKey: ["chatHistory"],
-    queryFn: getChatHistory,
-    refetchInterval: 3000,
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-  });
-};
-
-export const useSendMessage = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (content: string) => sendMessageToAI(content),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["chatHistory"] });
-    },
-  });
-};
-
-export const useUpdateFeedback = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ messageId, feedback }: { 
-      messageId: string; 
-      feedback: "up" | "down" | null 
-    }) => updateMessageFeedback(messageId, feedback),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["chatHistory"] });
-    },
-  });
-};
-
-export const useClearChat = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: clearChatHistory,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["chatHistory"] });
-    },
-  });
-};
-
-export const useGetUserConversation = (userId: string | null) => {
-  return useQuery({
-    queryKey: ["userConversation", userId],
-    queryFn: () => getUserConversation(userId!),
-    enabled: !!userId,
-    refetchInterval: 3000,
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-  });
-};
-
-export const useGetConversationPartners = () => {
-  return useQuery({
-    queryKey: ["conversationPartners"],
-    queryFn: () => getConversationPartners(),
-    refetchInterval: 5000,
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-  });
-};
-
-export const useGetUnreadMessageCount = (enabled: boolean = true) => {
-  return useQuery({
-    queryKey: ["unreadMessageCount"],
-    queryFn: () => getUnreadMessageCount(),
-    enabled: enabled,
-    refetchInterval: enabled ? 5000 : false,
-    refetchOnWindowFocus: enabled,
-    refetchOnMount: enabled,
-    retry: 1,
-  });
-};
-
-export const useSendUserMessage = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ receiverId, content }: { receiverId: string; content: string }) =>
-      sendUserMessage(receiverId, content),
-    onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["userConversation", variables.receiverId] });
-      queryClient.invalidateQueries({ queryKey: ["conversationPartners"] });
-      queryClient.invalidateQueries({ queryKey: ["unreadMessageCount"] });
-    },
-  });
-};
-
-export const useMarkConversationAsRead = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (userId: string) => markConversationAsRead(userId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["unreadMessageCount"] });
-      queryClient.invalidateQueries({ queryKey: ["conversationPartners"] });
-      queryClient.refetchQueries({ queryKey: ["conversationPartners"] });
-      queryClient.refetchQueries({ queryKey: ["unreadMessageCount"] });
     },
   });
 };

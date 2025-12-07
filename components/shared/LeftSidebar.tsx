@@ -6,7 +6,6 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   useSignOutAccount,
   useGetUnreadNotificationCount,
-  useGetUnreadMessageCount,
 } from "@/lib/react-query/queriesAndMutation";
 import { useUserContext } from "@/context/AuthContext";
 import { sidebarLinks } from "@/constants";
@@ -17,7 +16,6 @@ import {
   Users,
   Bookmark,
   PlusSquare,
-  MessageCircle,
   Bell,
   LogOut,
   Camera,
@@ -28,7 +26,6 @@ const iconMap: Record<string, any> = {
   "/": Home,
   "/explore": Compass,
   "/all-users": Users,
-  "/messages": MessageCircle,
   "/notifications": Bell,
   "/saved": Bookmark,
   "/create-post": PlusSquare,
@@ -41,13 +38,6 @@ const LeftSidebar = () => {
   const { user, isAuthenticated, signOut } = useUserContext();
   const { data: unreadCountData } = useGetUnreadNotificationCount();
   const unreadCount = unreadCountData?.count || 0;
-  const { data: unreadMessageCountData } =
-    useGetUnreadMessageCount(isAuthenticated);
-  const unreadMessageCount = isAuthenticated
-    ? unreadMessageCountData?.count ?? 0
-    : 0;
-
-  const isMessagesPage = pathname.startsWith("/messages");
 
   useEffect(() => {
     if (isSuccess) {
@@ -104,14 +94,9 @@ const LeftSidebar = () => {
       <nav className="flex-1 px-0 lg:px-3 py-3 md:py-2">
         <ul className="space-y-1 md:space-y-1">
           {sidebarLinks.map((link: INavLink) => {
-            const isActive =
-              link.route === "/messages"
-                ? pathname.startsWith("/messages")
-                : pathname === link.route;
+            const isActive = pathname === link.route;
             const isNotifications = link.route === "/notifications";
-            const isMessages = link.route === "/messages";
             const showNotificationBadge = isNotifications && unreadCount > 0;
-            const showMessageBadge = isMessages && unreadMessageCount > 0;
             const IconComponent = iconMap[link.route] || Home;
 
             return (
@@ -132,11 +117,6 @@ const LeftSidebar = () => {
                     {showNotificationBadge && (
                       <span className="absolute -top-1 -right-1 md:-top-1 md:-right-1 lg:-top-1.5 lg:-right-1.5 bg-blue-500 text-white text-[10px] md:text-[9px] lg:text-[10px] font-bold rounded-full flex items-center justify-center min-w-[18px] md:min-w-[16px] lg:min-w-[18px] h-4.5 md:h-4 lg:h-4.5 px-1 md:px-0.5 lg:px-1">
                         {unreadCount > 9 ? "9+" : unreadCount}
-                      </span>
-                    )}
-                    {showMessageBadge && (
-                      <span className="absolute -top-1 -right-1 md:-top-1 md:-right-1 lg:-top-1.5 lg:-right-1.5 bg-blue-500 text-white text-[10px] md:text-[9px] lg:text-[10px] font-bold rounded-full flex items-center justify-center min-w-[18px] md:min-w-[16px] lg:min-w-[18px] h-4.5 md:h-4 lg:h-4.5 px-1 md:px-0.5 lg:px-1">
-                        {unreadMessageCount > 9 ? "9+" : unreadMessageCount}
                       </span>
                     )}
                   </div>

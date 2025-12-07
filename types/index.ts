@@ -52,28 +52,3 @@ export type INewUser = {
   role?: "USER" | "ADMIN";
 };
 
-export interface IMessage {
-  _id: string;
-  userId: string;
-  role: "user" | "assistant";
-  content: string;
-  imageUrl?: string | null;
-  feedback?: "up" | "down" | null;
-  createdAt: string;
-}
-
-export interface IChatHistory {
-  messages: IMessage[];
-}
-
-export interface IUserConversation {
-  messages: Array<{
-    _id: string;
-    senderId: string;
-    receiverId: string;
-    content: string;
-    imageUrl?: string | null;
-    createdAt: string;
-    read?: boolean;
-  }>;
-}
